@@ -1,0 +1,89 @@
+# -- Prerequisites --
+#
+# Before running LAMMPS on this file, you must have already...
+# 1) Run cellpack2lt.py to create the "system.lt" file moltemplate needs
+# 2) Run "moltemplate.sh system.lt" to create the
+#   "system.data", "system.in.init", and "system.in.settings" files LAMMPS needs
+# 3) You must have run the first stage of minimization using "run.in.min1"
+#    (using a command like: lmp_ubuntu -i run.in.min1)
+# 4) You must have run the second stage of minimization using "run.in.min2"
+#    (using a command like: lmp_ubuntu -i run.in.min2)
+
+# -- Init Section --
+
+include system.in.init
+
+# -- Atom Definition Section --
+
+print '-----------------------------------------------------------------------'
+print 'Make sure you run LAMMPS on \"run.in.min\" before running this simulation.'
+print '(Minimization is necessary beforehand to avoid initial particle overlap.)'
+print '-----------------------------------------------------------------------'
+
+read_data system_after_min.data
+
+# -- Settings Section --
+
+include system.in.settings
+
+include system.in.settings.pair.coeffs
+
+# -- Run Section --
+
+
+dump            1 all custom 100 traj.lammpstrj id mol type x y z ix iy iz
+
+thermo_style    custom step temp pe etotal epair ebond eangle edihed
+thermo          100       # time interval for printing out "thermo" data
+thermo_modify   norm yes flush yes
+
+group mobile subtract all gFixed gOrdinary#gSurface  gBicycleI# gBicycleO gBicycleI
+
+# Integrate the equations of motion:
+fix fxRigid mobile rigid molecule
+fix fxNVE gOrdinary nve
+
+# Only compute forces between particles in different molecules
+# (no need to compute forces between particles in the same rigid molecule)
+# neigh_modify one 20000 page 200000
+neigh_modify exclude molecule/intra all
+neigh_modify exclude type 2 3
+neigh_modify exclude molecule/inter gBicycleI
+neigh_modify exclude molecule/inter gBicycleO
+
+
+# Reduce the time spent computing neighbor lists by increasing the bin size
+# and using "multi" style (needed when a large range of radii are in use)
+neighbor 10.0 multi
+
+
+# Decide how to split up the simulation volume so that the same number of
+# particles get assigned to every processor.  Do this periodically
+# (As opposed to dividing up the simulation volume into equal size rectangles
+# COMMENTING OUT NEXT LINE: THIS IS NOT ALWAYS A GOOD IDEA.)
+# fix fxBalance all balance 20000 xyz 20 1.4
+
+region rSphereI sphere  0    0  0  3000  side in #region size
+region rSphereO sphere  0    0  0  10.0  side out #region size
+group interior union gRigid gBicycleI
+fix fxWall1 interior wall/region rSphereI  harmonic  1.0  1.0  1450  #actual radius = 2000-380
+fix fxWall2 gBicycleO wall/region rSphereO  harmonic  1.0  1.0  1600.0  #actual radius = 800+780
+
+
+#variable r0 equal 0.0
+#variable rate equal 1.0
+#variable r equal "v_r0 + step*dt*v_rate"
+
+#fix test gBicycleO lineforce 0.0 0.1 0.0
+#loose atoms ?
+
+#fix fxSPHout gBicycleI indent 1 sphere 0.0 0.0 0.0 250.0# side out
+#fix fxSPHin mobile indent 1 sphere 0.0 0.0 0.0 1650.0 side in
+#fix fxnve mobile nve 
+#                        kB*Tstart   kB*Tstop   tdamp      randomseed
+timestep        0.25
+fix fxLan     mobile langevin 0.5961621 0.5961621 200.0 48279
+run 100000
+unfix fxLan
+#1-877-496-9889. 
+

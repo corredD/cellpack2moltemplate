@@ -1,0 +1,180 @@
+# -- Prerequisites --
+#
+# Before running LAMMPS on this file, you must have already...
+# 1) Run cellpack2lt.py to create the "system.lt" file moltemplate needs
+# 2) Run "moltemplate.sh system.lt" to create the
+#   "system.data", "system.in.init", and "system.in.settings" files LAMMPS needs
+# 3) You must have run the first stage of minimization using "run.in.min1"
+#    (using a command like: lmp_ubuntu -i run.in.min1)
+
+# -- Init Section --
+
+include system.in.init
+
+# -- Atom Definition Section --
+
+read_data system_after_min_soft.data
+
+# -- Settings Section --
+
+include system.in.settings
+
+# Now load the Lennard-Jones force parameters between particles:
+# (Normally these are included in "sytem.in.settings", but not in this example.)
+
+include system.in.settings.pair.coeffs
+
+# -- Run Section --
+
+
+dump            1 all custom 10000 traj_min.lammpstrj id mol type x y z ix iy iz
+
+thermo_style    custom step temp pe etotal epair ebond eangle edihed
+thermo          100       # time interval for printing out "thermo" data
+thermo_modify   norm yes flush yes
+
+# Molecules containing multiple atoms use rigid-body integrators to hold
+# each molecule together and preserve its shape (while allowing it to move).
+# The group of atoms named "gRigid" contains only these atoms.
+# (This group is defined in system.in.settings)
+group mobile subtract all gFixed gOrdinary
+
+fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
+
+
+# Molecules containing only one atom do not need to be treated as rigid
+# bodies. We do not need to use rigid body integrators for them. Instead
+# we can use ordinary "fix nve" to integrate their equations of motion.
+# The group of atoms named "gOrdinary" contains only these atoms.
+# (This group is defined in system.in.settings)
+
+fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
+
+
+# Tell LAMMPS to only compute forces between particles in different molecules.
+# (No need to compute forces between particles in the same rigid molecule)
+# This drastically reduces the number of pairwise forces that need to
+# be calculated:
+
+neigh_modify one 20000 page 200000
+neigh_modify exclude molecule/intra all
+neigh_modify exclude type 2 3
+neigh_modify exclude molecule/inter gBicycleI
+neigh_modify exclude molecule/inter gBicycleO
+
+# Reduce the time spent computing neighbor lists by increasing the bin size
+# and using "multi" style (needed when a large range of radii are in use)
+
+neighbor 10.0 multi  # <-- THIS IS A SAFE CHOICE, BUT SIMULATIONS WILL BE SLOW.
+                     #     IF YOUR SIMULATION LACKS PARTICLES/ATOMS LARGER THAN
+		     #     A RIBOSOME, THEN USE A MUCH SMALLER VALUE (ie 10.0).
+		     #     PLAY WITH THIS NUMBER TO IMPROVE THE SIMULATION SPEED
+		     #     (Later, I should get cellpack2moltemplate to choose
+		     #      this number automatically from the particle radii.)
+
+
+
+region rSphereI sphere  0    0  0  3000  side in #region size
+region rSphereO sphere  0    0  0  10.0  side out #region size
+group interior union gRigid gBicycleI
+fix fxWall1 interior wall/region rSphereI  harmonic  1.0  1.0  1450  #actual radius = 2000-380
+fix fxWall2 gBicycleO wall/region rSphereO  harmonic  1.0  1.0  1600.0  #actual radius = 800+780
+
+# ------------------- Run the simulation ------------------------
+# Now begin the regular overlap minimization simulation
+# Begin with a small timestep, and a short Langevin damping time
+# and gradually increase the timestep, and the damping time
+
+timestep        0.00000001
+fix fxLan     mobile langevin 0.0 0.0 0.00001 48279
+run 100
+unfix fxLan
+
+timestep        0.00000002
+fix fxLan     mobile langevin 0.0 0.0 0.00002 48279
+run 100
+unfix fxLan
+
+timestep        0.00000005
+fix fxLan     mobile langevin 0.0 0.0 0.00005 48279
+run 100
+unfix fxLan
+
+timestep        0.0000001
+fix fxLan     mobile langevin 0.0 0.0 0.0001 48279
+run 100
+unfix fxLan
+
+timestep        0.0000002
+fix fxLan     mobile langevin 0.0 0.0 0.0002 48279
+run 100
+unfix fxLan
+
+timestep        0.0000005
+fix fxLan     mobile langevin 0.0 0.0 0.0005 48279
+run 100
+unfix fxLan
+
+timestep        0.000001
+fix fxLan     mobile langevin 0.0 0.0 0.001 48279
+run 200
+unfix fxLan
+
+timestep        0.000002
+fix fxLan     mobile langevin 0.0 0.0 0.002 48279
+run 200
+unfix fxLan
+
+timestep        0.000005
+fix fxLan     mobile langevin 0.0 0.0 0.005 48279
+run 200
+unfix fxLan
+
+timestep        0.00001
+fix fxLan     mobile langevin 0.0 0.0 0.01 48279
+run 200
+unfix fxLan
+
+timestep        0.00002
+fix fxLan     mobile langevin 0.0 0.0 0.02 48279
+run 200
+unfix fxLan
+
+timestep        0.00005
+fix fxLan     mobile langevin 0.0 0.0 0.05 48279
+run 200
+unfix fxLan
+
+timestep        0.0001
+fix fxLan     mobile langevin 0.0 0.0 0.1 48279
+run 200
+unfix fxLan
+
+timestep        0.0002
+fix fxLan     mobile langevin 0.0 0.0 0.2 48279
+run 200
+unfix fxLan
+
+timestep        0.0005
+fix fxLan     mobile langevin 0.0 0.0 0.5 48279
+run 200
+unfix fxLan
+
+timestep        0.001
+fix fxLan     mobile langevin 0.0 0.0 1.0 48279
+run 200
+unfix fxLan
+
+timestep        0.002
+fix fxLan     mobile langevin 0.0 0.0 2.0 48279
+run 200
+unfix fxLan
+
+timestep        0.005
+fix fxLan     mobile langevin 0.0 0.0 5.0 48279
+run 200
+unfix fxLan
+
+# Now that the system is minimized, save the conformation
+# We will load it in the next simulation
+write_data system_after_min.data

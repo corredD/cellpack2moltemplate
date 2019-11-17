@@ -1,0 +1,102 @@
+# -- Prerequisites --
+#
+# Before running LAMMPS on this file, you must have already...
+# 1) Run cellpack2lt.py to create the "system.lt" file moltemplate needs
+# 2) Run "moltemplate.sh system.lt" to create the
+#   "system.data", "system.in.init", and "system.in.settings" files LAMMPS needs
+
+# -- Init Section --
+
+include system.in.init
+
+# Specify the custom Gaussian force field style we will use during this step:
+include system.in.init.soft
+
+# -- Atom Definition Section --
+
+read_data system.data
+
+# -- Settings Section --
+
+include system.in.settings
+
+# Now load the custom Gaussian force parameters we will use during this step:
+# (Normally these are included in "sytem.in.settings", but not in this example.)
+
+include system.in.settings.pair.coeffs.soft
+
+# -- Run Section --
+
+group todump subtract all gBicycleI gBicycleO
+
+dump            1 todump custom 100 traj_min_soft.lammpstrj id mol type x y z ix iy iz
+dump_modify 1 sort id
+
+thermo_style    custom step temp pe etotal epair ebond eangle edihed
+thermo          100       # time interval for printing out "thermo" data
+thermo_modify   norm yes flush yes
+
+group mobile subtract all gFixed gOrdinary
+
+# Molecules containing multiple atoms use rigid-body integrators to hold
+# each molecule together and preserve its shape (while allowing it to move).
+# The group of atoms named "gRigid" contains only these atoms.
+# (This group is defined in system.in.settings)
+
+fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
+
+
+# Molecules containing only one atom do not need to be treated as rigid
+# bodies. We do not need to use rigid body integrators for them. Instead
+# we can use ordinary "fix nve" to integrate their equations of motion.
+# The group of atoms named "gOrdinary" contains only these atoms.
+# (This group is defined in system.in.settings)
+
+fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
+
+
+# Tell LAMMPS to only compute forces between particles in different molecules.
+# (No need to compute forces between particles in the same rigid molecule)
+# This drastically reduces the number of pairwise forces that need to
+# be calculated:
+neigh_modify one 100000 page 1000000
+neigh_modify exclude molecule/intra all
+neigh_modify exclude type 2 3
+neigh_modify exclude molecule/inter gBicycleI
+neigh_modify exclude molecule/inter gBicycleO
+
+# Reduce the time spent computing neighbor lists by increasing the bin size
+# and using "multi" style (needed when a large range of radii are in use)
+
+neighbor 10.0 multi  # <-- THIS IS A SAFE CHOICE, BUT SIMULATIONS WILL BE SLOW.
+                     #     IF YOUR SIMULATION LACKS PARTICLES/ATOMS LARGER THAN
+		     #     A RIBOSOME, THEN USE A MUCH SMALLER VALUE (ie 10.0).
+		     #     PLAY WITH THIS NUMBER TO IMPROVE THE SIMULATION SPEED
+		     #     (Later, I should get cellpack2moltemplate to choose
+		     #      this number automatically from the particle radii.)
+
+region rSphereI sphere  0    0  0  3200  side in #region size
+region rSphereO sphere  0    0  0  0.0  side out #region size
+group interior union gRigid gBicycleI
+fix fxWall1 interior wall/region rSphereI  harmonic  0.1  1.0  1600  #actual radius = 2000-380
+fix fxWall2 gBicycleO wall/region rSphereO  harmonic  0.1  1.0  1600.0  #actual radius = 800+780
+
+# ------------------- Run the simulation ------------------------
+
+# The first step is to use a soft Gaussian repulsive force between particles
+# in an effort to deal with cases where there is complete overlap between
+# protein complexes.  (In cases where CellPack completely failed.)
+# Runing a simulation with soft Gaussian repulsive forces
+# should eliminate the worst cases of particle overlap.
+# There is a finite energy barrier for two particles to completely overlap.
+# So run these simulations at a low temperature (at least 10x lower than the 
+# height of each Gaussian barrier) to make sure particles that were not 
+# overlapping before do not start overlapping after this step.
+
+timestep        1
+# Anneal the system starting at temperature kB*T/10, and ending at temperature 0
+fix fxLan     mobile langevin 0.05961621 0.0 100.0  48279
+run 2000
+unfix fxLan
+
+write_data system_after_min_soft.data
