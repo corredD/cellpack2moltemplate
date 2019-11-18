@@ -175,6 +175,7 @@ def RadiiNeeded(tree,
                 ir_needed.add(iradius)
     else:
         for object_name in tree:
+            if object_name == "mb" : continue
             RadiiNeeded(tree[object_name], ir_needed, delta_r)
 
 
@@ -395,7 +396,9 @@ def ConvertMolecule(molecule,
     #print ("convert molecule "+molecule['name']+" "+name,g_ingredient_id)
     #if (molecule['name'] == "Insulin_crystal"):
     #    return
-    instances = molecule['results']
+    instances = []
+    if 'results' in molecule:
+        instances = molecule['results']
     if len(instances) == 0 and model_data==None:
         return
     l_mol_defs.append(name + ' inherits .../ForceField {\n')
@@ -467,14 +470,16 @@ def ConvertMolecule(molecule,
         list_atom_type.append(atype_name)
     list_atom_type = set(list_atom_type)    
     N = len(crds)
-    group = 'gOrdinary'
-    if N> 1 :
-        group = 'gRigid'    
+    group = "g"+cname 
+    #group = 'gOrdinary'
+    #if N> 1 :
+        #group = 'gRigid'  
+        #group = "g"+cname  
     #if (molecule['name'] == "Insulin_crystal"): 
     #    group = 'gFixed'        
     list_atom_type_surface = []
-    if cname == "surface" :
-        group = 'gSurface'
+    if "surface" in cname :#cname == "surface" :
+        #group = 'gSurface'
         #need to add the bicycle if surface
         iradius = int(round(50/delta_r))
         atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
@@ -497,13 +502,13 @@ def ConvertMolecule(molecule,
     #grouping ?
     l_mol_defs.append('  write_once(\"In Settings\") {\n')
     l_mol_defs.append('      group '+group+' type '+" ".join(list_atom_type)+'\n')
-    if cname == "surface" :
+    if "surface" in cname :#if cname == "surface" :
         l_mol_defs.append('      group gBicycleO type '+list_atom_type_surface[0]+'\n')
         l_mol_defs.append('      group gBicycleI type '+list_atom_type_surface[1]+'\n')
     l_mol_defs.append('}  # end of: write_once(\"In Settings\")\n\n\n')    
     l_mol_defs.append('}  # end of: \"'+name+'\" molecule definition\n\n\n')
 
-    if not ('results' in molecule):
+    if not ('results' in molecule) and model_data==None :
         raise InputError('Error: Missing \results\" field in \"'+name+'\" molecule.\n')
 
     deltaXs = []
@@ -709,7 +714,7 @@ def ConvertMolecules(molecules,
 
 
 
-def ConvertSystem(tree,
+def ConvertSystem_old(tree,
                   file_out,
                   delta_r,
                   bounds,
@@ -759,6 +764,74 @@ def ConvertSystem(tree,
 
             #when debugging, uncomment the next line:
             #break
+
+def ConvertSystem(tree,
+                  file_out,
+                  delta_r,
+                  bounds,
+                  nindent=0,
+                  cname = "",
+                  model_data=None):
+    if not isinstance(tree, dict):
+        return
+    if 'cytoplasme' in tree and len(tree['cytoplasme']):
+        object_name = 'cytoplasme'
+        file_out.write(nindent*'  cytoplasme {\n')
+        ConvertMolecules(tree['cytoplasme']['ingredients'],
+                file_out,
+                delta_r,
+                bounds,
+                nindent,cname ='cytoplasme',model_data=model_data)
+        file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+        file_out.write('\n' + 
+                           nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                           '\n' +
+                           '\n')
+    if 'compartments' in tree:
+        for compname in tree['compartments']:
+            if 'surface' in tree['compartments'][compname]:
+                #list_groups.append("g"+compname+"_surface")
+                cname = object_name = compname+"_surface"
+                file_out.write(nindent*'  '+object_name + ' {\n')
+                ConvertMolecules(tree['compartments'][compname]['surface']['ingredients'],
+                         file_out,
+                         delta_r,
+                         bounds,
+                         nindent,cname =cname,model_data=model_data)
+                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+                file_out.write('\n' + 
+                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                                '\n' +
+                                '\n')                         
+            if 'interior' in tree['compartments'][compname]:
+                #list_groups.append("g"+compname+"_interior")
+                cname = object_name = compname+"_interior"
+                file_out.write(nindent*'  '+object_name + ' {\n')
+                ConvertMolecules(tree['compartments'][compname]['interior']['ingredients'],
+                         file_out,
+                         delta_r,
+                         bounds,
+                         nindent,cname =cname,model_data=model_data)
+                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+                file_out.write('\n' + 
+                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                                '\n' +
+                                '\n')      
+
+def CreateGroupCompartment(tree):
+    list_groups=[]
+    if not isinstance(tree, dict):
+        return
+    #start with cytoplasme, then compartment
+    if 'cytoplasme' in tree and len(tree['cytoplasme']):
+        list_groups.append("gcytoplasme")
+    if 'compartments' in tree:
+        for compname in tree['compartments']:
+            if 'surface' in tree['compartments'][compname]:
+                list_groups.append("g"+compname+"_surface")
+            if 'interior' in tree['compartments'][compname]:
+                list_groups.append("g"+compname+"_interior")
+    return list_groups
 
 #f="C:\\Users\\ludov\\Documents\\BrettISG\\models_oct13\\cf1_model0_1_0.bin"
 #import struct
@@ -1048,6 +1121,13 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write(' draw material Transparent\n') 
     file_out.write('  }  # end of "vmd_commands.tcl"\n\n')
 
+    #need one outside group
+    #need one group per compartment
+    list_groups = CreateGroupCompartment(tree)
+    group_string=""
+    for g in list_groups:
+        group_string+="    group "+g+" id 1       # define a group\n"
+        group_string+="    group "+g+" clear       # initialize it to be empty\n"
     file_out.write('\n'
                    '\n'
                    '  write_once("In Settings") {\n' +
@@ -1058,9 +1138,10 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '    #       algorithm for movement. In some cases these groups are empty.\n'
                    '    #       Even so, we must make sure both the "gRigid" and "gOrdinary"\n'
                    '    #       groups are defined so we can refer to them later. We do that below\n'
-                   '    # http://lammps.sandia.gov/doc/group.html\n'
-                   '    group gRigid id 1       # define a group\n' +
-                   '    group gRigid clear      # initialize it to be empty\n' +
+                   '    # http://lammps.sandia.gov/doc/group.html\n'+
+                   group_string +
+                   #'    group gRigid id 1       # define a group\n' +
+                   #'    group gRigid clear      # initialize it to be empty\n' +
                    '    group gOrdinary id 1    # define a group\n' +
                    '    group gOrdinary clear   # initialize it to be empty\n' +
                    '    group gFixed id 1    # define a group\n' +
@@ -1069,8 +1150,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '    group gBicycleI clear   # initialize it to be empty\n' +          
                    '    group gBicycleO id 1    # define a group\n' +
                    '    group gBicycleO clear   # initialize it to be empty\n' +                                                
-                   '    group gSurface id 1    # define a group\n' +
-                   '    group gSurface clear   # initialize it to be empty\n' +                    
+                   #'    group gSurface id 1    # define a group\n' +
+                   #'    group gSurface clear   # initialize it to be empty\n' +                    
                    '    #\n'
                    '    # Note: Later on we will use:\n'
                    '    #   fix fxRigid gRigid rigid molecule\n'
@@ -1300,13 +1381,14 @@ def main():
 
 if __name__ == '__main__':
     file_in=main()
+# need a minimum of 2 beads per rigid body or ellipsoid ? 
 #python  ~/Documents/cellpack2moltemplate/cellpack2moltemplate/cellpack2lt.py -in resultsISGtest.json  -out system2.lt
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck#nocheck?
 #"C:\Program Files\LAMMPS 64-bit 23Oct2017\bin\lmp_serial.exe" -i run.in.min
 #vmd traj_min.lammpstrj -e vmd_commands.tcl
 #python  ~/Documents/cellpack2moltemplate/cellpack2moltemplate/cellpack2lt.py -in result.json  -out system.lt;sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt;"C:\Program Files\LAMMPS 64-bit 23Oct2017\bin\lmp_serial.exe" -i run.in.min1;vmd traj_min_soft.lammpstrj -e vmd_commands.tcl
 #omp lammps : 
-#"C:\Program Files\LAMMPS 64-bit 23Oct2017\bin\lmp_serial.exe" -sf omp -pk omp 16 -i run.in.min
+#"C:\Program Files\LAMMPS 64-bit 23Oct2017\bin\lmp_serial.exe" -sf omp -pk omp 16 -i run.in.min1
 #gpu -sf gpu -pk gpu 1 doesnt work on my windowsmachine
 #write_once("In Settings") {
 #    group gSurface type @atom:A661 @atom:A497 @atom:A756 @atom:A749
@@ -1314,6 +1396,8 @@ if __name__ == '__main__':
 #    group gBicycleO type @atom:A550
 #}
 #python -i  ~/Documents/cellpack2moltemplate.git/cellpack2moltemplate/cellpack2lt.py -in models_oct13.json  -out system.lt -model cf1_model0_1_0.bin
-#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\models_oct13.json -out system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\mature\cfx_model0_0_0.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\mature\cfx_model0_0_0.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck #1h30 later
 #1175640 rigid bodies with 3224998 atoms ISG
+##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 16 -i run.in.min1
+#"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 16 -i run.in.min1
