@@ -774,7 +774,7 @@ def ConvertSystem(tree,
                   model_data=None):
     if not isinstance(tree, dict):
         return
-    if 'cytoplasme' in tree and len(tree['cytoplasme']):
+    if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
         object_name = 'cytoplasme'
         file_out.write(nindent*'  cytoplasme {\n')
         ConvertMolecules(tree['cytoplasme']['ingredients'],
@@ -789,6 +789,20 @@ def ConvertSystem(tree,
                            '\n')
     if 'compartments' in tree:
         for compname in tree['compartments']:
+            if 'interior' in tree['compartments'][compname]:
+                #list_groups.append("g"+compname+"_interior")
+                cname = object_name = compname+"_interior"
+                file_out.write(nindent*'  '+object_name + ' {\n')
+                ConvertMolecules(tree['compartments'][compname]['interior']['ingredients'],
+                         file_out,
+                         delta_r,
+                         bounds,
+                         nindent,cname =cname,model_data=model_data)
+                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+                file_out.write('\n' + 
+                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                                '\n' +
+                                '\n')       
             if 'surface' in tree['compartments'][compname]:
                 #list_groups.append("g"+compname+"_surface")
                 cname = object_name = compname+"_surface"
@@ -803,20 +817,7 @@ def ConvertSystem(tree,
                                 nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
                                 '\n' +
                                 '\n')                         
-            if 'interior' in tree['compartments'][compname]:
-                #list_groups.append("g"+compname+"_interior")
-                cname = object_name = compname+"_interior"
-                file_out.write(nindent*'  '+object_name + ' {\n')
-                ConvertMolecules(tree['compartments'][compname]['interior']['ingredients'],
-                         file_out,
-                         delta_r,
-                         bounds,
-                         nindent,cname =cname,model_data=model_data)
-                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-                file_out.write('\n' + 
-                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                                '\n' +
-                                '\n')      
+  
 
 def CreateGroupCompartment(tree):
     list_groups=[]
@@ -1401,3 +1402,5 @@ if __name__ == '__main__':
 #1175640 rigid bodies with 3224998 atoms ISG
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 16 -i run.in.min1
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 16 -i run.in.min1
+#'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\simple_serialized.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\simple_serialized.bin
