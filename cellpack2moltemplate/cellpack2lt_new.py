@@ -24,6 +24,7 @@ __date__ = '2018-8-13'
 
 g_control_vmd_colors = False
 g_ingredient_id=0
+g_ingredient_names=[]
 
 doc_msg = \
     'Typical Usage:\n\n' + \
@@ -178,6 +179,19 @@ def RadiiNeeded(tree,
             if object_name == "mb" : continue
             RadiiNeeded(tree[object_name], ir_needed, delta_r)
 
+
+def FromToRotation(dir1, dir2) :
+    r = 1.0 + np.dot(np.array(dir1), np.array(dir2))
+    w=[0,0,0]
+    if(r < 1E-6) :
+        r = 0
+        if abs(dir1[0]) > abs(dir1[2]): w=[-dir1[1], dir1[0], 0]
+        else : w = [0.0, -dir1[2], dir1[1]]
+    else :
+        w = np.cross(np.array(dir1), np.array(dir2))
+    q= np.array([w[0],w[1],w[2],r])
+    q /= tr.vector_norm(q)
+    return q
 
 def qnormalize(q):
     norm = 1.0 / sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
@@ -368,6 +382,7 @@ def compute_inertia(inertiaflag,radiusflag,dxcom,radius):
     # region  rRod  union 2 rSphereL rSphereR  
     # fix fxWall all wall/region rRod harmonic      10.0  0.0  1350.0
     # group mobile subtract all gFixed
+
 def ConvertMolecule(molecule,
                     name,
                     l_mol_defs,
@@ -393,6 +408,8 @@ def ConvertMolecule(molecule,
     """
     name = name.replace(" ","").replace("-","")
     global g_ingredient_id
+    global g_ingredient_names
+    g_ingredient_names.append(name)
     #print ("convert molecule "+molecule['name']+" "+name,g_ingredient_id)
     #if (molecule['name'] == "Insulin_crystal"):
     #    return
@@ -462,6 +479,28 @@ def ConvertMolecule(molecule,
     mol = '$mol'
     if (molecule['name'] == "Insulin_crystal"):
         mol='$mol:...'
+    #if surface proteins, transform cluster according offset and pcp
+    if "surface" in cname :
+        axe = molecule["principalVector"]
+        off = molecule["offset"]
+        center = [0,0,0]
+        q = FromToRotation(axe, [0,0,1])
+        #print ("q1",q)
+        #q = FromToRotation(axe, [0,0,-1])
+        #print ("q2",q)
+        
+        #m=tr.superimposition_matrix(axe, [0,0,1], scale=False, usesvd=False)
+        #q=tr.quaternion_from_matrix(m, isprecise=False)
+        #Quaternion q = Quaternion.FromToRotation(pcpalVector, Vector3.forward);
+        #print ("before",crds)
+        for i in range(0, len(crds)):
+            X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
+            X = [0.0, 0.0, 0.0]
+            AffineTransformQ(X, X_orig,q,[0,0,0])
+            crds[i] = X
+            center+=X
+        center = [center[0]/len(crds),center[1]/len(crds),center[2]/len(crds)]
+        #print ("after",crds)
     for i in range(0, len(crds)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
@@ -530,75 +569,63 @@ def ConvertMolecule(molecule,
             quaternions.append((-instances[i][1][0],instances[i][1][1],instances[i][1][2],-instances[i][1][3]))#in cp we use 1,-1,-1,1 here we tried -1,1,1,-1
             #quaternions.append((0,0,0,1))                    
 
-    else :
-        indices = np.nonzero(model_data["pos"][:,3]==g_ingredient_id)
-        pos = np.take(model_data["pos"],indices,axis=0)[0]
-        if len(pos) == 0:
-            g_ingredient_id=g_ingredient_id+1
-            return
-        ninstances = len(pos)
-        rot = np.take(model_data["quat"],indices,axis=0)[0]
-        for i in range(0, ninstances):
-            #if not (('0' in instance[i]) and ('1' in instance[i])):
-            deltaXs.append((-pos[i][0],
-                            pos[i][1],
-                            pos[i][2]))
-            quaternions.append((-rot[i][0],rot[i][1],rot[i][2],-rot[i][3]))#in cp we use 1,-1,-1,1 here we tried -1,1,1,-1
-    print (molecule['name'],g_ingredient_id,len(deltaXs))                   
-    #l_instances.append('# List of \"'+name+'\" instances:\n')
-    if (molecule['name'] == "Insulin_crystal"):
-        #later will use the ignredient type for that
-        l_instances.append(name+'Body {\n')
-        for i in range(0, ninstances):
-            l_instances.append(name + '_instances[' + str(i) + '] = new ' + name +
-                            '.quat(' + 
-                            str(quaternions[i][0]) + ',' +
-                            str(quaternions[i][1]) + ',' +
-                            str(quaternions[i][2]) + ',' +
-                            str(quaternions[i][3]) +
-                            ').move(' + 
-                            str(deltaXs[i][0]) + ',' +
-                            str(deltaXs[i][1]) + ',' +
-                            str(deltaXs[i][2]) + ')\n')
-        l_instances.append('}\n')
-        l_instances.append(name+'_body = new '+name+'Body\n\n')
-    else :
-        for i in range(0, ninstances):
-            l_instances.append(name + '_instances[' + str(i) + '] = new ' + name +
-                            '.quat(' + 
-                            str(quaternions[i][0]) + ',' +
-                            str(quaternions[i][1]) + ',' +
-                            str(quaternions[i][2]) + ',' +
-                            str(quaternions[i][3]) +
-                            ').move(' + 
-                            str(deltaXs[i][0]) + ',' +
-                            str(deltaXs[i][1]) + ',' +
-                            str(deltaXs[i][2]) + ')\n')
-    g_ingredient_id=g_ingredient_id+1
-    # Now determine the minimum/maximum coordinates of this object
-    # and adjust the simulation box boundaries if necessary
-    #Xnid = molecule['positions']
-    #for n in range(0, len(Xnid)):  #loop over "LOD" of this molecule
-    #compute store all intertia and pcp? adjust using first frame ?
-    for n in range(0, ninstances):
-        for i in range(0, len(crds)):
-            X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
-            X = [0.0, 0.0, 0.0]
-            #for I in range(0, len(Xnid[n]['coords'])/3):  #loop over atoms
-            #for d in range(0, 3):
-            #    X_orig[d] = Xnid[n]['coords'][I*3+d]
-            AffineTransformQ(X, X_orig,
-                                    [quaternions[n][0],
-                                    quaternions[n][1],
-                                    quaternions[n][2],
-                                    quaternions[n][3]],
-                                    deltaXs[n])
-            AdjustBounds(bounds, [X[0]-radii[i], X[1], X[2]])
-            AdjustBounds(bounds, [X[0]+radii[i], X[1], X[2]])
-            AdjustBounds(bounds, [X[0], X[1]-radii[i], X[2]])
-            AdjustBounds(bounds, [X[0], X[1]+radii[i], X[2]])
-            AdjustBounds(bounds, [X[0], X[1], X[2]-radii[i]])
-            AdjustBounds(bounds, [X[0], X[1], X[2]+radii[i]])
+        print (molecule['name'],g_ingredient_id,len(deltaXs))                   
+        #l_instances.append('# List of \"'+name+'\" instances:\n')
+        if (molecule['name'] == "Insulin_crystal"):
+            #later will use the ignredient type for that
+            current_instance=[]
+            current_instance.append(name+'Body {\n')
+            for i in range(0, ninstances):
+                current_instance.append(name + '_instances[' + str(i) + '] = new ' + name +
+                                '.quat(' + 
+                                str(quaternions[i][0]) + ',' +
+                                str(quaternions[i][1]) + ',' +
+                                str(quaternions[i][2]) + ',' +
+                                str(quaternions[i][3]) +
+                                ').move(' + 
+                                str(deltaXs[i][0]) + ',' +
+                                str(deltaXs[i][1]) + ',' +
+                                str(deltaXs[i][2]) + ')\n')
+            current_instance.append('}\n')
+            current_instance.append(name+'_body = new '+name+'Body\n\n')
+            l_instances.append(current_instance)
+        else :
+            for i in range(0, ninstances):
+                l_instances.append(name + '_instances[' + str(i) + '] = new ' + name +
+                                '.quat(' + 
+                                str(quaternions[i][0]) + ',' +
+                                str(quaternions[i][1]) + ',' +
+                                str(quaternions[i][2]) + ',' +
+                                str(quaternions[i][3]) +
+                                ').move(' + 
+                                str(deltaXs[i][0]) + ',' +
+                                str(deltaXs[i][1]) + ',' +
+                                str(deltaXs[i][2]) + ')\n')
+        g_ingredient_id=g_ingredient_id+1
+        # Now determine the minimum/maximum coordinates of this object
+        # and adjust the simulation box boundaries if necessary
+        #Xnid = molecule['positions']
+        #for n in range(0, len(Xnid)):  #loop over "LOD" of this molecule
+        #compute store all intertia and pcp? adjust using first frame ?
+        for n in range(0, ninstances):
+            for i in range(0, len(crds)):
+                X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
+                X = [0.0, 0.0, 0.0]
+                #for I in range(0, len(Xnid[n]['coords'])/3):  #loop over atoms
+                #for d in range(0, 3):
+                #    X_orig[d] = Xnid[n]['coords'][I*3+d]
+                AffineTransformQ(X, X_orig,
+                                        [quaternions[n][0],
+                                        quaternions[n][1],
+                                        quaternions[n][2],
+                                        quaternions[n][3]],
+                                        deltaXs[n])
+                AdjustBounds(bounds, [X[0]-radii[i], X[1], X[2]])
+                AdjustBounds(bounds, [X[0]+radii[i], X[1], X[2]])
+                AdjustBounds(bounds, [X[0], X[1]-radii[i], X[2]])
+                AdjustBounds(bounds, [X[0], X[1]+radii[i], X[2]])
+                AdjustBounds(bounds, [X[0], X[1], X[2]-radii[i]])
+                AdjustBounds(bounds, [X[0], X[1], X[2]+radii[i]])
         #m=tr.quaternion_matrix([quaternions[n][3],
         #                            quaternions[n][0],
         #                            quaternions[n][1],
@@ -690,6 +717,7 @@ def ConvertMolecules(molecules,
     #    return
     l_mol_defs = []
     l_instances = []
+    #is the following order?
     for molecule_type_name in molecules:
         ConvertMolecule(molecules[molecule_type_name],
                         molecule_type_name,
@@ -699,16 +727,20 @@ def ConvertMolecules(molecules,
                         bounds,cname,model_data=model_data)
         #when debugging, uncomment the next line:
         #break
+    #take care of the instance in the order given in the model data
+
     #get l_instances from binary file
     file_out.write('\n' + 
                    (nindent*'  ') + '# ----------- molecule definitions -----------\n'
                    '\n')
 
     file_out.write((nindent*'  ') + (nindent*'  ').join(l_mol_defs))
-    file_out.write('\n' +
+    
+    if model_data==None: 
+        file_out.write('\n' +
                    nindent*'  ' + '# ----------- molecule instances -----------\n' +
                    '\n')
-    file_out.write((nindent*'  ') + (nindent*'  ').join(l_instances))
+        file_out.write((nindent*'  ') + (nindent*'  ').join(l_instances))
     file_out.write('\n')
 
 
@@ -774,49 +806,101 @@ def ConvertSystem(tree,
                   model_data=None):
     if not isinstance(tree, dict):
         return
+    l_instances = []
+    object_name = "recipe"
+    file_out.write(nindent*'  '+object_name + ' {\n')
     if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
-        object_name = 'cytoplasme'
-        file_out.write(nindent*'  cytoplasme {\n')
+        #object_name = 'cytoplasme'
+        #file_out.write(nindent*'  '+object_name + ' {\n')
         ConvertMolecules(tree['cytoplasme']['ingredients'],
                 file_out,
                 delta_r,
                 bounds,
                 nindent,cname ='cytoplasme',model_data=model_data)
-        file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-        file_out.write('\n' + 
-                           nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                           '\n' +
-                           '\n')
+        #file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+        ##file_out.write('\n' + 
+        #                   nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+        #                   '\n' +
+        #                   '\n')
     if 'compartments' in tree:
         for compname in tree['compartments']:
-            if 'interior' in tree['compartments'][compname]:
-                #list_groups.append("g"+compname+"_interior")
-                cname = object_name = compname+"_interior"
-                file_out.write(nindent*'  '+object_name + ' {\n')
-                ConvertMolecules(tree['compartments'][compname]['interior']['ingredients'],
-                         file_out,
-                         delta_r,
-                         bounds,
-                         nindent,cname =cname,model_data=model_data)
-                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-                file_out.write('\n' + 
-                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                                '\n' +
-                                '\n')       
             if 'surface' in tree['compartments'][compname]:
                 #list_groups.append("g"+compname+"_surface")
-                cname = object_name = compname+"_surface"
-                file_out.write(nindent*'  '+object_name + ' {\n')
+                cname = compname+"_surface"
+                #object_name = cname
+                #file_out.write(nindent*'  '+object_name + ' {\n')
                 ConvertMolecules(tree['compartments'][compname]['surface']['ingredients'],
                          file_out,
                          delta_r,
                          bounds,
                          nindent,cname =cname,model_data=model_data)
-                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-                file_out.write('\n' + 
-                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                                '\n' +
-                                '\n')                         
+                #file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+                #file_out.write('\n' + 
+                #                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                #                '\n' +
+                #                '\n')                 
+            if 'interior' in tree['compartments'][compname]:
+                #list_groups.append("g"+compname+"_interior")
+                cname = compname+"_interior"
+                #object_name = cname
+                #file_out.write(nindent*'  '+object_name + ' {\n')
+                ConvertMolecules(tree['compartments'][compname]['interior']['ingredients'],
+                         file_out,
+                         delta_r,
+                         bounds,
+                         nindent,cname =cname,model_data=model_data)
+                #file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+                #file_out.write('\n' + 
+                #""                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                #                '\n' +
+                #                '\n')   
+    
+    if model_data!=None:
+        ninstances = len(model_data["pos"])
+        previous_name = g_ingredient_names[int(model_data["pos"][0][3])]
+        if previous_name == "Insulin_crystal":
+            l_instances.append(previous_name+'Body {\n')
+        count = 0
+        start = 0
+        for i in range(ninstances):
+            p = model_data["pos"][i]
+            q = model_data["quat"][i]
+            ptype = int(p[3])
+            name = g_ingredient_names[ptype]
+            if (previous_name!=name):
+                print (ptype,previous_name,start,count-start)
+                start = count
+                if (previous_name!=name and name == "Insulin_crystal"):
+                    l_instances.append(name+'Body {\n')
+                if (previous_name!=name and previous_name == "Insulin_crystal"):    
+                    l_instances.append('}\n')
+                    l_instances.append(previous_name+'_body = new '+previous_name+'Body\n\n')
+                previous_name = name
+            l_instances.append(name + '_instances[' + str(i) + '] = new ' + name +
+                                '.quat(' + 
+                                str(-q[0]) + ',' +
+                                str(q[1]) + ',' +
+                                str(q[2]) + ',' +
+                                str(-q[3]) +
+                                ').move(' + 
+                                str(-p[0]) + ',' +
+                                str(p[1]) + ',' +
+                                str(p[2]) + ')\n')
+            count += 1
+        print (previous_name,start,count-start)
+        bounds = [[-500.0,-500.0,-500.0],    #Box big enough to enclose all the particles
+              [500.0,500.0,500.0]] #[[xmin,ymin,zmin],[xmax,ymax,zmax]]    
+        file_out.write('\n' +
+                   nindent*'  ' + '# ----------- molecule instances -----------\n' +
+                   '\n')
+        file_out.write((nindent*'  ') + (nindent*'  ').join(l_instances))
+
+    file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+    file_out.write('\n' + 
+                    nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                    '\n' +
+                    '\n')      
+           
   
 
 def CreateGroupCompartment(tree):
@@ -1118,7 +1202,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write(' mol addrep 0\n')
     file_out.write(' mol modselect 3 0 "not type '+atype_name1+' '+atype_name2+'"\n')
     #file_out.write(' mol modcolor 3 0 "ColorID 2"\n')
-    file_out.write(' draw sphere \{0 0 0\} radius 1600.0 resolution 20\n') 
+    file_out.write(' draw sphere \{0 0 0\} radius 1370.0 resolution 20\n') 
     file_out.write(' draw material Transparent\n') 
     file_out.write('  }  # end of "vmd_commands.tcl"\n\n')
 
@@ -1192,6 +1276,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     
 
     # Print the simulation boundary conditions
+    bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
+              [7692,7692,7692]]
     print (bounds)
     file_out.write('\n\n'
                    '# Simulation boundaries:\n'
@@ -1403,4 +1489,4 @@ if __name__ == '__main__':
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 16 -i run.in.min1
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 16 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
-#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\simple_serialized.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\simple_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
