@@ -514,8 +514,8 @@ def ConvertMolecule(molecule,
     #if N> 1 :
         #group = 'gRigid'  
         #group = "g"+cname  
-    #if (molecule['name'] == "Insulin_crystal"): 
-    #    group = 'gFixed'        
+    if (molecule['name'] == "Insulin_crystal"): 
+        group = 'gFixed'        
     list_atom_type_surface = []
     if "surface" in cname :#cname == "surface" :
         #group = 'gSurface'
@@ -525,7 +525,7 @@ def ConvertMolecule(molecule,
         list_atom_type_surface.append(atype_name)
         charge = '0.0'
         rr=25.0
-        l=rr+60.0
+        l=rr+61.5
         offset = [[-1.732*rr,1.0*rr,0.0*rr],[0.0,-2.0*rr,0.0],[1.732*rr,1.0*rr,0.0]]
         pcp = [0,0,1]#molecule["principalAxis"]
         #offset = molecule["offset"]
@@ -1468,7 +1468,7 @@ def main():
 
 if __name__ == '__main__':
     file_in=main()
-# need a minimum of 2 beads per rigid body or ellipsoid ? 
+# need a minimum of 2 beads per rigid body 
 #python  ~/Documents/cellpack2moltemplate/cellpack2moltemplate/cellpack2lt.py -in resultsISGtest.json  -out system2.lt
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck#nocheck?
 #"C:\Program Files\LAMMPS 64-bit 23Oct2017\bin\lmp_serial.exe" -i run.in.min
@@ -1487,6 +1487,6 @@ if __name__ == '__main__':
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck #1h30 later
 #1175640 rigid bodies with 3224998 atoms ISG
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 16 -i run.in.min1
-#"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 16 -i run.in.min1
+#"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 8 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
-#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
