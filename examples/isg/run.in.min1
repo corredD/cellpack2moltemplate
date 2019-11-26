@@ -84,10 +84,10 @@ region rSphereI sphere  0 0 0  4100.0 side in #region size
 region rSphereO sphere  0 0 0  0.0  side out #region size
 group interior union gisg_interior gBicycleI#union of compartment name and bicycle
 group exterior union gcytoplasme gBicycleO
-fix fxWall1 interior wall/region rSphereI  harmonic  2.0  1.0  2790.0  #actual radius = 4100-2700 = 1400 radius
-fix fxWall2 exterior wall/region rSphereO  harmonic  2.0  1.0  1430.0  #actual radius = 10.0+1390 = 1400 radius
-fix_modify fxWall1 energy yes
-fix_modify fxWall2 energy yes
+fix fxWall1 interior wall/region rSphereI  harmonic  0.05  1.0  2790.0  #actual radius = 4100-2700 = 1400 radius
+fix fxWall2 exterior wall/region rSphereO  harmonic  0.05  1.0  1430.0  #actual radius = 10.0+1390 = 1400 radius
+#fix_modify fxWall1 energy yes
+#fix_modify fxWall2 energy yes
 #strength factor for wall-particle interaction (energy/distance^2).
 #The {harmonic} style is a softer
 #potential and does not blow up as r -> 0, but you must use a large
@@ -108,7 +108,7 @@ fix_modify fxWall2 energy yes
 
 timestep        0.1
 # Anneal the system starting at temperature kB*T/10, and ending at temperature 0
-fix fxLan     mobile langevin 0.05961621 0.0 100.0  48279
+fix fxLan     all langevin 0.05961621 0.0 100.0  48279
 run 40000
 unfix fxLan
 
