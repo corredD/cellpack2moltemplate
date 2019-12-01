@@ -477,6 +477,7 @@ def ConvertMolecule(molecule,
     l_mol_defs.append('  write(\"Data Atoms\") {\n')
     assert(len(crds) == len(radii))
     list_atom_type = []
+    list_atom_types = []
     mol = '$mol'
     #if (molecule['name'] == "Insulin_crystal"):
     #    mol='$mol:...'
@@ -484,22 +485,29 @@ def ConvertMolecule(molecule,
     if "surface" in cname :
         axe = molecule["principalVector"]
         off = molecule["offset"]
-        center = [0,0,0]
+        center2 = [0,0,0]
         q = FromToRotation(axe, [0,0,1])
+        print (name,axe,off)
+        print ("before",center,crds)
         for i in range(0, len(crds)):
+            #X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
             X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
+            #X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
             X = [0.0, 0.0, 0.0]
             AffineTransformQ(X, X_orig,q,[0,0,0])
             crds[i] = X
-            center+=X
-        center = [center[0]/len(crds),center[1]/len(crds),center[2]/len(crds)]
-        #print ("after",crds)
+            #crds[i] = [X[0]-off[0],X[1]-off[1],X[2]-off[2]]
+            center2+=X
+        center2 = [center2[0]/len(crds),center2[1]/len(crds),center2[2]/len(crds)]
+        print ("after",center2,crds)
     for i in range(0, len(crds)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
+        atype_names = '@{atom:A' + str(iradius) +'}'   #atom type depends on radius
         charge = '0.0'
         l_mol_defs.append('    $atom:a'+str(i+1)+'  '+mol+'  '+atype_name+'  '+charge+'  '+str(crds[i][0])+' '+str(crds[i][1])+' '+str(crds[i][2])+'\n')
         list_atom_type.append(atype_name)
+        list_atom_types.append(atype_names)
     list_atom_type = set(list_atom_type)    
     N = len(crds)
     group = "g"+cname 
@@ -514,9 +522,10 @@ def ConvertMolecule(molecule,
         #group = 'gSurface'
         #need to add the bicycle if surface
         charge = '0.0'
-        rr=25.0
-        l=rr+61.5
-        offset = [[-1.732*rr,1.0*rr,0.0*rr],[0.0,-2.0*rr,0.0],[1.732*rr,1.0*rr,0.0]]
+        rr=50.0
+        l=50+61.5/2.0
+        scale = 0.5
+        offset = [[-1.732*rr*scale,1.0*rr*scale,0.0*rr*scale],[0.0,-2.0*rr*scale,0.0],[1.732*rr*scale,1.0*rr*scale,0.0]]
         pcp = [0,0,1]#molecule["principalAxis"]
         
         #iradius = int(round(50/delta_r))
@@ -535,23 +544,30 @@ def ConvertMolecule(molecule,
     l_mol_defs.append('  }  # end of: write(\"Data Atoms\") {...\n\n')
     #grouping ?
     l_mol_defs.append('  write_once(\"In Settings\") {\n')
-    l_mol_defs.append('      group '+group+' type '+" ".join(list_atom_type)+'\n')
+    l_mol_defs.append('    group '+group+' type '+" ".join(list_atom_type)+'\n')
     if "surface" in cname :#if cname == "surface" :
-        l_mol_defs.append('      group gBicycleO type '+list_atom_type_surface[0]+'\n')
-        l_mol_defs.append('      group gBicycleI type '+list_atom_type_surface[1]+'\n')
+        l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
+        l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
     l_mol_defs.append('}  # end of: write_once(\"In Settings\")\n\n\n')    
-    l_mol_defs.append('}  # end of: \"'+name+'\" molecule definition\n\n\n')
+    
+    l_mol_defs.append('\nwrite_once("vmd_commands.tcl") {\n')
+    l_mol_defs.append(' mol rep VDW\n')
+    l_mol_defs.append(' mol addrep 0\n')
+    #l_mol_defs.append(' mol modselect 3 0 "type '+' '.join(list_atom_type)+' \" \n')
+    l_mol_defs.append(" mol modselect %i 0 \"type %s\"" % (g_ingredient_id+4,' '.join(set(list_atom_types)) ))
+    l_mol_defs.append('\n}\n')
 
+    l_mol_defs.append('}  # end of: \"'+name+'\" molecule definition\n\n\n')
     if not ('results' in molecule) and model_data==None :
         raise InputError('Error: Missing \results\" field in \"'+name+'\" molecule.\n')
-
+    g_ingredient_id=g_ingredient_id+1    
     deltaXs = []
     quaternions = []
     ninstances = 0
     if (model_data==None):
         instances = molecule['results']
         if len(instances) == 0:
-            g_ingredient_id=g_ingredient_id+1
+            #g_ingredient_id=g_ingredient_id+1
             return
         ninstances = len(instances)
         for i in range(0, ninstances):
@@ -596,7 +612,7 @@ def ConvertMolecule(molecule,
                                 str(deltaXs[i][0]) + ',' +
                                 str(deltaXs[i][1]) + ',' +
                                 str(deltaXs[i][2]) + ')\n')
-        g_ingredient_id=g_ingredient_id+1
+        #g_ingredient_id=g_ingredient_id+1
         # Now determine the minimum/maximum coordinates of this object
         # and adjust the simulation box boundaries if necessary
         #Xnid = molecule['positions']
@@ -1012,7 +1028,7 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
     # is half its peak height at r=rcut: <-> exp(-(1/2)(rcut/sigma)**2)=0.5
     sigma = rcut / sqrt((log(2)*2))
     # Then I will double the height of the Gaussian to compensate:
-    A = epsilon * 8.0#2.0
+    A = epsilon * 2.0#2.0
     # The arguments for the pair_coeff command are "A", "B", and "rcut"
     B = 0.5*(1.0/(sigma**2))
     r = rcut / (2.0**(1.0/6))
@@ -1023,6 +1039,49 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
                     str(-A) + ' ' +
                     str(B) + ' ' +
                     str(rcut) + '\n')
+
+def CompartmentConstraint(tree,bounds,rcut_max):
+    print("rcut_max",rcut_max)
+    vmd='write_once("vmd_commands.tcl") {\n'
+    astr = ('  write_once("In Settings") {\n' +
+        '    group todump subtract all gBicycleI gBicycleO\n'+
+        '    group mobile subtract all  gOrdinary gFixed\n'+
+        '    #group exterior union gcytoplasme gBicycleO\n')
+    mbthickness = 61.5/2.0
+    bicycle_radius = 50.0
+    strength = 1.0
+    count=0
+    if 'compartments' in tree:
+        for compname in tree['compartments']:
+            if 'mb' in tree['compartments'][compname]:
+                p = tree['compartments'][compname]['mb']['positions']
+                pos = [p[0],p[1],p[2]]
+                radius = tree['compartments'][compname]['mb']['radii'][0]
+                astr+='    #need wall at radius '+str(radius)+'\n'
+                astr+='    #mb is '+str(mbthickness)+'\n'
+                m=np.max(bounds)
+                #astr+=('    group interior union g%s_interior gBicycleI#union of compartment name and bicycle\n' % (compname))   
+                astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m))
+                astr+=('    region rSphereO%sg sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],0.0))
+                astr+=('    fix fxWall%i_1 g%s_interior wall/region rSphereI%sg  harmonic  %f  0.1  %f\n'%(count,compname,compname,0.001,m-radius+mbthickness+rcut_max))
+                astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,0.001,radius+mbthickness+rcut_max))                       
+                astr+=('    region rSphereI%s sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],radius))
+                astr+=('    region rSphereO%s sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],radius))
+                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,strength,mbthickness+bicycle_radius))
+                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,strength,mbthickness+bicycle_radius))                       
+                vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius-mbthickness)) 
+                vmd+=(' draw material Transparent\n') 
+                vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius)) 
+                vmd+=(' draw material Transparent\n') 
+                vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius+mbthickness)) 
+                vmd+=(' draw material Transparent\n')                 
+    astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
+    astr+='    region rBound block   '+str(bounds[0][0])+' '+str(bounds[1][0])+'  '+str(bounds[0][1])+' '+str(bounds[1][1])+'  '+str(bounds[0][2])+' '+str(bounds[1][2])+'\n'
+    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  1.0  0.1  400.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n'
+    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  1.0  0.1  1.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n'
+    astr+='}\n'
+    vmd+='}\n'
+    return astr+vmd
 
 #pxyzID
 def ConvertCellPACK(file_in,        # typically sys.stdin
@@ -1260,7 +1319,10 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                        '    \$sel set radius '+str(r)+'\n')
     atype_name1 = '@{atom:ABIC1}'          
     atype_name2 = '@{atom:ABIC2}'  
-    
+    file_out.write('    set sel [atomselect top "type '+atype_name1+'"]\n'
+                       '    \$sel set radius 50.0\n')
+    file_out.write('    set sel [atomselect top "type '+atype_name2+'"]\n'
+                       '    \$sel set radius 50.0\n')
     file_out.write('    mol rep VDW\n'
         '    mol addrep 0\n'
         '    mol modselect 1 0 "type '+atype_name1+'"\n'
@@ -1273,8 +1335,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write(' mol addrep 0\n')
     file_out.write(' mol modselect 3 0 "not type '+atype_name1+' '+atype_name2+'"\n')
     #file_out.write(' mol modcolor 3 0 "ColorID 2"\n')
-    file_out.write(' draw sphere \{0 0 0\} radius 1370.0 resolution 20\n') 
-    file_out.write(' draw material Transparent\n') 
+
     file_out.write('  }  # end of "vmd_commands.tcl"\n\n')
 
     #need one outside group
@@ -1316,14 +1377,12 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '    #   http://lammps.sandia.gov/doc/fix_rigid.html\n'
                    '    #   http://lammps.sandia.gov/doc/fix_nve.html\n'
                    '    #\n'
-                   '    #region rSphereI sphere  0    0  0  1600  side out\n'
-                   '    #region rSphereO sphere  0    0  0  1600  side in\n'
-                   '    # neigh_modify one 20000 page 200000\n'
+                   '    neigh_modify one 20000 page 200000\n'
                    '    neigh_modify exclude molecule/intra all\n'
-                   '    neigh_modify exclude type '+atype_name1+' '+atype_name2+'\n'
+                   #'    neigh_modify exclude type '+atype_name1+' '+atype_name2+'\n'
                    '    neigh_modify exclude molecule/inter gBicycleI\n'
                    '    neigh_modify exclude molecule/inter gBicycleO\n'
-                   '  }\n'
+                   '    neighbor 15.0 multi\n}\n'
                    '  ### This next line greatly increases the speed of the simulation:\n'
                    '  ### No need to calculate forces between particles in the same rigid molecule\n'
                    '  # neigh_modify exclude molecule/intra gRigid\n'
@@ -1333,7 +1392,6 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write('}  # end of the "ForceField" object definition\n'
                    '\n\n\n\n\n')
     
-
     ConvertSystem(tree,
                   file_out,
                   delta_r,
@@ -1344,14 +1402,16 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     if out_obj_name != '':
         file_out.write('}  # end of \"'+ out_obj_name + '\" object definition\n')
 
-    
-
     # Print the simulation boundary conditions
     bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
               [7692,7692,7692]]
-    bounds = [[-1538,-1538,-1538],    #Box big enough to enclose all the particles
-              [1538,1538,1538]]
+    bounds = [[-1923.0,-1923.0,-1923.0],    #Box big enough to enclose all the particles
+              [1923.0,1923.0,1923.0]]
     print (bounds)
+
+    c=CompartmentConstraint(tree,bounds,rcut_max)
+    file_out.write(c)
+
     file_out.write('\n\n'
                    '# Simulation boundaries:\n'
                    '\n'
@@ -1560,6 +1620,8 @@ if __name__ == '__main__':
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck #1h30 later
 #1175640 rigid bodies with 3224998 atoms ISG
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1
+##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 4 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
+#sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
