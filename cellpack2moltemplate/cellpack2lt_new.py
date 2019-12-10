@@ -383,7 +383,8 @@ def compute_inertia(inertiaflag,radiusflag,dxcom,radius):
     # fix fxWall all wall/region rRod harmonic      10.0  0.0  1350.0
     # group mobile subtract all gFixed
 
-def ConvertMolecule(molecule,
+def ConvertMolecule(tree,
+                    molecule,
                     name,
                     l_mol_defs,
                     l_instances,
@@ -491,13 +492,15 @@ def ConvertMolecule(molecule,
         print ("before",center,crds)
         for i in range(0, len(crds)):
             #X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
-            X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
-            #X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
+            #X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
+            X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
             X = [0.0, 0.0, 0.0]
             AffineTransformQ(X, X_orig,q,[0,0,0])
-            crds[i] = X
+            Xoff = [0.0, 0.0, 0.0]
+            AffineTransformQ(Xoff, [off[0],off[1],off[2]],q,[0,0,0])
+            crds[i] = (np.array(X)-np.array(off)).tolist()
             #crds[i] = [X[0]-off[0],X[1]-off[1],X[2]-off[2]]
-            center2+=X
+            center2+=X+Xoff
         center2 = [center2[0]/len(crds),center2[1]/len(crds),center2[2]/len(crds)]
         print ("after",center2,crds)
     for i in range(0, len(crds)):
@@ -554,7 +557,8 @@ def ConvertMolecule(molecule,
     l_mol_defs.append(' mol rep VDW\n')
     l_mol_defs.append(' mol addrep 0\n')
     #l_mol_defs.append(' mol modselect 3 0 "type '+' '.join(list_atom_type)+' \" \n')
-    l_mol_defs.append(" mol modselect %i 0 \"type %s\"" % (g_ingredient_id+4,' '.join(set(list_atom_types)) ))
+    l_mol_defs.append(" mol modselect %i 0 \"type %s\"\n" % (g_ingredient_id+4,' '.join(set(list_atom_types)) ))
+    l_mol_defs.append(" mol modcolor %i 0 \"ColorID %i\"\n" % (g_ingredient_id+4,g_ingredient_id+4))
     l_mol_defs.append('\n}\n')
 
     l_mol_defs.append('}  # end of: \"'+name+'\" molecule definition\n\n\n')
@@ -649,9 +653,13 @@ def ConvertMolecule(molecule,
                 l_instances.append('  \$sel set name '+color_name+'\n')
             l_instances.append('}  # end of "vmd_commands.tcl"\n')
             l_instances.append('\n')
-    return l_mol_defs
+    if "surface" not in cname :
+        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname)
+        return constr
+    else :
+        return ''
 
-def ConvertMolecules(molecules,
+def ConvertMolecules(tree,molecules,
                      file_out,
                      delta_r,
                      bounds,
@@ -664,13 +672,13 @@ def ConvertMolecules(molecules,
     l_instances = []
     #is the following order?
     for molecule_type_name in molecules:
-        ConvertMolecule(molecules[molecule_type_name],
+        ConvertMolecule(tree,molecules[molecule_type_name],
                         molecule_type_name,
                         l_mol_defs,
                         l_instances,
                         delta_r,
                         bounds,cname,model_data=model_data)
-        #when debugging, uncomment the next line:
+        #when debugging, uncomment the nex9t line:
         #break
     #take care of the instance in the order given in the model data
 
@@ -710,7 +718,7 @@ def ConvertSystem_old(tree,
     if not isinstance(tree, dict):
         return
     if 'ingredients' in tree:
-        ConvertMolecules(tree['ingredients'],
+        ConvertMolecules(tree,tree['ingredients'],
                          file_out,
                          delta_r,
                          bounds,
@@ -721,7 +729,7 @@ def ConvertSystem_old(tree,
                 continue
             file_out.write(nindent*'  '+object_name + ' {\n')
             if object_name == 'cytoplasme':
-                ConvertMolecules(tree['cytoplasme'],
+                ConvertMolecules(tree,tree['cytoplasme'],
                                 file_out,
                                 delta_r,
                                 bounds,
@@ -757,7 +765,7 @@ def ConvertSystem2(tree,
     if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
         object_name = 'cytoplasme'
         file_out.write(nindent*'  '+object_name + ' {\n')
-        ConvertMolecules(tree['cytoplasme']['ingredients'],
+        ConvertMolecules(tree,tree['cytoplasme']['ingredients'],
                 file_out,
                 delta_r,
                 bounds,
@@ -774,7 +782,7 @@ def ConvertSystem2(tree,
                 cname = compname+"_surface"
                 object_name = cname
                 file_out.write(nindent*'  '+object_name + ' {\n')
-                ConvertMolecules(tree['compartments'][compname]['surface']['ingredients'],
+                ConvertMolecules(tree,tree['compartments'][compname]['surface']['ingredients'],
                          file_out,
                          delta_r,
                          bounds,
@@ -789,7 +797,7 @@ def ConvertSystem2(tree,
                 cname = compname+"_interior"
                 object_name = cname
                 file_out.write(nindent*'  '+object_name + ' {\n')
-                ConvertMolecules(tree['compartments'][compname]['interior']['ingredients'],
+                ConvertMolecules(tree,tree['compartments'][compname]['interior']['ingredients'],
                          file_out,
                          delta_r,
                          bounds,
@@ -905,6 +913,7 @@ def ConvertSystem(tree,
     count = 0
     start = 0   
     prev_ingredient_name = ""
+    comp_constraints=''
     for i in range(ninstances):
         p = model_data["pos"][i]
         q = model_data["quat"][i]
@@ -926,12 +935,13 @@ def ConvertSystem(tree,
             file_out.write(nindent*'  '+name + '_ingredient {\n')
             l_mol_defs = []
             l_instances = []
-            ConvertMolecule(ingredient,
+            const=ConvertMolecule(tree,ingredient,
                         name,
                         l_mol_defs,
                         l_instances,
                         delta_r,
                         bounds,cname,model_data=model_data)
+            comp_constraints+=const
             file_out.write('\n' + 
                    (nindent*'  ') + '# ----------- molecule definitions -----------\n'
                    '\n')
@@ -966,12 +976,14 @@ def ConvertSystem(tree,
                     nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
                     '\n' +
                     '\n')   
+    return comp_constraints
    
 def CreateGroupCompartment(tree):
     list_groups=[]
     if not isinstance(tree, dict):
         return
     #start with cytoplasme, then compartment
+    #one group per atom type ?
     if 'cytoplasme' in tree and len(tree['cytoplasme']):
         list_groups.append("gcytoplasme")
     if 'compartments' in tree:
@@ -1028,7 +1040,7 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
     # is half its peak height at r=rcut: <-> exp(-(1/2)(rcut/sigma)**2)=0.5
     sigma = rcut / sqrt((log(2)*2))
     # Then I will double the height of the Gaussian to compensate:
-    A = epsilon * 2.0#2.0
+    A = 10000.0#epsilon * 10.0# 10.0#epsilon * 10000.0#2.0 ->5961.621
     # The arguments for the pair_coeff command are "A", "B", and "rcut"
     B = 0.5*(1.0/(sigma**2))
     r = rcut / (2.0**(1.0/6))
@@ -1040,7 +1052,27 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
                     str(B) + ' ' +
                     str(rcut) + '\n')
 
-def CompartmentConstraint(tree,bounds,rcut_max):
+def MoleculeCompartmentConstraint(tree,radii,delta_r,compname):
+    #should be done per atom type!
+    astr=''
+    mbthickness = 61.5/2.0
+    strength = 0.1
+    m=2000
+    for i in range(0, len(radii)):
+        iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
+        atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
+        astr+='group g'+atype_name+' type '+atype_name+'\n'
+        if 'compartments' in tree:
+            for cname in tree['compartments']:
+                if 'mb' in tree['compartments'][cname]:
+                    radius = tree['compartments'][cname]['mb']['radii'][0]
+                    if (compname == 'cytoplasme'):
+                        astr+='fix fxWall%s g%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,radius+mbthickness+radii[i])
+                    else :
+                        astr+='fix fxWall%s g%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,m-radius+mbthickness+radii[i])
+    return astr
+
+def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     print("rcut_max",rcut_max)
     vmd='write_once("vmd_commands.tcl") {\n'
     astr = ('  write_once("In Settings") {\n' +
@@ -1049,7 +1081,7 @@ def CompartmentConstraint(tree,bounds,rcut_max):
         '    #group exterior union gcytoplasme gBicycleO\n')
     mbthickness = 61.5/2.0
     bicycle_radius = 50.0
-    strength = 1.0
+    strength = 0.1
     count=0
     if 'compartments' in tree:
         for compname in tree['compartments']:
@@ -1063,12 +1095,12 @@ def CompartmentConstraint(tree,bounds,rcut_max):
                 #astr+=('    group interior union g%s_interior gBicycleI#union of compartment name and bicycle\n' % (compname))   
                 astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m))
                 astr+=('    region rSphereO%sg sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],0.0))
-                astr+=('    fix fxWall%i_1 g%s_interior wall/region rSphereI%sg  harmonic  %f  0.1  %f\n'%(count,compname,compname,0.001,m-radius+mbthickness+rcut_max))
-                astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,0.001,radius+mbthickness+rcut_max))                       
+                #astr+=('    fix fxWall%i_1 g%s_interior wall/region rSphereI%sg  harmonic  %f  0.1  %f\n'%(count,compname,compname,strength,m-radius+mbthickness+rcut_max))
+                #astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,strength,radius+mbthickness+rcut_max))                       
                 astr+=('    region rSphereI%s sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],radius))
                 astr+=('    region rSphereO%s sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],radius))
-                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,strength,mbthickness+bicycle_radius))
-                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,strength,mbthickness+bicycle_radius))                       
+                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,1,mbthickness+bicycle_radius))
+                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,1,mbthickness+bicycle_radius))                       
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius-mbthickness)) 
                 vmd+=(' draw material Transparent\n') 
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius)) 
@@ -1077,8 +1109,9 @@ def CompartmentConstraint(tree,bounds,rcut_max):
                 vmd+=(' draw material Transparent\n')                 
     astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
     astr+='    region rBound block   '+str(bounds[0][0])+' '+str(bounds[1][0])+'  '+str(bounds[0][1])+' '+str(bounds[1][1])+'  '+str(bounds[0][2])+' '+str(bounds[1][2])+'\n'
-    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  1.0  0.1  400.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n'
-    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  1.0  0.1  1.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n'
+    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  400.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
+    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  80.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 1
+    astr+= ing_constr
     astr+='}\n'
     vmd+='}\n'
     return astr+vmd
@@ -1392,7 +1425,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write('}  # end of the "ForceField" object definition\n'
                    '\n\n\n\n\n')
     
-    ConvertSystem(tree,
+    comp_constraints=ConvertSystem(tree,
                   file_out,
                   delta_r,
                   bounds,
@@ -1405,12 +1438,12 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     # Print the simulation boundary conditions
     bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
               [7692,7692,7692]]
-    bounds = [[-1923.0,-1923.0,-1923.0],    #Box big enough to enclose all the particles
-              [1923.0,1923.0,1923.0]]
+    bounds = [[-2000.0,-2000.0,-2000.0],    #Box big enough to enclose all the particles
+              [2000.0,2000.0,2000.0]]
     print (bounds)
 
-    c=CompartmentConstraint(tree,bounds,rcut_max)
-    file_out.write(c)
+    c=CompartmentConstraint(tree,bounds,rcut_max,comp_constraints)
+    file_out.write(c)    
 
     file_out.write('\n\n'
                    '# Simulation boundaries:\n'
