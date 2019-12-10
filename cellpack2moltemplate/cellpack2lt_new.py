@@ -25,7 +25,9 @@ __date__ = '2018-8-13'
 g_control_vmd_colors = False
 g_ingredient_id=0
 g_ingredient_names=[]
-
+g_radii = {}
+#key is compartment, value is list or atom type
+#set of radii for constraints, group by range of ten
 doc_msg = \
     'Typical Usage:\n\n' + \
     '  ' + g_program_name + ' -in HIV-1_0.1.cpr -out system.lt\n' + \
@@ -178,7 +180,6 @@ def RadiiNeeded(tree,
         for object_name in tree:
             if object_name == "mb" : continue
             RadiiNeeded(tree[object_name], ir_needed, delta_r)
-
 
 def FromToRotation(dir1, dir2) :
     r = 1.0 + np.dot(np.array(dir1), np.array(dir2))
@@ -1054,10 +1055,12 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
 
 def MoleculeCompartmentConstraint(tree,radii,delta_r,compname):
     #should be done per atom type!
+    # group by range 10 
+    global g_radii
     astr=''
     mbthickness = 61.5/2.0
     strength = 0.1
-    m=2000
+    m = 2000
     for i in range(0, len(radii)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
@@ -1066,9 +1069,14 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname):
             for cname in tree['compartments']:
                 if 'mb' in tree['compartments'][cname]:
                     radius = tree['compartments'][cname]['mb']['radii'][0]
+                    if compname not in g_radii : 
+                        g_radii[compname]={}
+                    if cname not in g_radii[compname]:
+                        g_radii[compname][cname]={"radius":radius,"atom":set([])}
+                    g_radii[compname][cname]["atom"].add(iradius)
                     if (compname == 'cytoplasme'):
                         astr+='fix fxWall%s g%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,radius+mbthickness+radii[i])
-                    else :
+                    else :                       
                         astr+='fix fxWall%s g%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,m-radius+mbthickness+radii[i])
     return astr
 
@@ -1111,7 +1119,35 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     astr+='    region rBound block   '+str(bounds[0][0])+' '+str(bounds[1][0])+'  '+str(bounds[0][1])+' '+str(bounds[1][1])+'  '+str(bounds[0][2])+' '+str(bounds[1][2])+'\n'
     astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  400.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
     astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  80.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 1
-    astr+= ing_constr
+    #astr+= ing_constr
+    global g_radii
+    #astr=''
+    mbthickness = 61.5/2.0
+    strength = 1.0
+    m = 2000
+    for cname in g_radii:
+        for comp in g_radii[cname]:
+            radius = g_radii[cname][comp]['radius']
+            atom = np.sort(list(g_radii[cname][comp]['atom']))
+            N=len(atom)
+            b={}
+            for n in range(0,N):
+                v=atom[n]
+                s=v%50
+                start = (v-s)+50
+                if start not in b:
+                    b[start]=[]
+                b[start].append('@atom:A' + str(v))
+            #print (b)
+            for s in b:
+                print (s)
+                #atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
+                if cname == 'cytoplasme':
+                    astr+='group gO'+str(s)+' type '+' '.join(set(b[s]))+'\n'
+                    astr+='fix fxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1)
+                else :             
+                    astr+='group gI'+str(s)+' type '+' '.join(set(b[s]))+'\n'          
+                    astr+='fix fxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,m-radius+mbthickness+s*0.1)
     astr+='}\n'
     vmd+='}\n'
     return astr+vmd
@@ -1658,3 +1694,6 @@ if __name__ == '__main__':
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
+
+
+
