@@ -1041,7 +1041,7 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
     # is half its peak height at r=rcut: <-> exp(-(1/2)(rcut/sigma)**2)=0.5
     sigma = rcut / sqrt((log(2)*2))
     # Then I will double the height of the Gaussian to compensate:
-    A = 10000.0#epsilon * 10.0# 10.0#epsilon * 10000.0#2.0 ->5961.621
+    A = 1000.0#epsilon * 10.0# 10.0#epsilon * 10000.0#2.0 ->5961.621
     # The arguments for the pair_coeff command are "A", "B", and "rcut"
     B = 0.5*(1.0/(sigma**2))
     r = rcut / (2.0**(1.0/6))
@@ -1124,7 +1124,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     #astr=''
     mbthickness = 61.5/2.0
     strength = 1.0
-    m = 2000
+    m=np.max(bounds)
     for cname in g_radii:
         for comp in g_radii[cname]:
             radius = g_radii[cname][comp]['radius']
