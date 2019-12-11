@@ -1128,6 +1128,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     for cname in g_radii:
         for comp in g_radii[cname]:
             radius = g_radii[cname][comp]['radius']
+            d=m-radius
             atom = np.sort(list(g_radii[cname][comp]['atom']))
             N=len(atom)
             b={}
@@ -1147,7 +1148,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                     astr+='fix fxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1)
                 else :             
                     astr+='group gI'+str(s)+' type '+' '.join(set(b[s]))+'\n'          
-                    astr+='fix fxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,m-radius+mbthickness+s*0.1)
+                    astr+='fix fxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1)
     astr+='}\n'
     vmd+='}\n'
     return astr+vmd
@@ -1474,8 +1475,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     # Print the simulation boundary conditions
     bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
               [7692,7692,7692]]
-    bounds = [[-2000.0,-2000.0,-2000.0],    #Box big enough to enclose all the particles
-              [2000.0,2000.0,2000.0]]
+    bounds = [[-2100.0,-2100.0,-2100.0],    #Box big enough to enclose all the particles
+              [2100.0,2100.0,2100.0]]
     print (bounds)
 
     c=CompartmentConstraint(tree,bounds,rcut_max,comp_constraints)
