@@ -26,6 +26,7 @@ g_control_vmd_colors = False
 g_ingredient_id=0
 g_ingredient_names=[]
 g_radii = {}
+g_path_radii = {}
 #key is compartment, value is list or atom type
 #set of radii for constraints, group by range of ten
 doc_msg = \
@@ -151,7 +152,8 @@ def AdjustBounds(bounds, X):
 
 def RadiiNeeded(tree,
                 ir_needed,
-                delta_r):
+                delta_r,
+                path=""):
     """
     Note: LAMMPS (and most other) molecular dynamics simulation programs does
           not allow users to define unique radii for each of the 10^6 or so
@@ -166,20 +168,28 @@ def RadiiNeeded(tree,
     This function recursively searches for objects in the JSON file containing
     a 'radii' field.  Quantize each of the radii (by dividing by delta_r) and 
     add them to the set of radii that we will need to define later (ir_needed).
+
+    carry along the path
     """
 
     if not isinstance(tree, dict):
         return
     if 'radii' in tree:
         r_ni = tree['radii']
+        if path not in ir_needed: ir_needed[path] = set([])
         for n in range(0, len(tree['radii'])): #loop over "subunits" of this molecule
             for i in range(0, len(r_ni[n]['radii'])):   #loop over atoms
                 iradius = int(round(r_ni[n]['radii'][i]/delta_r))  #(quantize the radii)
-                ir_needed.add(iradius)
+                #ir_needed.append({path:iradius})
+                ir_needed[path].add(iradius)
     else:
         for object_name in tree:
+            cpath=path+"."+object_name
+            if not isinstance(tree[object_name], dict):continue
+            if 'radii' in tree[object_name]: 
+                cpath = path
             if object_name == "mb" : continue
-            RadiiNeeded(tree[object_name], ir_needed, delta_r)
+            RadiiNeeded(tree[object_name], ir_needed, delta_r,cpath)
 
 def FromToRotation(dir1, dir2) :
     r = 1.0 + np.dot(np.array(dir1), np.array(dir2))
@@ -392,6 +402,7 @@ def ConvertMolecule(tree,
                     delta_r,
                     bounds,
                     cname = "",
+                    path = "",
                     model_data=None):
     """ 
     Convert all information concerning a type of molecule defined in a 
@@ -411,6 +422,7 @@ def ConvertMolecule(tree,
     name = name.replace(" ","").replace("-","")
     global g_ingredient_id
     global g_ingredient_names
+    global g_path_radii
     g_ingredient_names.append(name)
     #print ("convert molecule "+molecule['name']+" "+name,g_ingredient_id)
     #if (molecule['name'] == "Insulin_crystal"):
@@ -507,8 +519,8 @@ def ConvertMolecule(tree,
         #print ("after",center2,crds)
     for i in range(0, len(crds)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
-        atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
-        atype_names = '@{atom:A' + str(iradius) +'}'   #atom type depends on radius
+        atype_name = '@atom:A' + str(iradius)+'_'+str(g_path_radii[path])    #atom type depends on radius
+        atype_names = '@{atom:A' + str(iradius)+'_'+str(g_path_radii[path])  +'}'   #atom type depends on radius
         charge = '0.0'
         l_mol_defs.append('    $atom:a'+str(i+1)+'  '+mol+'  '+atype_name+'  '+charge+'  '+str(crds[i][0])+' '+str(crds[i][1])+' '+str(crds[i][2])+'\n')
         list_atom_type.append(atype_name)
@@ -549,7 +561,7 @@ def ConvertMolecule(tree,
     l_mol_defs.append('  }  # end of: write(\"Data Atoms\") {...\n\n')
     #grouping ?
     l_mol_defs.append('  write_once(\"In Settings\") {\n')
-    l_mol_defs.append('    group '+group+' type '+" ".join(list_atom_type)+'\n')
+    l_mol_defs.append('    group '+group+' type '+" ".join(list_atom_type)+'#'+molecule['name']+'\n')
     #if "surface" in cname :#if cname == "surface" :
     #    l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
     #    l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
@@ -656,7 +668,7 @@ def ConvertMolecule(tree,
             l_instances.append('}  # end of "vmd_commands.tcl"\n')
             l_instances.append('\n')
     if "surface" not in cname :
-        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname)
+        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname,str(g_path_radii[path]))
         return constr
     else :
         return ''
@@ -858,11 +870,12 @@ def ConvertSystem2(tree,
 
 def FindIngredientInTreeFromId(query_ing_id,tree):
     current_id = 0
+    path="."
     if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
         cname ='cytoplasme'
         for ing_name in tree['cytoplasme']['ingredients']:
             if query_ing_id == current_id :
-                return [tree['cytoplasme']['ingredients'][ing_name],cname]
+                return [tree['cytoplasme']['ingredients'][ing_name],cname,".cytoplasme.ingredients"]
             current_id+=1
     if 'compartments' in tree:
         for compname in tree['compartments']:
@@ -870,15 +883,15 @@ def FindIngredientInTreeFromId(query_ing_id,tree):
                 cname = compname+"_surface"
                 for ing_name in tree['compartments'][compname]['surface']['ingredients']:
                     if query_ing_id == current_id :
-                        return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname]
+                        return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
                     current_id+=1                        
             if 'interior' in tree['compartments'][compname] and len(tree['compartments'][compname]['interior']['ingredients']):
                 cname = compname+"_interior"
                 for ing_name in tree['compartments'][compname]['interior']['ingredients']:
                     if query_ing_id == current_id :
-                        return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname]
+                        return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
                     current_id+=1                        
-    return [None,None]    
+    return [None,None,None]    
 
 def FindIngredientInTree(query_ing_name,tree):
     if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
@@ -924,7 +937,7 @@ def ConvertSystem(tree,
         p = model_data["pos"][i]
         q = model_data["quat"][i]
         ptype = int(p[3])
-        ingredient, cname = FindIngredientInTreeFromId(ptype,tree)
+        ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree)
         name = ingredient["name"]
         #if name == "Insulin_crystal" : continue
         if name != prev_ingredient_name :
@@ -943,12 +956,13 @@ def ConvertSystem(tree,
             file_out.write(nindent*'  '+name + '_ingredient {\n')
             l_mol_defs = []
             l_instances = []
-            const=ConvertMolecule(tree,ingredient,
+            const=ConvertMolecule(tree,
+                        ingredient,
                         name,
                         l_mol_defs,
                         l_instances,
                         delta_r,
-                        bounds,cname,model_data=model_data)
+                        bounds,cname,path,model_data=model_data)
             comp_constraints+=const
             file_out.write('\n' + 
                    (nindent*'  ') + '# ----------- molecule definitions -----------\n'
@@ -1038,7 +1052,7 @@ def OnePairCoeff(aname, aradius, delta_r, pairstyle, epsilon):
 
 def OnePairCoeffCutSoft(aname, aradius, delta_r, pairstyle, epsilon, alambda):
     #pair_coeff * * lj/cut/soft 300.0 50.0 0.5 60.4#
-    rcut = 4 * aradius * delta_r   #(don't forget the 2)
+    rcut = 3 * aradius * delta_r   #(don't forget the 2)
     r = rcut / (2.0**(1.0/6)) #sigma ? the energy minimum is at 2^(1/6)*sigma.
     return ('     pair_coeff ' + 
                     '@atom:A' + str(aname) + ' ' +
@@ -1074,7 +1088,7 @@ def OnePairCoeffSoft(aname, aradius, delta_r, epsilon, A=10000.0):
                     str(B) + ' ' +
                     str(rcut) + '\n')
 
-def MoleculeCompartmentConstraint(tree,radii,delta_r,compname):
+def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix):
     #should be done per atom type!
     # group by range 10 
     global g_radii
@@ -1084,7 +1098,7 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname):
     m = 2000
     for i in range(0, len(radii)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
-        atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
+        atype_name = '@atom:A' + str(iradius)+'_'+prefix    #atom type depends on radius
         astr+='group g'+atype_name+' type '+atype_name+'\n'
         if 'compartments' in tree:
             for cname in tree['compartments']:
@@ -1194,6 +1208,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     Read a JSON file created by CellPACK and 
     convert it to MOLTEMPLATE (LT) format.
     """
+    global g_path_radii
     tree = json.load(file_in,object_pairs_hook=OrderedDict)#retain file order
     model_data=None
     if (model_in!=""):
@@ -1252,7 +1267,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     # These will be referenced below when we
     # create a "ForceField" object which describes them.
 
-    ir_needed = set([]) # Which particle radii are needed in this simulation?
+    ir_needed = {}#[]#set([]) # Which particle radii are needed in this simulation?
                         # LAMMPS does not allow every particle in the sim to
                         # have a unique radius.  The number of particle types
                         # cannot exceed roughly 10^3 (for efficient execution)
@@ -1269,6 +1284,11 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                         # for those particle types.
 
     RadiiNeeded(tree, ir_needed, delta_r)
+    rmax=0.0
+    for p in ir_needed :
+        mm=max(ir_needed[p])
+        if mm > rmax :
+            rmax = mm
     #add the bycycle
     #rr = max(ir_needed)
     #r1 = 50.0
@@ -1283,7 +1303,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     #ir_needed.add(iradius)
     
     assert(len(ir_needed) > 0)
-    rmax = max(ir_needed) * delta_r
+    #rmax = max(ir_needed) * delta_r
     rcut_max = rmax
     bounds = [[0.0,0.0,0.0],    #Box big enough to enclose all the particles
               [-1.0,-1.0,-1.0]] #[[xmin,ymin,zmin],[xmax,ymax,zmax]]
@@ -1295,15 +1315,22 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     pairstyle2args['lj/class2/coul/cut'] = str(rcut_max)
     pairstyle2args['gauss'] = str(rcut_max)
     #pair_mixing_style = 'geometric' <-- NO do not use geometric why ?
-    pair_mixing_style = 'arithmetic'#geometric ?arithmetic sixthpower ?
+    pair_mixing_style = 'sixthpower'#geometric ?arithmetic sixthpower ?
     special_bonds_command = 'special_bonds lj/coul 0.0 0.0 1.0'
     apairstyle='lj/cut/soft'
-    alambda = 0.85
+    alambda = 0.95
     aepsilon = 5.9#5.90#300 was to high ?
+    
     file_out.write('   write_once("In Settings Pair Coeffs LJ Softs") {\n')
-    for iradius in sorted(ir_needed):
-        coeff = OnePairCoeffCutSoft(iradius, iradius, delta_r, apairstyle, aepsilon,alambda)
-        file_out.write(coeff)
+    #for iradius in sorted(ir_needed):
+    #    coeff = OnePairCoeffCutSoft(iradius, iradius, delta_r, apairstyle, aepsilon,alambda)
+    #    file_out.write(coeff)
+    
+    for i,p in enumerate(ir_needed):
+        g_path_radii[p]=i
+        for iradius in sorted(ir_needed[p]):
+            coeff = OnePairCoeffCutSoft(str(iradius)+"_"+str(i), iradius, delta_r, apairstyle, aepsilon,alambda)
+            file_out.write(coeff)        
     bycicle1 = OnePairCoeffCutSoft("BIC1", 500, delta_r, apairstyle, aepsilon,alambda)
     bycicle2 = OnePairCoeffCutSoft("BIC2", 500, delta_r, apairstyle, aepsilon,alambda)
     file_out.write(bycicle1)
@@ -1311,9 +1338,12 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write('  }  #end of "In Settings Pair Coeffs LJ Softs"\n'
                    '\n\n\n')
     file_out.write('   write_once("In Settings Pair Coeffs") {\n')
-    for iradius in sorted(ir_needed):
-        coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
-        file_out.write(coeff)
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):
+            coeff = OnePairCoeff(str(iradius)+"_"+str(i), iradius, delta_r, pairstyle, epsilon)
+    #for iradius in sorted(ir_needed):
+    #    coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
+    #    file_out.write(coeff)
     bycicle1 = OnePairCoeff("BIC1", 500, delta_r, pairstyle, epsilon)
     bycicle2 = OnePairCoeff("BIC2", 500, delta_r, pairstyle, epsilon)
     file_out.write(bycicle1)
@@ -1335,9 +1365,13 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     #                '\n\n\n')
     file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
     file_out.write('   write_once("In Settings Pair Coeffs Soft") {\n')
-    for iradius in sorted(ir_needed):
-        coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
-        file_out.write(coeff)
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):    
+            coeff = OnePairCoeffSoft(str(iradius)+"_"+str(i), iradius, delta_r, epsilon,A=100000.0)
+            file_out.write(coeff)    
+    #for iradius in sorted(ir_needed):
+    #    coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
+    #    file_out.write(coeff)
     bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=100000.0)
     bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=100000.0)
     file_out.write(bycicle1)
@@ -1352,12 +1386,13 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '  # Take care of that detail below.\n')
     file_out.write('\n'
                    '   write_once("Data Masses") {\n')
-
-    for iradius in sorted(ir_needed):
-        rcut = iradius * delta_r * 0.1
-        #r = rcut / (2.0**(1.0/6))
-        file_out.write('    ' +
-                       '@atom:A' + str(iradius) +' '+ str(rcut) +'\n')
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):   
+    #for iradius in sorted(ir_needed):
+            rcut = iradius * delta_r * 0.1
+            #r = rcut / (2.0**(1.0/6))
+            file_out.write('    ' +
+                       '@atom:A' + str(iradius)+"_"+str(i) +' '+ str(rcut) +'\n')
     file_out.write('    ' +
                        '@atom:ABIC1 ' + str(default_mass) +'\n')
     file_out.write('    ' +
@@ -1428,10 +1463,12 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '\n'
                    '  write_once("vmd_commands.tcl") {\n')
     #is it important to sort them ?
-    for iradius in sorted(ir_needed):
-        r = iradius * delta_r
-        atype_name = '@{atom:A' + str(iradius) + '}'
-        file_out.write('    set sel [atomselect top "type '+atype_name+'"]\n'
+    #for iradius in sorted(ir_needed):
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):          
+            r = iradius * delta_r
+            atype_name = '@{atom:A' + str(iradius)+"_"+str(i) + '}'
+            file_out.write('    set sel [atomselect top "type '+atype_name+'"]\n'
                        '    \$sel set radius '+str(r)+'\n')
     atype_name1 = '@{atom:ABIC1}'          
     atype_name2 = '@{atom:ABIC2}'  
