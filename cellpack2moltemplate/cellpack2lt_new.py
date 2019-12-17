@@ -76,12 +76,12 @@ def Quaternion2Matrix(q, M):
     M[0][0] =  (q[0]*q[0])-(q[1]*q[1])-(q[2]*q[2])+(q[3]*q[3])
     M[1][1] = -(q[0]*q[0])+(q[1]*q[1])-(q[2]*q[2])+(q[3]*q[3])
     M[2][2] = -(q[0]*q[0])-(q[1]*q[1])+(q[2]*q[2])+(q[3]*q[3])
-    M[0][1] = 2*(q[0]*q[1] - q[2]*q[3]);
-    M[1][0] = 2*(q[0]*q[1] + q[2]*q[3]);
-    M[1][2] = 2*(q[1]*q[2] - q[0]*q[3]);
-    M[2][1] = 2*(q[1]*q[2] + q[0]*q[3]);
-    M[0][2] = 2*(q[0]*q[2] + q[1]*q[3]);
-    M[2][0] = 2*(q[0]*q[2] - q[1]*q[3]);
+    M[0][1] = 2*(q[0]*q[1] - q[2]*q[3])
+    M[1][0] = 2*(q[0]*q[1] + q[2]*q[3])
+    M[1][2] = 2*(q[1]*q[2] - q[0]*q[3])
+    M[2][1] = 2*(q[1]*q[2] + q[0]*q[3])
+    M[0][2] = 2*(q[0]*q[2] + q[1]*q[3])
+    M[2][0] = 2*(q[0]*q[2] - q[1]*q[3])
 
 
 
@@ -195,50 +195,50 @@ def FromToRotation(dir1, dir2) :
     return q
 
 def qnormalize(q):
-    norm = 1.0 / sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
-    q[0] *= norm;
-    q[1] *= norm;
-    q[2] *= norm;
-    q[3] *= norm;
+    norm = 1.0 / sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3])
+    q[0] *= norm
+    q[1] *= norm
+    q[2] *= norm
+    q[3] *= norm
     return q
 
 def exyz_to_q(ex, ey, ez):
     # squares of quaternion components
-    q0sq = 0.25 * (ex[0] + ey[1] + ez[2] + 1.0);
-    q1sq = q0sq - 0.5 * (ey[1] + ez[2]);
-    q2sq = q0sq - 0.5 * (ex[0] + ez[2]);
-    q3sq = q0sq - 0.5 * (ex[0] + ey[1]);
+    q0sq = 0.25 * (ex[0] + ey[1] + ez[2] + 1.0)
+    q1sq = q0sq - 0.5 * (ey[1] + ez[2])
+    q2sq = q0sq - 0.5 * (ex[0] + ez[2])
+    q3sq = q0sq - 0.5 * (ex[0] + ey[1])
     # some component must be greater than 1/4 since they sum to 1
     # compute other components from it
     q=[0,0,0,1]
     if (q0sq >= 0.25) :
-        q[0] = sqrt(q0sq);
-        q[1] = (ey[2] - ez[1]) / (4.0*q[0]);
-        q[2] = (ez[0] - ex[2]) / (4.0*q[0]);
-        q[3] = (ex[1] - ey[0]) / (4.0*q[0]);
+        q[0] = sqrt(q0sq)
+        q[1] = (ey[2] - ez[1]) / (4.0*q[0])
+        q[2] = (ez[0] - ex[2]) / (4.0*q[0])
+        q[3] = (ex[1] - ey[0]) / (4.0*q[0])
     elif (q1sq >= 0.25) :
-        q[1] = sqrt(q1sq);
-        q[0] = (ey[2] - ez[1]) / (4.0*q[1]);
-        q[2] = (ey[0] + ex[1]) / (4.0*q[1]);
-        q[3] = (ex[2] + ez[0]) / (4.0*q[1]);
+        q[1] = sqrt(q1sq)
+        q[0] = (ey[2] - ez[1]) / (4.0*q[1])
+        q[2] = (ey[0] + ex[1]) / (4.0*q[1])
+        q[3] = (ex[2] + ez[0]) / (4.0*q[1])
     elif (q2sq >= 0.25) :
-        q[2] = sqrt(q2sq);
-        q[0] = (ez[0] - ex[2]) / (4.0*q[2]);
-        q[1] = (ey[0] + ex[1]) / (4.0*q[2]);
-        q[3] = (ez[1] + ey[2]) / (4.0*q[2]);
+        q[2] = sqrt(q2sq)
+        q[0] = (ez[0] - ex[2]) / (4.0*q[2])
+        q[1] = (ey[0] + ex[1]) / (4.0*q[2])
+        q[3] = (ez[1] + ey[2]) / (4.0*q[2])
     elif (q3sq >= 0.25) :
-        q[3] = sqrt(q3sq);
-        q[0] = (ex[1] - ey[0]) / (4.0*q[3]);
-        q[1] = (ez[0] + ex[2]) / (4.0*q[3]);
-        q[2] = (ez[1] + ey[2]) / (4.0*q[3]);
-    return qnormalize(q);
+        q[3] = sqrt(q3sq)
+        q[0] = (ex[1] - ey[0]) / (4.0*q[3])
+        q[1] = (ez[0] + ex[2]) / (4.0*q[3])
+        q[2] = (ez[1] + ey[2]) / (4.0*q[3])
+    return qnormalize(q)
 
 MAXJACOBI = 51
 def rotate(matrix,  i,  j,  k,  l, s,  tau):#matrix[3][3]
-    g = matrix[i][j];
-    h = matrix[k][l];
-    matrix[i][j] = g-s*(h+g*tau);
-    matrix[k][l] = h+s*(g-h*tau);
+    g = matrix[i][j]
+    h = matrix[k][l]
+    matrix[i][j] = g-s*(h+g*tau)
+    matrix[k][l] = h+s*(g-h*tau)
     return matrix
 
 def jacobi(matrix):
@@ -259,53 +259,53 @@ def jacobi(matrix):
     c=0
     for i in range(3):
         for j in range(3): 
-            evectors[i][j] = 0.0;
-        evectors[i][i] = 1.0;
+            evectors[i][j] = 0.0
+        evectors[i][i] = 1.0
 
     for i in range(3):
-        b[i] =  matrix[i][i];
-        evalues[i] = matrix[i][i];
+        b[i] =  matrix[i][i]
+        evalues[i] = matrix[i][i]
         z[i] = 0.0;
 
     for iter in range(1,MAXJACOBI):#(int iter = 1; iter <= MAXJACOBI; iter++) {
-        sm = 0.0;
+        sm = 0.0
         for i in range(2):
             for j in range(i+1,3): 
-                 sm += fabs(matrix[i][j]);
+                 sm += fabs(matrix[i][j])
         if (sm == 0.0) :
-            return [0,evalues,evectors];
-        if (iter < 4): tresh = 0.2*sm/(3*3);
-        else : tresh = 0.0;
+            return [0,evalues,evectors]
+        if (iter < 4): tresh = 0.2*sm/(3*3)
+        else : tresh = 0.0
         for i in range(2):
             for j in range(i+1,3): 
-                g = 100.0*fabs(matrix[i][j]);
+                g = 100.0*fabs(matrix[i][j])
                 if (iter > 4 and fabs(evalues[i])+g == fabs(evalues[i]) and fabs(evalues[j])+g == fabs(evalues[j])):
-                    matrix[i][j] = 0.0;
+                    matrix[i][j] = 0.0
                 elif (fabs(matrix[i][j]) > tresh) :
-                    h = evalues[j]-evalues[i];
+                    h = evalues[j]-evalues[i]
                     if (fabs(h)+g == fabs(h)):
-                        t = (matrix[i][j])/h;
+                        t = (matrix[i][j])/h
                     else :
-                        theta = 0.5*h/(matrix[i][j]);
+                        theta = 0.5*h/(matrix[i][j])
                         t = 1.0/(fabs(theta)+sqrt(1.0+theta*theta));
-                        if (theta < 0.0): t = -t;
-                    c = 1.0/sqrt(1.0+t*t);
-                    s = t*c;
-                    tau = s/(1.0+c);
-                    h = t*matrix[i][j];
-                    z[i] -= h;
-                    z[j] += h;
-                    evalues[i] -= h;
-                    evalues[j] += h;
-                    matrix[i][j] = 0.0;
-                    for k in range(0,i):   rotate(matrix,k,i,k,j,s,tau);
-                    for k in range(i+1,j): rotate(matrix,i,k,k,j,s,tau);
-                    for k in range(j+1,3): rotate(matrix,i,k,j,k,s,tau);
-                    for k in range(0,3):   rotate(evectors,k,i,k,j,s,tau);
+                        if (theta < 0.0): t = -t
+                    c = 1.0/sqrt(1.0+t*t)
+                    s = t*c
+                    tau = s/(1.0+c)
+                    h = t*matrix[i][j]
+                    z[i] -= h
+                    z[j] += h
+                    evalues[i] -= h
+                    evalues[j] += h
+                    matrix[i][j] = 0.0
+                    for k in range(0,i):   rotate(matrix,k,i,k,j,s,tau)
+                    for k in range(i+1,j): rotate(matrix,i,k,k,j,s,tau)
+                    for k in range(j+1,3): rotate(matrix,i,k,j,k,s,tau)
+                    for k in range(0,3):   rotate(evectors,k,i,k,j,s,tau)
     for i in range(3):
         b[i] += z[i]
-        evalues[i]+= z[i] ;
-        z[i] = 0.0;
+        evalues[i]+= z[i] 
+        z[i] = 0.0
     return [0,evalues,evectors]
 
 SINERTIA=0.4
@@ -315,59 +315,59 @@ def compute_inertia(inertiaflag,radiusflag,dxcom,radius):
     itensor = np.zeros(6)
     natoms=len(dxcom)
     if (inertiaflag==0) :#{
-        inertiaflag = 1;
+        inertiaflag = 1
         for i in range(natoms):
             onemass=1.0
-            dx = dxcom[i][0];
-            dy = dxcom[i][1];
-            dz = dxcom[i][2];
-            itensor[0] += onemass * (dy*dy + dz*dz);
-            itensor[1] += onemass * (dx*dx + dz*dz);
-            itensor[2] += onemass * (dx*dx + dy*dy);
-            itensor[3] -= onemass * dy*dz;
-            itensor[4] -= onemass * dx*dz;
-            itensor[5] -= onemass * dx*dy;
+            dx = dxcom[i][0]
+            dy = dxcom[i][1]
+            dz = dxcom[i][2]
+            itensor[0] += onemass * (dy*dy + dz*dz)
+            itensor[1] += onemass * (dx*dx + dz*dz)
+            itensor[2] += onemass * (dx*dx + dy*dy)
+            itensor[3] -= onemass * dy*dz
+            itensor[4] -= onemass * dx*dz
+            itensor[5] -= onemass * dx*dy
         if (radiusflag==1):
             for i in range(natoms):
                 onemass=1.0
-                itensor[0] += SINERTIA*onemass * radius[i]*radius[i];
-                itensor[1] += SINERTIA*onemass * radius[i]*radius[i];
-                itensor[2] += SINERTIA*onemass * radius[i]*radius[i];
+                itensor[0] += SINERTIA*onemass * radius[i]*radius[i]
+                itensor[1] += SINERTIA*onemass * radius[i]*radius[i]
+                itensor[2] += SINERTIA*onemass * radius[i]*radius[i]
     #diagonalize inertia tensor for each body via Jacobi rotations
     #inertia = 3 eigenvalues = principal moments of inertia
     #evectors and exzy = 3 evectors = principal axes of rigid body
     cross = np.zeros(3)
     tensor = np.zeros((3,3))
     evectors= np.zeros((3,3))
-    tensor[0][0] = itensor[0];
-    tensor[1][1] = itensor[1];
-    tensor[2][2] = itensor[2];
-    tensor[1][2] = tensor[2][1] = itensor[3];
-    tensor[0][2] = tensor[2][0] = itensor[4];
-    tensor[0][1] = tensor[1][0] = itensor[5];
+    tensor[0][0] = itensor[0]
+    tensor[1][1] = itensor[1]
+    tensor[2][2] = itensor[2]
+    tensor[1][2] = tensor[2][1] = itensor[3]
+    tensor[0][2] = tensor[2][0] = itensor[4]
+    tensor[0][1] = tensor[1][0] = itensor[5]
     #print (itensor)
     r,inertia,evectors = jacobi(tensor)
     if (r==1):
-        print("Insufficient Jacobi rotations for rigid molecule");
+        print("Insufficient Jacobi rotations for rigid molecule")
     #print ("Jacobi",r,inertia,evectors)
     ex = np.zeros(3)
     ey = np.zeros(3)
     ez = np.zeros(3)
-    ex[0] = evectors[0][0];
-    ex[1] = evectors[1][0];
-    ex[2] = evectors[2][0];
-    ey[0] = evectors[0][1];
-    ey[1] = evectors[1][1];
-    ey[2] = evectors[2][1];
-    ez[0] = evectors[0][2];
-    ez[1] = evectors[1][2];
-    ez[2] = evectors[2][2];
+    ex[0] = evectors[0][0]
+    ex[1] = evectors[1][0]
+    ex[2] = evectors[2][0]
+    ey[0] = evectors[0][1]
+    ey[1] = evectors[1][1]
+    ey[2] = evectors[2][1]
+    ez[0] = evectors[0][2]
+    ez[1] = evectors[1][2]
+    ez[2] = evectors[2][2]
     # if any principal moment < scaled EPSILON, set to 0.0
-    qmax = max(inertia[0],inertia[1]);
-    qmax = max(qmax,inertia[2]);
-    if (inertia[0] < EPSILON*qmax): inertia[0] = 0.0;
-    if (inertia[1] < EPSILON*qmax): inertia[1] = 0.0;
-    if (inertia[2] < EPSILON*qmax): inertia[2] = 0.0;
+    qmax = max(inertia[0],inertia[1])
+    qmax = max(qmax,inertia[2])
+    if (inertia[0] < EPSILON*qmax): inertia[0] = 0.0
+    if (inertia[1] < EPSILON*qmax): inertia[1] = 0.0
+    if (inertia[2] < EPSILON*qmax): inertia[2] = 0.0
     # enforce 3 evectors as a right-handed coordinate system
     # flip 3rd vector if needed
     cross=np.cross(ex,ey)
@@ -489,21 +489,22 @@ def ConvertMolecule(tree,
         off = molecule["offset"]
         center2 = [0,0,0]
         q = FromToRotation(axe, [0,0,1])
-        print (name,axe,off)
-        print ("before",center,crds)
+        #print (name,axe,off)
+        #print ("before",center,crds)
         for i in range(0, len(crds)):
             #X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
-            #X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
-            X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
+            X_orig = [crds[i][0]+off[0],crds[i][1]+off[1],crds[i][2]+off[2]]#[0.0, 0.0, 0.0]
+            #X_orig = [crds[i][0],crds[i][1],crds[i][2]]#[0.0, 0.0, 0.0]
             X = [0.0, 0.0, 0.0]
             AffineTransformQ(X, X_orig,q,[0,0,0])
             Xoff = [0.0, 0.0, 0.0]
             AffineTransformQ(Xoff, [off[0],off[1],off[2]],q,[0,0,0])
-            crds[i] = (np.array(X)-np.array(off)).tolist()
+            #crds[i] = (np.array(X)-np.array(off)).tolist()
+            crds[i] = [X[0],X[1],X[2]]
             #crds[i] = [X[0]-off[0],X[1]-off[1],X[2]-off[2]]
             center2+=X+Xoff
         center2 = [center2[0]/len(crds),center2[1]/len(crds),center2[2]/len(crds)]
-        print ("after",center2,crds)
+        #print ("after",center2,crds)
     for i in range(0, len(crds)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
@@ -549,9 +550,9 @@ def ConvertMolecule(tree,
     #grouping ?
     l_mol_defs.append('  write_once(\"In Settings\") {\n')
     l_mol_defs.append('    group '+group+' type '+" ".join(list_atom_type)+'\n')
-    if "surface" in cname :#if cname == "surface" :
-        l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
-        l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
+    #if "surface" in cname :#if cname == "surface" :
+    #    l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
+    #    l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
     l_mol_defs.append('}  # end of: write_once(\"In Settings\")\n\n\n')    
     
     l_mol_defs.append('\nwrite_once("vmd_commands.tcl") {\n')
@@ -647,7 +648,7 @@ def ConvertMolecule(tree,
             l_instances.append('\n')
             l_instances.append('write("vmd_commands.tcl") {  #(optional VMD file)\n')
             for I in range(0, len(radii)):
-                r = iradius * delta_r
+                #r = iradius * delta_r
                 atomid_name = '${atom:'+name+'_instances['+str(i)+']/a'+str(I+1)+'}'
                 color_name  = '@color:'+name
                 l_instances.append('  set sel [atomselect top "index '+atomid_name+'"]\n')
@@ -915,14 +916,20 @@ def ConvertSystem(tree,
     start = 0   
     prev_ingredient_name = ""
     comp_constraints=''
+    count_ingr=0
+    limit_ingr=-1#hard coded for debug
     for i in range(ninstances):
+        if count_ingr == limit_ingr and limit_ingr != -1 :
+            break
         p = model_data["pos"][i]
         q = model_data["quat"][i]
         ptype = int(p[3])
         ingredient, cname = FindIngredientInTreeFromId(ptype,tree)
         name = ingredient["name"]
+        #if name == "Insulin_crystal" : continue
         if name != prev_ingredient_name :
-            print (ptype,prev_ingredient_name,name,start,count-start)
+            print (ptype,prev_ingredient_name,name,start,count-start,count_ingr)
+            count_ingr+=1
             if (count != 0) :
                 #if (prev_ingredient_name == "Insulin_crystal"):
                 #    file_out.write('}\n')
@@ -1029,22 +1036,36 @@ def OnePairCoeff(aname, aradius, delta_r, pairstyle, epsilon):
                     str(r) + ' ' +
                     str(rcut) + '\n')
 
-def OnePairCoeffSoft(aname, aradius, delta_r, epsilon):
-    rcut = 2 * aradius * delta_r   #(don't forget the 2)
+def OnePairCoeffCutSoft(aname, aradius, delta_r, pairstyle, epsilon, alambda):
+    #pair_coeff * * lj/cut/soft 300.0 50.0 0.5 60.4#
+    rcut = 4 * aradius * delta_r   #(don't forget the 2)
+    r = rcut / (2.0**(1.0/6)) #sigma ? the energy minimum is at 2^(1/6)*sigma.
+    return ('     pair_coeff ' + 
+                    '@atom:A' + str(aname) + ' ' +
+                    '@atom:A' + str(aname) + ' ' +
+                    pairstyle + ' ' +
+                    str(epsilon) + ' ' +
+                    str(r) + ' ' +
+                    str(alambda) + ' ' +
+                    str(rcut+10.0) + '\n')
+
+def OnePairCoeffSoft(aname, aradius, delta_r, epsilon, A=10000.0):
+    radius = aradius * delta_r
+    rcut = 2 * radius   #(don't forget the 2)
     # pair_style gauss uses the following formula for the energy:
-    # Upair(r) = A*exp(-B*r**2) = A*exp(-(0.5)*(r/sigma)**2)
+    # Upair(r) = -A*exp(-B*r**2) = A*exp(-(0.5)*(r/sigma)**2)
     # I will set the force distance cutoff ("rcut") to the radius
     # defined by the JSON file created by CellPACK.
     # The force between particles separated by larger than this distance
     # is zero.  (We don't want the system to swell during minimization.)
     # I'll choose the sigma parameter (gaussian width) so that the gaussian
     # is half its peak height at r=rcut: <-> exp(-(1/2)(rcut/sigma)**2)=0.5
-    sigma = rcut / sqrt((log(2)*2))
+    sigma = radius / sqrt((log(2)*2))
     # Then I will double the height of the Gaussian to compensate:
-    A = 1000.0#epsilon * 10.0# 10.0#epsilon * 10000.0#2.0 ->5961.621
+    # A = 10000.0#epsilon * 10.0# 10.0#epsilon * 10000.0#2.0 ->5961.621
     # The arguments for the pair_coeff command are "A", "B", and "rcut"
     B = 0.5*(1.0/(sigma**2))
-    r = rcut / (2.0**(1.0/6))
+    #r = rcut / (2.0**(1.0/6))
     return ('     pair_coeff ' + 
                     '@atom:A' + str(aname) + ' ' +
                     '@atom:A' + str(aname) + ' ' +
@@ -1084,18 +1105,20 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     print("rcut_max",rcut_max)
     vmd='write_once("vmd_commands.tcl") {\n'
     astr = ('  write_once("In Settings") {\n' +
+        '    group gBicycleO type @atom:ABIC1\n' +
+        '    group gBicycleI type @atom:ABIC2\n' +
         '    group todump subtract all gBicycleI gBicycleO\n'+
         '    group mobile subtract all  gOrdinary gFixed\n'+
         '    #group exterior union gcytoplasme gBicycleO\n')
     mbthickness = 61.5/2.0
     bicycle_radius = 50.0
-    strength = 0.1
+    strength = 100.0
     count=0
     if 'compartments' in tree:
         for compname in tree['compartments']:
             if 'mb' in tree['compartments'][compname]:
                 p = tree['compartments'][compname]['mb']['positions']
-                pos = [p[0],p[1],p[2]]
+                #pos = [p[0],p[1],p[2]]
                 radius = tree['compartments'][compname]['mb']['radii'][0]
                 astr+='    #need wall at radius '+str(radius)+'\n'
                 astr+='    #mb is '+str(mbthickness)+'\n'
@@ -1107,8 +1130,8 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 #astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,strength,radius+mbthickness+rcut_max))                       
                 astr+=('    region rSphereI%s sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],radius))
                 astr+=('    region rSphereO%s sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],radius))
-                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,1,mbthickness+bicycle_radius))
-                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,1,mbthickness+bicycle_radius))                       
+                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,1000,mbthickness+bicycle_radius))
+                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,1000,mbthickness+bicycle_radius))                       
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius-mbthickness)) 
                 vmd+=(' draw material Transparent\n') 
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius)) 
@@ -1116,14 +1139,14 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius+mbthickness)) 
                 vmd+=(' draw material Transparent\n')                 
     astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
-    astr+='    region rBound block   '+str(bounds[0][0])+' '+str(bounds[1][0])+'  '+str(bounds[0][1])+' '+str(bounds[1][1])+'  '+str(bounds[0][2])+' '+str(bounds[1][2])+'\n'
-    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  400.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
-    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  80.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 1
+    astr+='    region rBound block '+str(bounds[0][0]-100)+' '+str(bounds[1][0]+100)+'  '+str(bounds[0][1]-100)+' '+str(bounds[1][1]+100)+'  '+str(bounds[0][2]-100)+' '+str(bounds[1][2]+100)+'\n'
+    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
+    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  1.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
     #astr+= ing_constr
     global g_radii
     #astr=''
     mbthickness = 61.5/2.0
-    strength = 1.0
+    strength = 100.0
     m=np.max(bounds)
     for cname in g_radii:
         for comp in g_radii[cname]:
@@ -1131,6 +1154,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
             d=m-radius
             atom = np.sort(list(g_radii[cname][comp]['atom']))
             N=len(atom)
+            d=m-radius
             b={}
             for n in range(0,N):
                 v=atom[n]
@@ -1145,10 +1169,10 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 #atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
                 if cname == 'cytoplasme':
                     astr+='group gO'+str(s)+' type '+' '.join(set(b[s]))+'\n'
-                    astr+='fix fxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1)
+                    astr+='fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1,radius,mbthickness,s)
                 else :             
                     astr+='group gI'+str(s)+' type '+' '.join(set(b[s]))+'\n'          
-                    astr+='fix fxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1)
+                    astr+='fix ifxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1,d,mbthickness,s)
     astr+='}\n'
     vmd+='}\n'
     return astr+vmd
@@ -1270,10 +1294,22 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     pairstyle2args['lj/class2/coul/long'] = str(rcut_max)
     pairstyle2args['lj/class2/coul/cut'] = str(rcut_max)
     pairstyle2args['gauss'] = str(rcut_max)
-    #pair_mixing_style = 'geometric' <-- NO do not use geometric
-    pair_mixing_style = 'arithmetic'
+    #pair_mixing_style = 'geometric' <-- NO do not use geometric why ?
+    pair_mixing_style = 'arithmetic'#geometric ?arithmetic sixthpower ?
     special_bonds_command = 'special_bonds lj/coul 0.0 0.0 1.0'
-
+    apairstyle='lj/cut/soft'
+    alambda = 0.85
+    aepsilon = 5.9#5.90#300 was to high ?
+    file_out.write('   write_once("In Settings Pair Coeffs LJ Softs") {\n')
+    for iradius in sorted(ir_needed):
+        coeff = OnePairCoeffCutSoft(iradius, iradius, delta_r, apairstyle, aepsilon,alambda)
+        file_out.write(coeff)
+    bycicle1 = OnePairCoeffCutSoft("BIC1", 500, delta_r, apairstyle, aepsilon,alambda)
+    bycicle2 = OnePairCoeffCutSoft("BIC2", 500, delta_r, apairstyle, aepsilon,alambda)
+    file_out.write(bycicle1)
+    file_out.write(bycicle2)
+    file_out.write('  }  #end of "In Settings Pair Coeffs LJ Softs"\n'
+                   '\n\n\n')
     file_out.write('   write_once("In Settings Pair Coeffs") {\n')
     for iradius in sorted(ir_needed):
         coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
@@ -1283,22 +1319,32 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write(bycicle1)
     file_out.write(bycicle2)
     file_out.write('  }  #end of "In Settings Pair Coeffs"\n'
-                   '\n\n\n')
-    default_mass = 1.0   # Users can override this later
-
-
-
+                   '\n\n\n')                   
+    #scaling=[2.5,2.0,1.5,1.25,1.05]
+    #for i in range(5):
+    #    file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
+    #    file_out.write('   write_once("In Settings Pair Coeffs Soft'+str(i)+'") {\n')
+    #    for iradius in sorted(ir_needed):
+    #        coeff = OnePairCoeffSoft(iradius, iradius/scaling[i], delta_r, epsilon,A=20000.0)
+    #        file_out.write(coeff)
+    #    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=20000.0)
+    #    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=20000.0)
+    #    file_out.write(bycicle1)
+    #    file_out.write(bycicle2)
+    #    file_out.write('  }  #end of "In Settings Pair Coeffs Soft'+str(i)+'"\n'
+    #                '\n\n\n')
     file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
     file_out.write('   write_once("In Settings Pair Coeffs Soft") {\n')
     for iradius in sorted(ir_needed):
-        coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon)
+        coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
         file_out.write(coeff)
-    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon)
-    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon)
+    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=100000.0)
+    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=100000.0)
     file_out.write(bycicle1)
     file_out.write(bycicle2)
     file_out.write('  }  #end of "In Settings Pair Coeffs Soft"\n'
                    '\n\n\n')
+
     default_mass = 1.0   # Users can override this later
   
     file_out.write('  # Last I checked, LAMMPS still requires that every atom has its\n'
@@ -1308,10 +1354,10 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '   write_once("Data Masses") {\n')
 
     for iradius in sorted(ir_needed):
-        #rcut = iradius * delta_r
+        rcut = iradius * delta_r * 0.1
         #r = rcut / (2.0**(1.0/6))
         file_out.write('    ' +
-                       '@atom:A' + str(iradius) +' '+ str(default_mass) +'\n')
+                       '@atom:A' + str(iradius) +' '+ str(rcut) +'\n')
     file_out.write('    ' +
                        '@atom:ABIC1 ' + str(default_mass) +'\n')
     file_out.write('    ' +
@@ -1511,7 +1557,7 @@ def main():
     
         # defaults:
         out_obj_name = ''
-        type_subset = set([])
+        #type_subset = set([])
 
         filename_in = ''
         filename_out = 'THIS_FILE'
