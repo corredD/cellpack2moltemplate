@@ -1107,7 +1107,7 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix):
                     if compname not in g_radii : 
                         g_radii[compname]={}
                     if cname not in g_radii[compname]:
-                        g_radii[compname][cname]={"radius":radius,"atom":set([])}
+                        g_radii[compname][cname]={"radius":radius,"atom":set([]),"prefix":prefix}
                     g_radii[compname][cname]["atom"].add(iradius)
                     if (compname == 'cytoplasme'):
                         astr+='fix fxWall%s g%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,radius+mbthickness+radii[i])
@@ -1176,8 +1176,9 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 start = (v-s)+50
                 if start not in b:
                     b[start]=[]
-                b[start].append('@atom:A' + str(v))
+                b[start].append('@atom:A' + str(v)+"_"+g_radii[cname][comp]["prefix"])
             #print (b)
+            
             for s in b:
                 print (s)
                 #atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
@@ -1315,7 +1316,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     pairstyle2args['lj/class2/coul/cut'] = str(rcut_max)
     pairstyle2args['gauss'] = str(rcut_max)
     #pair_mixing_style = 'geometric' <-- NO do not use geometric why ?
-    pair_mixing_style = 'sixthpower'#geometric ?arithmetic sixthpower ?
+    pair_mixing_style = 'arithmetic'#geometric ?arithmetic sixthpower ?
     special_bonds_command = 'special_bonds lj/coul 0.0 0.0 1.0'
     apairstyle='lj/cut/soft'
     alambda = 0.95
