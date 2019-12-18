@@ -1144,8 +1144,8 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 #astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,strength,radius+mbthickness+rcut_max))                       
                 astr+=('    region rSphereI%s sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],radius))
                 astr+=('    region rSphereO%s sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],radius))
-                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,1000,mbthickness+bicycle_radius))
-                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,1000,mbthickness+bicycle_radius))                       
+                astr+=('    fix fxWall%i_3 gBicycleI wall/region rSphereI%s  harmonic  %f  0.1  %f\n'%(count,compname,10000,mbthickness+bicycle_radius))
+                astr+=('    fix fxWall%i_4 gBicycleO wall/region rSphereO%s  harmonic  %f  0.1  %f\n'%(count,compname,10000,mbthickness+bicycle_radius))                       
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius-mbthickness)) 
                 vmd+=(' draw material Transparent\n') 
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius)) 
@@ -1153,9 +1153,9 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius+mbthickness)) 
                 vmd+=(' draw material Transparent\n')                 
     astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
-    astr+='    region rBound block '+str(bounds[0][0]-100)+' '+str(bounds[1][0]+100)+'  '+str(bounds[0][1]-100)+' '+str(bounds[1][1]+100)+'  '+str(bounds[0][2]-100)+' '+str(bounds[1][2]+100)+'\n'
+    astr+='    region rBound block '+str(bounds[0][0]*2)+' '+str(bounds[1][0]*2)+'  '+str(bounds[0][1]*2)+' '+str(bounds[1][1]*2)+'  '+str(bounds[0][2]*2)+' '+str(bounds[1][2]*2)+'\n'
     astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
-    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  1.0    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
+    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,m)
     #astr+= ing_constr
     global g_radii
     #astr=''
