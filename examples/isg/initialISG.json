@@ -1,1 +1,4699 @@
-{"recipe":{"paths":[["autoPACKserver","https://raw.githubusercontent.com/mesoscope/cellPACK_data/master/cellPACK_database_1.1.0/"]],"name":"root","version":"1.0"},"options":{"cancelDialog":false,"_hackFreepts":false,"windowsSize":50,"use_gradient":false,"placeMethod":"jitter","saveResult":false,"runTimeDisplay":false,"overwritePlaceMethod":true,"innerGridMethod":"jordan","boundingBox":[[-900,-900,-900],[900,900,900]],"gradients":[],"smallestProteinSize":0,"computeGridParams":true,"freePtsUpdateThrehod":0,"pickWeightedIngr":true,"_timer":false,"ingrLookForNeighbours":false,"pickRandPt":true,"largestProteinSize":0,"resultfile":"","use_periodicity":false,"EnviroOnly":false},"cytoplasme":{"ingredients":{"Ribosome":{"encapsulatingRadius":25,"name":"Ribosome","source":{"pdb":"4v88","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":0,"molarity":0.0000338,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"","Type":"MultiSphere","positions":[{"coords":[56.623131866146416,-14.897910779335813,-14.052629272036285,-30.886069395077115,48.60811958152782,25.045761656189697,-77.00253388751327,-44.66165081422402,-8.209720558478253]}],"radii":[{"radii":[128.57245503215395,119.01947138247735,116.88296173719547]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"tRNA":{"encapsulatingRadius":25,"name":"tRNA","source":{"pdb":"4tna","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":0,"molarity":0.000371,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"T-RNA-PHE","Type":"MultiSphere","positions":[{"coords":[4.037498332759014,8.546773451321108,5.715681286344253,-12.169409361127741,-5.300341430376112,21.114368344661447,3.0471900940234065,-7.674356412475811,-22.15548557210437]}],"radii":[{"radii":[21.354957887924527,32.309966876272426,20.995887147605842]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"CCT":{"encapsulatingRadius":25,"name":"CCT","source":{"pdb":"4b2t","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":0,"molarity":0.0000761,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"chaperonin CCT","Type":"MultiSphere","positions":[{"coords":[-57.028885206274765,23.953833315579132,-7.509356607313691,35.48995614242969,25.62817847355325,-39.16402596760379,-39.95073603256481,-26.02021785302788,-33.36379110833826,-46.27986600276393,-29.055143177873717,17.002953284509104,51.15604190008831,33.92873133885361,9.923683628471267,22.947498026838616,12.96532714663087,47.934010247301174,54.65322071235339,-27.41626523856457,-2.608269560288207,-30.810734318361284,31.298228416889273,48.97386563640417,-16.29693423880883,26.879856176025214,-51.25879578966807,15.262602242660577,-27.944113134490323,-59.67145339766593,-0.4969514884012938,-39.50619771721723,56.42685087647739]}],"radii":[{"radii":[44.36076384643306,44.341291896174646,47.26527296650247,51.029510297935786,43.95539413035272,47.54367541962735,44.90360472219958,51.58237965031204,43.48030421055449,47.31994001744544,43.59451880918308]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"PFK":{"encapsulatingRadius":25,"name":"PFK","source":{"pdb":"6pfk","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":0,"molarity":0.000761,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"PHOSPHOFRUCTOKINASE","Type":"MultiSphere","positions":[{"coords":[-18.121556637845483,-13.689553776931255,-3.3278928449534817,15.080678507515525,-16.926978890543822,2.8834894310806263,-8.952785110508891,16.187972939086624,13.507003928346109,11.849430707429153,14.42314370285074,-13.051773179959504]}],"radii":[{"radii":[39.43879450882684,38.777662334792694,38.96734760021868,38.73901298325073]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}}}},"compartments":{"isg":{"geom_type":"mb","geom":"mb","name":"isg","thickness":7.5,"surface":{"ingredients":{"Vamp2":{"encapsulatingRadius":25,"name":"Vamp2","source":{"pdb":"VAMP.pdb","bu":"","selection":"","model":"","transform":{"offset":[-15,25,-10]}},"nbMol":548,"molarity":0.000034,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.53,0.85,0.08],"offset":[-15,25,-10],"uniprot":"","label":"VAMP-2","Type":"MultiSphere","positions":[{"coords":[10.156223703014295,24.52543701619129,-3.6047535329209666,-7.050859216972702,-13.282068755403053,4.022269510424655,9.07053698295682,-36.72049670944671,5.178081152997663,22.183819915726783,27.97794843577418,35.039109925044855,-2.4401312336445997,7.217854426040358,-14.036746112891596,-23.718714037026675,-3.221562933389789,-12.490596465223064]}],"radii":[{"radii":[21.866723378826816,15.169638170913393,14.949638774852941,21.686837172535306,18.60647943274951,18.619637911197017]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":8.52,"sprite":{"image":"","offsety":0,"scale2d":0}},"Syt5":{"encapsulatingRadius":25,"name":"Syt5","source":{"pdb":"Syt5.pdb","bu":"","selection":"","model":"","transform":{"offset":[-3,8.3e-16,-62]}},"nbMol":56,"molarity":0.00000174,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.02,0.01,-1],"offset":[-3,8.3e-16,-62],"uniprot":"","label":"Synaptotagmin-5","Type":"MultiSphere","positions":[{"coords":[-6.8350616879687145,7.262909318881666,-22.576840191656544,-0.4935354774612924,-4.605477061579332,-36.60488712496144,-6.499372908681982,-3.667821820912937,16.107323563793912,0.43467493979709304,1.7472454985078834,47.20550486211566,1.01974281051924,0.24094494558177848,77.51462945687588,12.985270906529095,0.3197012061155958,12.475386210345022]}],"radii":[{"radii":[21.02989467529526,19.751045766341914,18.97867047741519,15.910569304619626,17.985950999774545,21.016662044284725]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":7.13,"sprite":{"image":"","offsety":0,"scale2d":0}},"Vamp3":{"encapsulatingRadius":25,"name":"Vamp3","source":{"pdb":"VAMP.pdb","bu":"","selection":"","model":"","transform":{"offset":[-12,31,-12]}},"nbMol":881,"molarity":0.0000274,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.47,0.88,0.05],"offset":[-12,31,-12],"uniprot":"","label":"VAMP-3","Type":"MultiSphere","positions":[{"coords":[-7.5937556281623415,-13.152272423290203,3.762992592224073,21.373529865209083,27.739322647285313,33.7989697651105,-18.841241078874226,-0.8298647349380808,-14.41216395843237,7.959403926170438,20.799355478214657,-5.899028931614048,9.07053698295682,-36.72049670944671,5.178081152997663]}],"radii":[{"radii":[17.27723572780426,22.203916587760904,22.65877426796755,21.810051415979427,14.949638774852941]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":6.68,"sprite":{"image":"","offsety":0,"scale2d":0}},"Ptprn2":{"encapsulatingRadius":25,"name":"Ptprn2","source":{"pdb":"Phogrin.pdb","bu":"","selection":"","model":"","transform":{"offset":[3,1,-35]}},"nbMol":51,"molarity":0.00000159,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,-1],"offset":[3,1,-35],"uniprot":"","label":"R-PTP-N2 (phogrin)","Type":"MultiSphere","positions":[{"coords":[-3.224689957591491,-1.8074538386632941,28.33033710935304,12.464999140450152,21.417867582342176,-30.136219797306573,-7.430918630166667,-18.205541111860754,-33.6106745374545,-6.270107584572795,-3.8103252324737977,87.31818532085826]}],"radii":[{"radii":[32.887379102331764,31.534457361651928,32.3022656689796,36.996793229512235]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":5.99,"sprite":{"image":"","offsety":0,"scale2d":0}},"Ptprn":{"encapsulatingRadius":25,"name":"Ptprn","source":{"pdb":"PTPRN.pdb","bu":"","selection":"","model":"","transform":{"offset":[-4e-16,-4,-41]}},"nbMol":14,"molarity":4.35e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.04,0.05,-1],"offset":[-4e-16,-4,-41],"uniprot":"","label":"R-PTP-N","Type":"MultiSphere","positions":[{"coords":[-4.7611328204273935,-2.206634854139477,85.55603195441796,-7.677663788346978,-15.382306735433609,-31.700674934728347,2.321057323433673,-3.036755056230399,29.93934794448288,9.960062914178028,17.176568310658052,-29.602925661511613]}],"radii":[{"radii":[29.28886838799313,31.774740399324493,31.700366940921878,32.79332318519703]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":5.36,"sprite":{"image":"","offsety":0,"scale2d":0}},"Sytl4":{"encapsulatingRadius":25,"name":"Sytl4","source":{"pdb":"2zet","bu":"","selection":"","model":"","transform":{"offset":[1,-1,54]},"uniprot":"Q99P58"},"nbMol":165,"molarity":0.00000513,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[1,-1,54],"uniprot":"","label":"Ras-related protein Rab-27B","Type":"MultiSphere","positions":[{"coords":[-3.9116141390068258,5.034390766060795,-9.724016793505939,8.01545617284485,-10.316185878339425,19.925899555149954]}],"radii":[{"radii":[30.178009978543873,25.83062572384734]}],"packingMode":"random","comments":"Sytl4? bound to Rab27B - include Rab27B as heterodimer?","color":[1,0,0],"confidence":2.78,"sprite":{"image":"","offsety":0,"scale2d":0}},"Cpe":{"encapsulatingRadius":25,"name":"Cpe","source":{"pdb":"2nsm","bu":"","selection":"","model":"","transform":{"offset":[-1,5,-44]},"uniprot":"P15169"},"nbMol":242,"molarity":0.00000752,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[-1,5,-44],"uniprot":"","label":"Carboxypeptidase N catalytic chain","Type":"MultiSphere","positions":[{"coords":[10.481178748400247,0.5681087587169138,3.218821072178299,-13.544079410264132,-0.7341264113927046,-4.159452792050572]}],"radii":[{"radii":[29.31260194492302,29.523899038780467]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":2.73,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rab37":{"encapsulatingRadius":25,"name":"Rab37","source":{"pdb":"2g6b","bu":"","selection":"","model":"","transform":{"offset":[1,2,42]}},"nbMol":376,"molarity":0.0000117,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[1,2,42],"uniprot":"","label":"RAB37","Type":"MultiSphere","positions":[{"coords":[2.7589889533490233,1.8467554625176206,6.834189860186797,-3.534811138234189,-2.3660594112122606,-8.755950403234333]}],"radii":[{"radii":[22.92158844056531,24.761362662163382]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":2.26,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rap1a":{"encapsulatingRadius":25,"name":"Rap1a","source":{"pdb":"1c1y","bu":"","selection":"","model":"","transform":{"offset":[-25,34,-3]}},"nbMol":377,"molarity":0.0000117,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.63,0.78,-0.03],"offset":[-25,34,-3],"uniprot":"","label":"Ras-related protein Rap-1A","Type":"MultiSphere","positions":[{"coords":[-4.607850062371799,6.135768350979898,-3.0733249906313773,4.337522858712653,-5.775803274389078,2.89302325784767]}],"radii":[{"radii":[25.889471084899185,24.858358709423577]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.86,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rab3a":{"encapsulatingRadius":25,"name":"Rab3a","source":{"pdb":"3rab","bu":"","selection":"","model":"","transform":{"offset":[-41,11,-3]}},"nbMol":940,"molarity":0.0000292,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.95,0.28,-0.12],"offset":[-41,11,-3],"uniprot":"","label":"Ras-related protein Rab-3A","Type":"MultiSphere","positions":[{"coords":[10.078829502884721,-0.3878055562818843,-0.3089749362627341,-7.153814866501977,0.2752590618828673,0.2193061696083074]}],"radii":[{"radii":[22.204236089605967,22.01836813654324]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.46,"sprite":{"image":"","offsety":0,"scale2d":0}},"Atp6v0d1":{"encapsulatingRadius":25,"name":"Atp6v0d1","source":{"pdb":"vATPase.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,-3,-95]}},"nbMol":136,"molarity":0.00000423,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.01,-0.16,-0.99],"offset":[0,-3,-95],"uniprot":"","label":"V-ATPase","Type":"MultiSphere","positions":[{"coords":[-4.380433426467533,15.642759176230811,-52.187790189583325,4.549073064560702,-31.341623510081405,-52.85056240506641,18.91120461146093,-11.127917555466752,33.65035466255128,-6.09698899846083,0.8693683743476583,92.34108921692575,-19.26146240772286,56.0589295273071,20.005895632595525]}],"radii":[{"radii":[66.52169883481865,73.89332115556502,71.04234272720808,49.6946121290775,57.66212838677217]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0.87,"sprite":{"image":"","offsety":0,"scale2d":0}},"Vamp8":{"encapsulatingRadius":25,"name":"Vamp8","source":{"pdb":"VAMP.pdb","bu":"","selection":"","model":"","transform":{"offset":[-10,27,-14]}},"nbMol":640,"molarity":0.0000236,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.53,0.85,0.04],"offset":[-10,27,-14],"uniprot":"","label":"VAMP-8","Type":"MultiSphere","positions":[{"coords":[7.978815062094174,20.821883205787806,-5.875256281393529,8.89576574008592,-36.49461488171506,5.186421010759547,21.373529865209083,27.739322647285313,33.7989697651105,-7.881734253062962,-12.919340235708201,3.613849174827605,-18.801881117269193,-0.6914560174077522,-14.532944265066615]}],"radii":[{"radii":[21.782877227044896,15.15489095467317,22.203916587760904,16.946328257875088,22.785052605669218]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0.21,"sprite":{"image":"","offsety":0,"scale2d":0}},"Pam":{"encapsulatingRadius":25,"name":"Pam","source":{"pdb":"PAM.pdb","bu":"","selection":"","model":"","transform":{"offset":[-5,-1,60]}},"nbMol":115,"molarity":0.0000018,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.13,-0.08,-0.99],"offset":[-5,-1,60],"uniprot":"","label":"Peptidyl-gly a-amidating monoxygenase","Type":"MultiSphere","positions":[{"coords":[-3.6188065508696488,-16.03942833821437,7.023316468974656,10.043300721211576,28.687718262722,3.9601385692035223,4.392919799198037,13.642204007574673,-13.356300135483394,-12.872297848730827,-36.129554863710055,18.08136764662443,-3.531100380864624,5.166162180663096,-67.280050225126]}],"radii":[{"radii":[31.233698154046373,28.29814388774773,30.482051247189982,27.85400668168061,30.28873653077004]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":3.57,"sprite":{"image":"","offsety":0,"scale2d":0}},"Dnajc5":{"encapsulatingRadius":25,"name":"Dnajc5","source":{"pdb":"2n05","bu":"","selection":"","model":"","transform":{"offset":[40,-10,-8]}},"nbMol":113,"molarity":0.00000351,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.97,0.2,0.13],"offset":[40,-10,-8],"uniprot":"","label":"Cysteine string protein","Type":"MultiSphere","positions":[{"coords":[-6.316784466711853,2.828926969110372,0.3246920274563273,12.001045342903147,-5.555657577626677,0.3651388932561056]}],"radii":[{"radii":[22.223976964853488,12.948949362491325]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.15,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rph3al":{"encapsulatingRadius":25,"name":"Rph3al","source":{"pdb":"Rab3a_Rabphilin.pdb","bu":"","selection":"","model":"","transform":{"offset":[4,-45,14]}},"nbMol":36,"molarity":0.00000112,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.02,-0.94,0.35],"offset":[4,-45,14],"uniprot":"","label":"Rab effector Noc2","Type":"MultiSphere","positions":[{"coords":[-4.909748313056653,-6.13142049647131,0.9558855037106877,-13.998328750756311,11.45994180332224,-2.6145682563092105,26.66443038800826,-6.307212795296669,2.1163700639836627]}],"radii":[{"radii":[29.369878577366446,24.483029036313706,26.21609555206923]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.01,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rab3c":{"encapsulatingRadius":25,"name":"Rab3c","source":{"pdb":"1zbd","bu":"","selection":"","model":"","transform":{"offset":[11,1,-44]}},"nbMol":258,"molarity":0.00000802,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[11,1,-44],"uniprot":"","label":"Ras-related protein Rab-3C","Type":"MultiSphere","positions":[{"coords":[-10.718177996719174,-4.297873141743128,1.2908266836864968,6.680113089451453,2.678652905349054,-0.8045087727174192]}],"radii":[{"radii":[23.624393892307413,22.359851497349187]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0.98,"sprite":{"image":"","offsety":0,"scale2d":0}},"Atp6ap":{"encapsulatingRadius":25,"name":"Atp6ap","source":{"pdb":"ReninReceptor.pdb","bu":"","selection":"","model":"","transform":{"offset":[-3,-15,66]}},"nbMol":130,"molarity":0.00000404,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.03,0.09,-1],"offset":[-3,-15,66],"uniprot":"","label":"Renin receptor","Type":"MultiSphere","positions":[{"coords":[2.2839367070180567,0.35700145126207516,22.983582981984213,4.147301970247375,14.022379326336587,-67.71207137990265,-3.2939511598035733,-3.297410666353013,-10.376658041380615]}],"radii":[{"radii":[27.95794070727426,30.987712244874206,30.209277623383525]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0.9,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rab3d":{"encapsulatingRadius":25,"name":"Rab3d","source":{"pdb":"2gf9","bu":"","selection":"","model":"","transform":{"offset":[-2,-5,-44]}},"nbMol":411,"molarity":0.0000128,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,-1],"offset":[-2,-5,-44],"uniprot":"","label":"GTP-binding protein Rab-3D","Type":"MultiSphere","positions":[{"coords":[4.556310633763765,-0.05650213603208698,9.191171591723663,-3.5074810981543347,0.04349575568208763,-7.075430807761579]}],"radii":[{"radii":[25.909836469295865,25.88129289755272]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0.89,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rab27b":{"encapsulatingRadius":25,"name":"Rab27b","source":{"pdb":"2f7s","bu":"","selection":"","model":"","transform":{"offset":[-20,7,36]}},"nbMol":1,"molarity":3.11e-8,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.46,0.18,0.87],"offset":[-20,7,36],"uniprot":"","label":"Ras-related protein Rab-27B","Type":"MultiSphere","positions":[{"coords":[-13.629909708072773,-13.195784327062976,-3.3125099301589316,13.871640712445146,13.429815972699839,3.371258400953021]}],"radii":[{"radii":[31.009138391566438,27.504190904713738]}],"packingMode":"random","comments":"included in Sytl4?","color":[1,0,0],"confidence":0.85,"sprite":{"image":"","offsety":0,"scale2d":0}},"Slc30a8":{"encapsulatingRadius":25,"name":"Slc30a8","source":{"pdb":"Znt8.pdb","bu":"","selection":"","model":"","transform":{"offset":[-10,5.4e-16,-1]}},"nbMol":12,"molarity":1.87e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-1,0.01,0.02],"offset":[-10,5.4e-16,-1],"uniprot":"","label":"Zinc transporter 8","Type":"MultiSphere","positions":[{"coords":[-23.042175283116386,0,7.962128734106955e-9,15.216858225371286,8.036059474721215,16.17625000798415,15.216858225371286,-8.036059474721215,-16.176250018500426]}],"radii":[{"radii":[29.246372567692774,31.162164995239248,31.16216507112749]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Clcn3":{"encapsulatingRadius":25,"name":"Clcn3","source":{"pdb":"Clcn3.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":6,"molarity":1.87e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.03,-2e-18,-1],"offset":[0,0,0],"uniprot":"","label":"H+-Cl-exchange transporter 3","Type":"MultiSphere","positions":[{"coords":[12.519574925957272,17.81692601555332,33.43107180476861,-12.242625009902241,-18.01694412199606,34.43805973217337,-0.5162439924193052,-0.3069581321668977,-15.444066589602883]}],"radii":[{"radii":[47.30536538352671,46.45845979953295,48.465642245453374]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Epha5":{"encapsulatingRadius":25,"name":"Epha5","source":{"pdb":"Epha5.pdb","bu":"","selection":"","model":"","transform":{"offset":[-7,3,68]}},"nbMol":12,"molarity":3.73e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[3e-19,-0.03,-1],"offset":[-7,3,68],"uniprot":"","label":"Ephrin type-A receptor 5","Type":"MultiSphere","positions":[{"coords":[6.6724234189047245,-10.250786008099,-137.61572550465905,28.065334100035766,-9.40418878618995,-120.87032962703023,0.3293829558102068,-4.111425068545492,-7.85667550449179,-0.6497737771080168,4.012697914741155,-130.00692487249546,-0.438400843899295,3.084947670417279,71.68122684318152,0.8883443363054084,-4.035800559915032,35.838765957236134,-17.28906439676701,10.754305910119491,106.09151413430996,14.92736695443477,-4.596472110438132,-109.84961674455904,-16.815485289824807,7.395007580044622,140.9724994354011,18.575211400089945,1.3066211018489469,-63.20296074214706]}],"radii":[{"radii":[21.17895911604982,19.8289521083952,30.32091022064543,19.20942522299647,22.032282611764696,23.10157936171516,23.800441631465393,23.620774970796216,27.473980222787738,30.281269788220776]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Kcnj11":{"encapsulatingRadius":25,"name":"Kcnj11","source":{"pdb":"Kcnj11.pdb","bu":"","selection":"","model":"","transform":{"offset":[1,1,-28]}},"nbMol":12,"molarity":9.33e-8,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.01,-0.01,-1],"offset":[1,1,-28],"uniprot":"","label":"Potassium Channel BIR","Type":"MultiSphere","positions":[{"coords":[0.04091843205756618,-0.07253344548271912,33.1417569806442,-0.022112352424130677,0.03919713020269455,-17.909831180231777]}],"radii":[{"radii":[35.443722773768876,41.82386504959721]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Syt7":{"encapsulatingRadius":25,"name":"Syt7","source":{"pdb":"Syt7.pdb","bu":"","selection":"","model":"","transform":{"offset":[9,-1,-65]}},"nbMol":118,"molarity":0.00000367,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.05,-0.01,-1],"offset":[9,-1,-65],"uniprot":"","label":"Synaptotagmin-7","Type":"MultiSphere","positions":[{"coords":[-1.2044558004867572,5.437915366267373,-20.694662096311248,14.416211126184214,-5.867539581300979,-24.921694812531726,-8.516452734756747,-3.063322644371863,-28.458235245366424,7.355131916365684,8.141641766699166,4.552736325474292,-7.04945999863086,-4.9881816945783655,12.289405982885036,-9.593422162465007,-1.024924360428836,75.58739106039874,-10.227551147708985,0.4074228195618237,45.0133253758712]}],"radii":[{"radii":[17.490176748775397,17.65582075631642,17.40292064707021,20.04620682001364,20.324182947497132,17.985950999774545,17.350645065472698]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Rac1":{"encapsulatingRadius":25,"name":"Rac1","source":{"pdb":"1mh1","bu":"","selection":"","model":"","transform":{"offset":[-44,20,6]}},"nbMol":24,"molarity":7.46e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[-0.82,0.57,0.05],"offset":[-44,20,6],"uniprot":"","label":"p21-Rac1","Type":"MultiSphere","positions":[{"coords":[-7.758145358271689,4.16666126274999,1.4753915764867305,8.001464754309158,-4.29734062684107,-1.5216644124199714]}],"radii":[{"radii":[27.847142099773635,27.913138522487426]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Cdc42":{"encapsulatingRadius":25,"name":"Cdc42","source":{"pdb":"5c2j","bu":"AU","selection":"","model":"","transform":{"offset":[25,-3,-42]}},"nbMol":24,"molarity":7.46e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0.47,-0.07,-0.88],"offset":[25,-3,-42],"uniprot":"","label":"Cdc42","Type":"MultiSphere","positions":[{"coords":[-4.613433758919644,8.578772854850055,-0.8540960140578946,4.353043632649334,-8.094572178379991,0.80588936786567]}],"radii":[{"radii":[25.455728210746557,24.470084228933864]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}}}},"interior":{"ingredients":{"Chga":{"encapsulatingRadius":25,"name":"Chga","source":{"pdb":"Cga.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":454,"molarity":0.000043945,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Chromogranin-A","Type":"MultiSphere","positions":[{"coords":[109.23399232640821,-26.250690880554558,40.57374432076392,-236.18750452081144,57.297948441504644,-78.65808836115914,-94.5173218202464,31.2621999539882,-24.218769722283923,49.253154527864524,-15.77961413537329,26.35684403866071,284.1323386030241,-69.55543576055993,67.82832924726935,-188.12226211774828,51.81411622931667,-56.824992135838784,-283.9425880730459,61.6355477015528,-95.9230316109323,-141.10270701527338,45.779645112848286,-37.76835461586533,223.7830694714263,-59.32373391835902,61.12336175526775,-1.9115198122983088,-6.401039267301858,7.720121839752267,-48.861727613479445,11.911290686427453,-10.382650856182664,165.53937743269506,-40.96859249283929,52.364452592573485]}],"radii":[{"radii":[31.91790508279676,28.047209826748567,26.878589107354014,31.59284478074706,33.82788281318114,29.154318804486323,28.011575642065104,27.343510236414634,32.023471698268075,29.22122368334551,27.570907263195185,31.21989985456673]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":3.75,"sprite":{"image":"","offsety":0,"scale2d":0}},"Scg3":{"encapsulatingRadius":25,"name":"Scg3","source":{"pdb":"Scg3.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":178,"molarity":0.0000172295,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Secretogranin-3","Type":"MultiSphere","positions":[{"coords":[92.70565438594593,-22.822234586358217,37.3602021390671,-32.511670237088936,4.398786708270176,-4.564310741469612,-95.2999086442627,31.4129943107663,-24.441793538079082,155.08387744210177,-37.86502876759093,50.23151673644435,27.817982195668037,-12.30081574634443,19.360617444578352,218.21153660851036,-57.77327292565322,60.17550510210427,282.62765658922814,-69.23229645548622,67.63935162634661,-220.32819672631956,55.96669097013287,-71.70969637256815,-160.18133987438517,48.406514166308625,-44.632307301036725,-278.21910412354856,61.00641384073835,-93.8885807036726]}],"radii":[{"radii":[35.261109795603524,35.97394700766123,36.72931348135502,34.000399512762776,34.36653745061441,34.27760091533261,34.24571453913391,33.5841751902841,36.21999281083408,34.5905548780915]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":3.36,"sprite":{"image":"","offsety":0,"scale2d":0}},"Pcsk2":{"encapsulatingRadius":25,"name":"Pcsk2","source":{"pdb":"1p8j","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":354,"molarity":0.0000171327,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Neuroendocrine convertase 2","Type":"MultiSphere","positions":[{"coords":[-1.5242540873330945,-17.46530906327566,-19.946803969260742,1.1414228888924178,16.027379835174244,18.608569673347105]}],"radii":[{"radii":[48.33681215379793,48.5015445636145]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":3.35,"sprite":{"image":"","offsety":0,"scale2d":0}},"Ins2":{"encapsulatingRadius":25,"name":"Ins2","source":{"pdb":"2kqp","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":177000,"molarity":0.017132728,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Insulin-2","Type":"MultiSphere","positions":[{"coords":[-2.513719423489664,16.471503974984472,-2.1559825259733367,0.9115877227218014,-7.422825818775637,0.7700271109666543]}],"radii":[{"radii":[15.508090398447203,15.995311757108167]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.79,"sprite":{"image":"","offsety":0,"scale2d":0}},"Pcsk1":{"encapsulatingRadius":25,"name":"Pcsk1","source":{"pdb":"1p8j","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":129,"molarity":0.00000309744,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Neuroendocrine convertase 1","Type":"MultiSphere","positions":[{"coords":[-1.5242540873330945,-17.46530906327566,-19.946803969260742,1.1414228888924178,16.027379835174244,18.608569673347105]}],"radii":[{"radii":[48.33681215379793,48.5015445636145]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.75,"sprite":{"image":"","offsety":0,"scale2d":0}},"Scg2":{"encapsulatingRadius":25,"name":"Scg2","source":{"pdb":"Scg2.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":287,"molarity":0.0000277802,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Secretogranin-2","Type":"MultiSphere","positions":[{"coords":[291.2784636736935,-59.29741967677146,46.61381094534532,375.37437606169794,-75.20140495236541,58.41089096614688,-364.8943996632682,80.2259222096226,-105.55324887638095,-56.47728737060555,5.7941542386192815,7.9182426660227065,202.40619368539365,-50.275000281759596,50.917494458371166,-205.02894354762321,55.26428363619627,-43.74242210351433,-284.17512747161646,72.1528708477272,-71.5867339181527,-130.09047277804785,24.22160445732685,-19.86071335483028,114.81793669166484,-35.89883045819064,43.43513840026286,29.491085517212184,-10.838999697761167,28.56710365985795]}],"radii":[{"radii":[44.979352300683665,48.4457259289439,48.105639811025725,45.59426397943936,45.668341020428336,43.89736317920653,45.00807172972296,42.901250835138995,46.22641915412383,45.903821765356014]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.69,"sprite":{"image":"","offsety":0,"scale2d":0}},"Vegfa":{"encapsulatingRadius":25,"name":"Vegfa","source":{"pdb":"VegFA.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":2,"molarity":1.94e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"VEGF-A","Type":"MultiSphere","positions":[{"coords":[10.60346488215039,39.22195028536517,12.58306049016977,-15.920225065810238,38.41222407709189,-13.228296114532407,6.001317022422718,18.6759873506882,15.860877569293867,-9.044172675258835,18.599762093470073,-10.985274407323304,-8.412402967079522,-17.88615898973183,7.150880316168836,-9.38877324348674,-15.443425122786644,-13.053488163729387,14.708506500813748,-16.250761477593972,6.898812169973722]}],"radii":[{"radii":[16.157667415470687,16.1153384198052,18.793177034325975,17.97926205238711,16.879398088956385,23.65753919831747,23.83611289215232]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.58,"sprite":{"image":"","offsety":0,"scale2d":0}},"Ins1":{"encapsulatingRadius":25,"name":"Ins1","source":{"pdb":"2kqp","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":177000,"molarity":0.017132728,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Insulin-1","Type":"MultiSphere","positions":[{"coords":[0.4399751416134714,15.588568072655711,-5.584845417744239,-0.6002850049529069,-8.292588057631853,2.9162449617855835]}],"radii":[{"radii":[16.59906691511267,17.025334772799624]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.57,"sprite":{"image":"","offsety":0,"scale2d":0}},"Chgb":{"encapsulatingRadius":25,"name":"Chgb","source":{"pdb":"Chgb.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":122,"molarity":0.000011809,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Secretogranin-1","Type":"MultiSphere","positions":[{"coords":[-254.2346357860751,66.99606329789381,-62.972630581147314,-165.3772946520032,42.849562272240206,-33.739107656599515,186.69288739535477,-50.454656175454424,52.83906482891284,274.41025958609885,-57.522075616873856,50.33253773508143,-345.1453528613002,76.97129690295642,-101.21029807432136,359.22943375064744,-72.95797882241493,53.055333066140534,-77.00137378519634,9.538714387947849,-2.6679832360033657,14.125690625776826,-6.790577406273108,24.538648300803388,99.88969221075371,-29.62380399162275,41.33198550996012]}],"radii":[{"radii":[50.02033413996299,50.72567145712454,45.64615830273417,45.42159787320815,53.00584146784787,46.714258708104595,50.39543083985841,48.28545068605957,45.710833483494184]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.54,"sprite":{"image":"","offsety":0,"scale2d":0}},"Scg5":{"encapsulatingRadius":25,"name":"Scg5","source":{"pdb":"Sgc5.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":79,"molarity":0.00000764681,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Neuroendocrine protein 7B2","Type":"MultiSphere","positions":[{"coords":[79.79364383277529,-11.110595915799667,31.03916319385057,-99.43715699485207,12.068474189346588,-38.71511626669353,-41.60032357010576,6.733748895932251,-18.012379301256182,-69.45360881223816,8.480917613043701,-28.378357967323485,10.315136833774929,0.21403966299102706,6.126562357571409,58.18602892692478,-6.109183649850316,24.106927498501342,33.91006073694312,-1.7039515157139604,16.679443917459963,100.88395794472389,-20.669812237391966,36.34355465481177,-15.567095859317448,4.298627318920673,-6.636629858549945]}],"radii":[{"radii":[14.99885078845259,19.713905342125145,17.294817544075816,18.90944767823783,15.901284856629267,15.372673283816416,16.076775169916257,14.64495074280514,16.179396901401088]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.43,"sprite":{"image":"","offsety":0,"scale2d":0}},"Mif":{"encapsulatingRadius":25,"name":"Mif","source":{"pdb":"1fim","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":491,"molarity":0.0000158744,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Macrophage migration inh. factor","Type":"MultiSphere","positions":[{"coords":[-8.248528783849505,-10.746527923485964,3.552713678800501e-15,-5.182501792176275,12.516699432062175,3.552713678800501e-15,13.431030576025783,-1.7701715085762046,3.552713678800501e-15]}],"radii":[{"radii":[22.215444884698904,22.215444884698904,22.215444884698904]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":-1.13,"sprite":{"image":"","offsety":0,"scale2d":0}},"Vgf":{"encapsulatingRadius":25,"name":"Vgf","source":{"pdb":"Vgf.pdb","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":179,"molarity":0.0000173263,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Neurosecretory protein VGF","Type":"MultiSphere","positions":[{"coords":[-232.0354389452689,63.6261487298503,-51.03750057750745,388.15784144328126,-76.921239852866,62.91094633044125,-373.62596308313783,81.2491470068876,-108.19951222040595,-302.0671551160891,74.46505412450628,-78.9061789980002,48.00640383842159,-15.737509652218428,32.36954749074431,117.69070484497621,-37.303371821106985,43.65961568295779,-164.70284296248252,38.191069253789514,-31.44557899174626,-96.16270970448579,12.868929110363148,-5.750004459520426,253.79656187240738,-53.621916862203996,47.44429304212656,320.7948033271537,-65.23512724475344,46.94502541535334,-24.231881881006075,0.5120972976066795,16.96438881309419,186.4589694491139,-48.691506704058234,50.71825120966466]}],"radii":[{"radii":[38.54472159163465,36.90372046612874,42.2205664370374,38.91316544028361,38.128350119584574,37.76940410732596,39.24679993201464,39.276124045731414,34.75125333147859,36.79987206301324,38.93392011383785,37.45519571765802]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":2.51,"sprite":{"image":"","offsety":0,"scale2d":0}},"Nptx1":{"encapsulatingRadius":25,"name":"Nptx1","source":{"pdb":"3flt","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":2,"molarity":1.94e-7,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Neuronal pentraxin-1","Type":"MultiSphere","positions":[{"coords":[40.00245114412759,27.06135828842154,-14.884309171860254,-40.00245114412759,-27.06135828842154,-14.884309171860254,-27.06135828842154,40.00245114412759,-14.884309171860254,27.06135828842154,-40.00245114412759,-14.884309171860254,-40.00245114412759,27.06135828842154,14.884309171860254,40.00245114412759,-27.06135828842154,14.884309171860254,27.06135828842154,40.00245114412759,14.884309171860254,-27.06135828842154,-40.00245114412759,14.884309171860254,9.015886328670211,47.17672341924366,-14.854135581068892,-9.015886328670211,-47.17672341924366,-14.854135581068892,-47.17672341924366,9.015886328670211,-14.854135581068892,47.17672341924366,-9.015886328670211,-14.854135581068892,-9.015886328670211,47.17672341924366,14.854135581068892,9.015886328670211,-47.17672341924366,14.854135581068892,47.17672341924366,9.015886328670211,14.854135581068892,-47.17672341924366,-9.015886328670211,14.854135581068892]}],"radii":[{"radii":[27.457970501973683,27.457970501973683,27.457970501973683,27.457970501973683,27.457970501973683,27.457970501973683,27.457970501973683,27.457970501973683,27.153087903406057,27.153087903406057,27.153087903406057,27.153087903406057,27.153087903406057,27.153087903406057,27.153087903406057,27.153087903406057]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.53,"sprite":{"image":"","offsety":0,"scale2d":0}},"Stc1":{"encapsulatingRadius":25,"name":"Stc1","source":{"pdb":"4gxt","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":978,"molarity":0.0000946656,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Stanniocalcin-1","Type":"MultiSphere","positions":[{"coords":[9.360104412054909,8.780227444450922,8.250524885615363,-9.354649805754178,-8.775110761790987,-8.245716887430284]}],"radii":[{"radii":[27.59562200092854,28.44880341229998]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.34,"sprite":{"image":"","offsety":0,"scale2d":0}},"Wif1":{"encapsulatingRadius":25,"name":"Wif1","source":{"pdb":"2ygq","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":249,"molarity":0.000024102,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Wnt inhibitory factor 1","Type":"MultiSphere","positions":[{"coords":[14.303995948723799,-12.236542924539522,-2.067453024184273,-12.236542924539526,-2.067453024184273,14.303995948723802,-2.0674530241842763,14.303995948723802,-12.236542924539522]}],"radii":[{"radii":[34.18916314158054,34.18916314158054,34.18916314158054]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.25,"sprite":{"image":"","offsety":0,"scale2d":0}},"Gc":{"encapsulatingRadius":25,"name":"Gc","source":{"pdb":"1kw2","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":1447,"molarity":0.000140062,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"GC1q-R protein or Vitamin D-binding protein","Type":"MultiSphere","positions":[{"coords":[5.4812245629840115,0.4861311132669357,-15.284259467581926,-6.208680794655287,-0.5506493798863161,17.312753222656255]}],"radii":[{"radii":[38.167103861228,32.89473584021502]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":1.19,"sprite":{"image":"","offsety":0,"scale2d":0}},"Nucb1":{"encapsulatingRadius":25,"name":"Nucb1","source":{"pdb":"1snl","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":209,"molarity":0.0000202302,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Nucleobindin-1","Type":"MultiSphere","positions":[{"coords":[17.17291943327238,20.41374128671946,-4.075974487277784,-3.1570941585968257,-1.7562280227671334,-7.5522293958283875,-3.577955581772206,-7.362071093296389,13.391775372859918]}],"radii":[{"radii":[16.530215946144818,17.58421951499295,13.438981028651057]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":-2.23,"sprite":{"image":"","offsety":0,"scale2d":0}},"Nucb2":{"encapsulatingRadius":25,"name":"Nucb2","source":{"pdb":"1snl","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":297,"molarity":0.0000287481,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Nucleobindin-2","Type":"MultiSphere","positions":[{"coords":[-2.0774063966837697,-1.999264721004434,-8.301132321731389,-3.475215479183729,-8.032829588413325,10.868371987115927,14.625318681183739,20.56409264844828,2.4310101881611947]}],"radii":[{"radii":[18.139127708888005,13.421497953924785,14.927496750795719]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":-4.01,"sprite":{"image":"","offsety":0,"scale2d":0}},"Igf2":{"encapsulatingRadius":25,"name":"Igf2","source":{"pdb":"5l3l","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":118,"molarity":0.0000114218,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Insulin-like growth factor II","Type":"MultiSphere","positions":[{"coords":[-11.332044453951898,-17.16225163714311,-7.673167171689224,11.377488808300908,-0.17365182813228924,-4.9476673191908525,-0.8399112028089002,9.915831524369898,3.709266003109661,-3.809903527676401,-3.755418422839873,3.0372044632098163]}],"radii":[{"radii":[8.631028870864865,8.982703229266827,12.051736718654466,12.134947484488182]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Iapp":{"encapsulatingRadius":25,"name":"Iapp","source":{"pdb":"2kj7","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":3540,"molarity":0.000342655,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Islet amyloid polypeptide","Type":"MultiSphere","positions":[{"coords":[-1.2966187844244823,-3.165706686869715,0.2071981899999082,1.2575190995902954,-17.669312830141116,-2.6974115531972704,3.345588058291534,12.038843530421627,-0.21494742725777286,-4.025148458364014,22.319150109163573,4.687639044967498]}],"radii":[{"radii":[9.817966824681715,9.746565616658156,11.087269653244274,10.397561904492523]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"CPeptide1":{"encapsulatingRadius":25,"name":"CPeptide1","source":{"pdb":"1t0c","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":177000,"molarity":0.017132728,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Insulin-Cpeptide 1","Type":"MultiSphere","positions":[{"coords":[5.505179396026586,2.2978568841797964,-2.0530352200748503,-6.933550266346999,-2.8940575892642837,2.5857146285267034]}],"radii":[{"radii":[11.78403193113163,11.916174014714816]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"CPeptide2":{"encapsulatingRadius":25,"name":"CPeptide2","source":{"pdb":"1t0c","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":177000,"molarity":0.017132728,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Insulin-Cpeptide 1","Type":"MultiSphere","positions":[{"coords":[7.90562013476485,2.1751467398289095,1.9657498530326596,-5.47312163176028,-1.505870819881553,-1.3609037444072256]}],"radii":[{"radii":[10.6180910048383,14.48600530377965]}],"packingMode":"random","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}},"Insulin_crystal":{"encapsulatingRadius":25,"name":"Insulin_crystal","source":{"pdb":"1trz","bu":"","selection":"","model":"","transform":{"offset":[0,0,0]}},"nbMol":354000,"molarity":0.002855455,"molecularweight":0,"meshFile":"","meshType":"file","principalVector":[0,0,1],"offset":[0,0,0],"uniprot":"","label":"Insulin-Crystal","Type":"MultiSphere","positions":[{"coords":[-1.0618596177047308,12.307069112588984,5.551115123125783e-17,-10.127304688972018,-7.073131960496145,5.551115123125783e-17,11.189164306676748,-5.233937152092839,5.551115123125783e-17]}],"radii":[{"radii":[20,20,20]}],"packingMode":"supercell","comments":"","color":[1,0,0],"confidence":0,"sprite":{"image":"","offsety":0,"scale2d":0}}}},"mb":{"positions":[0,0,0],"radii":[1600]}}}}
+{
+    "recipe": {
+      "paths": [
+        [
+          "autoPACKserver",
+          "https://raw.githubusercontent.com/mesoscope/cellPACK_data/master/cellPACK_database_1.1.0/"
+        ]
+      ],
+      "name": "root",
+      "version": "1.0"
+    },
+    "options": {
+      "cancelDialog": false,
+      "_hackFreepts": false,
+      "windowsSize": 50,
+      "use_gradient": false,
+      "placeMethod": "jitter",
+      "saveResult": false,
+      "runTimeDisplay": false,
+      "overwritePlaceMethod": true,
+      "innerGridMethod": "jordan",
+      "boundingBox": [
+        [
+          -785,
+          -785,
+          -785
+        ],
+        [
+          785,
+          785,
+          785
+        ]
+      ],
+      "gradients": [],
+      "smallestProteinSize": 0,
+      "computeGridParams": true,
+      "freePtsUpdateThrehod": 0,
+      "pickWeightedIngr": true,
+      "_timer": false,
+      "ingrLookForNeighbours": false,
+      "pickRandPt": true,
+      "largestProteinSize": 0,
+      "resultfile": "",
+      "use_periodicity": false,
+      "EnviroOnly": false
+    },
+    "cytoplasme": {
+      "ingredients": {
+        "Ribosome": {
+          "encapsulatingRadius": 25,
+          "name": "Ribosome",
+          "source": {
+            "pdb": "4v88",
+            "bu": "",
+            "selection": "",
+            "model": "",
+            "transform": {
+              "offset": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "nbMol": 0,
+          "molarity": 0.0000338,
+          "molecularweight": 0,
+          "meshFile": "",
+          "meshType": "file",
+          "principalVector": [
+            0,
+            0,
+            1
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "uniprot": "",
+          "label": "",
+          "Type": "MultiSphere",
+          "positions": [
+            {
+              "coords": [
+                -38.66508773253749,
+                70.40724459445892,
+                -4.198617353057415,
+                42.58518900503863,
+                -3.295441974952402,
+                54.18719260324697,
+                -81.3541716100863,
+                -57.51302229795965,
+                -21.06020163466092,
+                49.43590093740498,
+                -57.83762736652889,
+                -26.22304589402883,
+                -68.2400497232275,
+                7.8760076558977214,
+                39.96982595948273,
+                56.30596088864583,
+                22.0370732604645,
+                -50.59976031317646
+              ]
+            }
+          ],
+          "radii": [
+            {
+              "radii": [
+                97.97659289192511,
+                94.39461620821157,
+                92.7119684510062,
+                93.43203005685585,
+                90.2925821256539,
+                97.7591631620271
+              ]
+            }
+          ],
+          "packingMode": "random",
+          "comments": "",
+          "color": [
+            1,
+            0,
+            0
+          ],
+          "confidence": 0,
+          "sprite": {
+            "image": "",
+            "offsety": 0,
+            "scale2d": 0
+          }
+        },
+        "tRNA": {
+          "encapsulatingRadius": 25,
+          "name": "tRNA",
+          "source": {
+            "pdb": "4tna",
+            "bu": "",
+            "selection": "",
+            "model": "",
+            "transform": {
+              "offset": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "nbMol": 0,
+          "molarity": 0.000371,
+          "molecularweight": 0,
+          "meshFile": "",
+          "meshType": "file",
+          "principalVector": [
+            0,
+            0,
+            1
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "uniprot": "",
+          "label": "T-RNA-PHE",
+          "Type": "MultiSphere",
+          "positions": [
+            {
+              "coords": [
+                3.2215704998743107,
+                -3.374133981419405,
+                -19.99571804962449,
+                -14.018349368667671,
+                -8.615448166713394,
+                24.46926267545587,
+                -6.219790643878092,
+                5.921349157329774,
+                12.53687833032777,
+                4.168576623174346,
+                -14.824808230874819,
+                -30.816843429556904,
+                1.8513298342473945,
+                0.2941124807133697,
+                -3.8167693410048393,
+                9.642041356689376,
+                13.724452950573312,
+                9.308326401375677
+              ]
+            }
+          ],
+          "radii": [
+            {
+              "radii": [
+                13.697632991225978,
+                24.349472670342028,
+                29.0474665401681,
+                13.55410101641562,
+                14.84236097980697,
+                16.07526291341981
+              ]
+            }
+          ],
+          "packingMode": "random",
+          "comments": "",
+          "color": [
+            1,
+            0,
+            0
+          ],
+          "confidence": 0,
+          "sprite": {
+            "image": "",
+            "offsety": 0,
+            "scale2d": 0
+          }
+        },
+        "CCT": {
+          "encapsulatingRadius": 25,
+          "name": "CCT",
+          "source": {
+            "pdb": "4b2t",
+            "bu": "",
+            "selection": "",
+            "model": "",
+            "transform": {
+              "offset": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "nbMol": 0,
+          "molarity": 0.0000761,
+          "molecularweight": 0,
+          "meshFile": "",
+          "meshType": "file",
+          "principalVector": [
+            0,
+            0,
+            1
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "uniprot": "",
+          "label": "chaperonin CCT",
+          "Type": "MultiSphere",
+          "positions": [
+            {
+              "coords": [
+                -57.028885206274765,
+                23.953833315579132,
+                -7.509356607313691,
+                35.48995614242969,
+                25.62817847355325,
+                -39.16402596760379,
+                -39.95073603256481,
+                -26.02021785302788,
+                -33.36379110833826,
+                -46.27986600276393,
+                -29.055143177873717,
+                17.002953284509104,
+                51.15604190008831,
+                33.92873133885361,
+                9.923683628471267,
+                22.947498026838616,
+                12.96532714663087,
+                47.934010247301174,
+                54.65322071235339,
+                -27.41626523856457,
+                -2.608269560288207,
+                -30.810734318361284,
+                31.298228416889273,
+                48.97386563640417,
+                -16.29693423880883,
+                26.879856176025214,
+                -51.25879578966807,
+                15.262602242660577,
+                -27.944113134490323,
+                -59.67145339766593,
+                -0.4969514884012938,
+                -39.50619771721723,
+                56.42685087647739
+              ]
+            }
+          ],
+          "radii": [
+            {
+              "radii": [
+                44.36076384643306,
+                44.341291896174646,
+                47.26527296650247,
+                51.029510297935786,
+                43.95539413035272,
+                47.54367541962735,
+                44.90360472219958,
+                51.58237965031204,
+                43.48030421055449,
+                47.31994001744544,
+                43.59451880918308
+              ]
+            }
+          ],
+          "packingMode": "random",
+          "comments": "",
+          "color": [
+            1,
+            0,
+            0
+          ],
+          "confidence": 0,
+          "sprite": {
+            "image": "",
+            "offsety": 0,
+            "scale2d": 0
+          }
+        },
+        "PFK": {
+          "encapsulatingRadius": 25,
+          "name": "PFK",
+          "source": {
+            "pdb": "6pfk",
+            "bu": "",
+            "selection": "",
+            "model": "",
+            "transform": {
+              "offset": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "nbMol": 0,
+          "molarity": 0.000761,
+          "molecularweight": 0,
+          "meshFile": "",
+          "meshType": "file",
+          "principalVector": [
+            0,
+            0,
+            1
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "uniprot": "",
+          "label": "PHOSPHOFRUCTOKINASE",
+          "Type": "MultiSphere",
+          "positions": [
+            {
+              "coords": [
+                -18.121556637845483,
+                -13.689553776931255,
+                -3.3278928449534817,
+                15.080678507515525,
+                -16.926978890543822,
+                2.8834894310806263,
+                -8.952785110508891,
+                16.187972939086624,
+                13.507003928346109,
+                11.849430707429153,
+                14.42314370285074,
+                -13.051773179959504
+              ]
+            }
+          ],
+          "radii": [
+            {
+              "radii": [
+                39.43879450882684,
+                38.777662334792694,
+                38.96734760021868,
+                38.73901298325073
+              ]
+            }
+          ],
+          "packingMode": "random",
+          "comments": "",
+          "color": [
+            1,
+            0,
+            0
+          ],
+          "confidence": 0,
+          "sprite": {
+            "image": "",
+            "offsety": 0,
+            "scale2d": 0
+          }
+        }
+      }
+    },
+    "compartments": {
+      "isg": {
+        "geom_type": "mb",
+        "geom": "mb",
+        "name": "isg",
+        "thickness": 7.5,
+        "surface": {
+          "ingredients": {
+            "Vamp2": {
+              "encapsulatingRadius": 25,
+              "name": "Vamp2",
+              "source": {
+                "pdb": "VAMP.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -15,
+                    25,
+                    -10
+                  ]
+                }
+              },
+              "nbMol": 548,
+              "molarity": 0.000034,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.53,
+                0.85,
+                0.08
+              ],
+              "offset": [
+                -15,
+                25,
+                -10
+              ],
+              "uniprot": "",
+              "label": "VAMP-2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    10.156223703014295,
+                    24.52543701619129,
+                    -3.6047535329209666,
+                    -7.050859216972702,
+                    -13.282068755403053,
+                    4.022269510424655,
+                    9.07053698295682,
+                    -36.72049670944671,
+                    5.178081152997663,
+                    22.183819915726783,
+                    27.97794843577418,
+                    35.039109925044855,
+                    -2.4401312336445997,
+                    7.217854426040358,
+                    -14.036746112891596,
+                    -23.718714037026675,
+                    -3.221562933389789,
+                    -12.490596465223064
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    21.866723378826816,
+                    15.169638170913393,
+                    14.949638774852941,
+                    21.686837172535306,
+                    18.60647943274951,
+                    18.619637911197017
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 8.52,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Syt5": {
+              "encapsulatingRadius": 25,
+              "name": "Syt5",
+              "source": {
+                "pdb": "Syt5.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -3,
+                    8.3e-16,
+                    -62
+                  ]
+                }
+              },
+              "nbMol": 56,
+              "molarity": 0.00000174,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.02,
+                0.01,
+                -1
+              ],
+              "offset": [
+                -3,
+                8.3e-16,
+                -62
+              ],
+              "uniprot": "",
+              "label": "Synaptotagmin-5",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -6.8350616879687145,
+                    7.262909318881666,
+                    -22.576840191656544,
+                    -0.4935354774612924,
+                    -4.605477061579332,
+                    -36.60488712496144,
+                    -6.499372908681982,
+                    -3.667821820912937,
+                    16.107323563793912,
+                    0.43467493979709304,
+                    1.7472454985078834,
+                    47.20550486211566,
+                    1.01974281051924,
+                    0.24094494558177848,
+                    77.51462945687588,
+                    12.985270906529095,
+                    0.3197012061155958,
+                    12.475386210345022
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    21.02989467529526,
+                    19.751045766341914,
+                    18.97867047741519,
+                    15.910569304619626,
+                    17.985950999774545,
+                    21.016662044284725
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 7.13,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Vamp3": {
+              "encapsulatingRadius": 25,
+              "name": "Vamp3",
+              "source": {
+                "pdb": "VAMP.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -12,
+                    31,
+                    -12
+                  ]
+                }
+              },
+              "nbMol": 881,
+              "molarity": 0.0000274,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.47,
+                0.88,
+                0.05
+              ],
+              "offset": [
+                -12,
+                31,
+                -12
+              ],
+              "uniprot": "",
+              "label": "VAMP-3",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -7.5937556281623415,
+                    -13.152272423290203,
+                    3.762992592224073,
+                    21.373529865209083,
+                    27.739322647285313,
+                    33.7989697651105,
+                    -18.841241078874226,
+                    -0.8298647349380808,
+                    -14.41216395843237,
+                    7.959403926170438,
+                    20.799355478214657,
+                    -5.899028931614048,
+                    9.07053698295682,
+                    -36.72049670944671,
+                    5.178081152997663
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    17.27723572780426,
+                    22.203916587760904,
+                    22.65877426796755,
+                    21.810051415979427,
+                    14.949638774852941
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 6.68,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Ptprn2": {
+              "encapsulatingRadius": 25,
+              "name": "Ptprn2",
+              "source": {
+                "pdb": "Phogrin.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    3,
+                    1,
+                    -35
+                  ]
+                }
+              },
+              "nbMol": 51,
+              "molarity": 0.00000159,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                -1
+              ],
+              "offset": [
+                3,
+                1,
+                -35
+              ],
+              "uniprot": "",
+              "label": "R-PTP-N2 (phogrin)",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -3.224689957591491,
+                    -1.8074538386632941,
+                    28.33033710935304,
+                    12.464999140450152,
+                    21.417867582342176,
+                    -30.136219797306573,
+                    -7.430918630166667,
+                    -18.205541111860754,
+                    -33.6106745374545,
+                    -6.270107584572795,
+                    -3.8103252324737977,
+                    87.31818532085826
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    32.887379102331764,
+                    31.534457361651928,
+                    32.3022656689796,
+                    36.996793229512235
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 5.99,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Ptprn": {
+              "encapsulatingRadius": 25,
+              "name": "Ptprn",
+              "source": {
+                "pdb": "PTPRN.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -4e-16,
+                    -4,
+                    -41
+                  ]
+                }
+              },
+              "nbMol": 14,
+              "molarity": 4.35e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.04,
+                0.05,
+                -1
+              ],
+              "offset": [
+                -4e-16,
+                -4,
+                -41
+              ],
+              "uniprot": "",
+              "label": "R-PTP-N",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -4.7611328204273935,
+                    -2.206634854139477,
+                    85.55603195441796,
+                    -7.677663788346978,
+                    -15.382306735433609,
+                    -31.700674934728347,
+                    2.321057323433673,
+                    -3.036755056230399,
+                    29.93934794448288,
+                    9.960062914178028,
+                    17.176568310658052,
+                    -29.602925661511613
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    29.28886838799313,
+                    31.774740399324493,
+                    31.700366940921878,
+                    32.79332318519703
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 5.36,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Sytl4": {
+              "encapsulatingRadius": 25,
+              "name": "Sytl4",
+              "source": {
+                "pdb": "2zet",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    1,
+                    -1,
+                    54
+                  ]
+                },
+                "uniprot": "Q99P58"
+              },
+              "nbMol": 165,
+              "molarity": 0.00000513,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                1,
+                -1,
+                54
+              ],
+              "uniprot": "",
+              "label": "Ras-related protein Rab-27B",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    1.7619725237272377,
+                    -4.858754878375322,
+                    5.130225467514691,
+                    -16.544864145908363,
+                    6.664620160786299,
+                    -9.035413167467851,
+                    -4.761987695273653,
+                    17.050013860756366,
+                    -5.97505900099452,
+                    4.382891800682771,
+                    -0.5710286083113942,
+                    -17.66678072478264,
+                    11.180119442528941,
+                    -13.213261132685119,
+                    26.55278097917872
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    23.78928363291015,
+                    18.136672918641178,
+                    20.47284948023353,
+                    19.780338409805655,
+                    22.12128699717511
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "Sytl4? bound to Rab27B - include Rab27B as heterodimer?",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 2.78,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Cpe": {
+              "encapsulatingRadius": 25,
+              "name": "Cpe",
+              "source": {
+                "pdb": "2nsm",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -1,
+                    5,
+                    -44
+                  ]
+                },
+                "uniprot": "P15169"
+              },
+              "nbMol": 242,
+              "molarity": 0.00000752,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                -1,
+                5,
+                -44
+              ],
+              "uniprot": "",
+              "label": "Carboxypeptidase N catalytic chain",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    19.5973440662668,
+                    6.91924649528702,
+                    4.729400738076334,
+                    2.4543663940308136,
+                    2.9213548677768273,
+                    14.830123894711406,
+                    5.737870321556514,
+                    10.475067913886203,
+                    -8.577172545789953,
+                    -12.085099148408318,
+                    10.712982677909746,
+                    1.3492625049286762,
+                    14.506104304234633,
+                    -11.792380000307054,
+                    -0.3914040135293755,
+                    -20.9980205118559,
+                    -7.649305916780353,
+                    -7.706691821890835,
+                    -2.303768918267636,
+                    -11.253873958861046,
+                    -2.923795339005002
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    19.021682941079312,
+                    16.270514944148914,
+                    19.498381818894135,
+                    18.76025410496482,
+                    17.25924333994576,
+                    20.92479619970587,
+                    19.335130764279135
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 2.73,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rab37": {
+              "encapsulatingRadius": 25,
+              "name": "Rab37",
+              "source": {
+                "pdb": "2g6b",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    1,
+                    2,
+                    42
+                  ]
+                }
+              },
+              "nbMol": 376,
+              "molarity": 0.0000117,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                1,
+                2,
+                42
+              ],
+              "uniprot": "",
+              "label": "RAB37",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -7.040951628070468,
+                    8.699252521719767,
+                    -1.3092108332812398,
+                    9.515620058390752,
+                    0.5283538619384629,
+                    -1.2884101081329487,
+                    -4.690950448207853,
+                    -7.243948043883584,
+                    -10.53243715507812,
+                    0.2905002281898199,
+                    -0.5220504225406994,
+                    11.833387006156372
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    14.133851574253937,
+                    15.207635309966557,
+                    16.14092042050346,
+                    17.429631295444125
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 2.26,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rap1a": {
+              "encapsulatingRadius": 25,
+              "name": "Rap1a",
+              "source": {
+                "pdb": "1c1y",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -25,
+                    34,
+                    -3
+                  ]
+                }
+              },
+              "nbMol": 377,
+              "molarity": 0.0000117,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.63,
+                0.78,
+                -0.03
+              ],
+              "offset": [
+                -25,
+                34,
+                -3
+              ],
+              "uniprot": "",
+              "label": "Ras-related protein Rap-1A",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    4.010554633144119,
+                    -13.639490503504959,
+                    -2.4846120858161633,
+                    -2.336764276948129,
+                    9.81457255890869,
+                    -8.156258107410682,
+                    11.045862561431742,
+                    3.722047180045678,
+                    -1.099475385247171,
+                    -11.652853039222673,
+                    2.590664747551532,
+                    -0.6793807462846324,
+                    -6.275235691496356,
+                    -8.763480667400616,
+                    3.6853875435915135,
+                    2.7757588852392807,
+                    2.822674476127247,
+                    11.478336623606893
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    15.717667509363364,
+                    16.00586538336775,
+                    15.215650561733334,
+                    15.1415564392574,
+                    12.328872250543094,
+                    15.458830242228148
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.86,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rab3a": {
+              "encapsulatingRadius": 25,
+              "name": "Rab3a",
+              "source": {
+                "pdb": "3rab",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -41,
+                    11,
+                    -3
+                  ]
+                }
+              },
+              "nbMol": 940,
+              "molarity": 0.0000292,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.95,
+                0.28,
+                -0.12
+              ],
+              "offset": [
+                -41,
+                11,
+                -3
+              ],
+              "uniprot": "",
+              "label": "Ras-related protein Rab-3A",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -9.13338171757691,
+                    2.2692840831681593,
+                    8.815482982200272,
+                    -10.16287096129993,
+                    8.161873991599432,
+                    -3.8216654106209695,
+                    7.16728168537392,
+                    4.177380546219594,
+                    5.417520317941406,
+                    1.1727476614826333,
+                    -11.208831625481166,
+                    3.2816421099479562,
+                    -2.5913021865398864,
+                    -1.9039577458642711,
+                    -10.056043648128504,
+                    16.593309742307987,
+                    2.9868619207143334,
+                    -4.268265884831741
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    14.923523294768795,
+                    13.596016338412554,
+                    14.092601169817005,
+                    17.271648636839434,
+                    16.331132576582082,
+                    14.062507829474644
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.46,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Atp6v0d1": {
+              "encapsulatingRadius": 25,
+              "name": "Atp6v0d1",
+              "source": {
+                "pdb": "vATPase.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    -3,
+                    -95
+                  ]
+                }
+              },
+              "nbMol": 136,
+              "molarity": 0.00000423,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.01,
+                -0.16,
+                -0.99
+              ],
+              "offset": [
+                0,
+                -3,
+                -95
+              ],
+              "uniprot": "",
+              "label": "V-ATPase",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -16.649894517700687,
+                    -25.837487238170695,
+                    -21.339565940107235,
+                    -7.133026559371501,
+                    -17.233370274156243,
+                    95.77652874527871,
+                    26.89421221764269,
+                    2.8348054790678816,
+                    -25.672446001560417,
+                    -3.8320081955949945,
+                    -21.900697743135083,
+                    42.16979190446895,
+                    -21.027766088810665,
+                    57.89757963946795,
+                    20.57094465100738,
+                    34.16273020367464,
+                    -7.955369488645374,
+                    -68.0657435351294,
+                    -17.974411465443126,
+                    20.08290159584169,
+                    -61.46077640684034,
+                    -5.478496344740307,
+                    20.26796090032181,
+                    92.56352701845947,
+                    -13.00605634940004,
+                    -38.38530483139388,
+                    -65.75347746311172,
+                    43.166604966185105,
+                    6.5591373244919,
+                    43.5046089391914
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    51.368990149574415,
+                    46.328280531378994,
+                    48.78905271068084,
+                    50.96912239700993,
+                    54.02125194473779,
+                    46.12369086063535,
+                    50.89703347695374,
+                    48.28143916729181,
+                    47.304634951298475,
+                    51.515550682035084
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0.87,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Vamp8": {
+              "encapsulatingRadius": 25,
+              "name": "Vamp8",
+              "source": {
+                "pdb": "VAMP.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -10,
+                    27,
+                    -14
+                  ]
+                }
+              },
+              "nbMol": 640,
+              "molarity": 0.0000236,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.53,
+                0.85,
+                0.04
+              ],
+              "offset": [
+                -10,
+                27,
+                -14
+              ],
+              "uniprot": "",
+              "label": "VAMP-8",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    7.978815062094174,
+                    20.821883205787806,
+                    -5.875256281393529,
+                    8.89576574008592,
+                    -36.49461488171506,
+                    5.186421010759547,
+                    21.373529865209083,
+                    27.739322647285313,
+                    33.7989697651105,
+                    -7.881734253062962,
+                    -12.919340235708201,
+                    3.613849174827605,
+                    -18.801881117269193,
+                    -0.6914560174077522,
+                    -14.532944265066615
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    21.782877227044896,
+                    15.15489095467317,
+                    22.203916587760904,
+                    16.946328257875088,
+                    22.785052605669218
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0.21,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Pam": {
+              "encapsulatingRadius": 25,
+              "name": "Pam",
+              "source": {
+                "pdb": "PAM.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -5,
+                    -1,
+                    60
+                  ]
+                }
+              },
+              "nbMol": 115,
+              "molarity": 0.0000018,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.13,
+                -0.08,
+                -0.99
+              ],
+              "offset": [
+                -5,
+                -1,
+                60
+              ],
+              "uniprot": "",
+              "label": "Peptidyl-gly a-amidating monoxygenase",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -2.2486199405121683,
+                    -13.409671505051904,
+                    9.307866189993959,
+                    -12.168961433771116,
+                    -33.71704911497304,
+                    25.5444923357894,
+                    -3.5462975531428143,
+                    5.286254652430976,
+                    -67.85478678398842,
+                    3.7538028102640126,
+                    11.632167111214319,
+                    -14.756800966518334,
+                    -12.497056023347914,
+                    -35.64959136688254,
+                    4.036223783198281,
+                    13.72604091586112,
+                    33.93954333765177,
+                    -3.6120830105577184,
+                    5.2002269552546,
+                    20.92677423204753,
+                    8.918451349123899
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    25.742635218474934,
+                    22.075933753908508,
+                    28.528810640710144,
+                    29.13616318107135,
+                    23.086628464548358,
+                    24.605713692660736,
+                    25.807933993604813
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 3.57,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Dnajc5": {
+              "encapsulatingRadius": 25,
+              "name": "Dnajc5",
+              "source": {
+                "pdb": "2n05",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    40,
+                    -10,
+                    -8
+                  ]
+                }
+              },
+              "nbMol": 113,
+              "molarity": 0.00000351,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.97,
+                0.2,
+                0.13
+              ],
+              "offset": [
+                40,
+                -10,
+                -8
+              ],
+              "uniprot": "",
+              "label": "Cysteine string protein",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    8.451261964725928,
+                    -7.427568612608086,
+                    1.9237499997147431,
+                    -5.0488457540107685,
+                    -3.8889738151252295,
+                    -1.902608993827757,
+                    -4.63428804945203,
+                    14.898731368668106,
+                    5.864333306265722,
+                    18.019395414280375,
+                    -4.751235407702895,
+                    1.8648167029150835,
+                    -2.8169498036955436,
+                    8.82232934494129,
+                    -3.463269647621731,
+                    1.3669325414759923,
+                    -1.3564942321892532,
+                    -9.737210775314683,
+                    -15.93647573065015,
+                    -4.829560335340869,
+                    9.843145871671886
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    7.657002892358642,
+                    8.246013966724535,
+                    7.525919167240556,
+                    10.481053960599377,
+                    8.555314369116847,
+                    9.5457834212201,
+                    10.497097695235443
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.15,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rph3al": {
+              "encapsulatingRadius": 25,
+              "name": "Rph3al",
+              "source": {
+                "pdb": "Rab3a_Rabphilin.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    4,
+                    -45,
+                    14
+                  ]
+                }
+              },
+              "nbMol": 36,
+              "molarity": 0.00000112,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.02,
+                -0.94,
+                0.35
+              ],
+              "offset": [
+                4,
+                -45,
+                14
+              ],
+              "uniprot": "",
+              "label": "Rab effector Noc2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    34.80621991188495,
+                    -10.209466616788713,
+                    3.917290595395471,
+                    -16.480675918352247,
+                    -7.80664030871908,
+                    4.852657254121553,
+                    8.898453043869917,
+                    -12.191195842433375,
+                    -0.11590571683644946,
+                    1.5562855445061565,
+                    1.5593803643684563,
+                    -2.8110433501804026,
+                    -16.808243731325323,
+                    8.670533080769212,
+                    -9.64571943087319,
+                    -11.799539201376152,
+                    15.534535894015795,
+                    3.610664064108418,
+                    23.981725665473594,
+                    2.3983027585577243,
+                    0.7763051665806309
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    18.82296921888539,
+                    19.90345343630225,
+                    18.808762294690016,
+                    17.156765927529758,
+                    17.430085362186773,
+                    17.406302244496434,
+                    13.744419699903487
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.01,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rab3c": {
+              "encapsulatingRadius": 25,
+              "name": "Rab3c",
+              "source": {
+                "pdb": "1zbd",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    11,
+                    1,
+                    -44
+                  ]
+                }
+              },
+              "nbMol": 258,
+              "molarity": 0.00000802,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                11,
+                1,
+                -44
+              ],
+              "uniprot": "",
+              "label": "Ras-related protein Rab-3C",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    2.2568172526193884,
+                    7.223310264307401,
+                    -10.107462753610022,
+                    15.67651283833709,
+                    1.3418384272478543,
+                    2.6594606292635845,
+                    -13.454250413186333,
+                    -9.79201747372231,
+                    -3.930754621843356,
+                    -7.573269939764346,
+                    8.376141864065712,
+                    0.04470863540056769,
+                    6.015842486425761,
+                    -7.679745725134599,
+                    -4.532834096716115,
+                    5.571514074634042,
+                    5.318072596192484,
+                    9.086105186408915,
+                    -11.854651489204388,
+                    -5.736557607989844,
+                    9.153127745703827
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    13.141171713085336,
+                    14.256989349279285,
+                    13.764677086471725,
+                    12.580748808248442,
+                    13.783569680082001,
+                    14.77077635597021,
+                    17.602183221465747
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0.98,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Atp6ap": {
+              "encapsulatingRadius": 25,
+              "name": "Atp6ap",
+              "source": {
+                "pdb": "ReninReceptor.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -3,
+                    -15,
+                    66
+                  ]
+                }
+              },
+              "nbMol": 130,
+              "molarity": 0.00000404,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.03,
+                0.09,
+                -1
+              ],
+              "offset": [
+                -3,
+                -15,
+                66
+              ],
+              "uniprot": "",
+              "label": "Renin receptor",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -4.238607566941152,
+                    -16.25206226928866,
+                    -7.140602659890639,
+                    10.72611313796878,
+                    -0.20105699010874822,
+                    16.971912003505025,
+                    -8.035025585741302,
+                    3.678520482668606,
+                    17.10373000136724,
+                    3.9186190255057913,
+                    1.6267194931370739,
+                    -18.88760362690107,
+                    -9.401724864164423,
+                    3.5540687290813153,
+                    -7.034810068867429,
+                    5.112586368930837,
+                    -2.7335787498501958,
+                    34.34352925850027,
+                    3.976297019758105,
+                    14.38994968959517,
+                    -69.80385364286906
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    17.32412719147627,
+                    18.994678969888767,
+                    19.27250037255871,
+                    26.541243019075637,
+                    18.89690474135939,
+                    17.912390664634717,
+                    27.955295434615298
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0.9,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rab3d": {
+              "encapsulatingRadius": 25,
+              "name": "Rab3d",
+              "source": {
+                "pdb": "2gf9",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -2,
+                    -5,
+                    -44
+                  ]
+                }
+              },
+              "nbMol": 411,
+              "molarity": 0.0000128,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                -1
+              ],
+              "offset": [
+                -2,
+                -5,
+                -44
+              ],
+              "uniprot": "",
+              "label": "GTP-binding protein Rab-3D",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -10.416769022813229,
+                    -7.5895470555495255,
+                    -1.7110894875961211,
+                    9.869731025221489,
+                    5.0707286809253205,
+                    7.527773394701093,
+                    -2.578031402526628,
+                    0.06455688091204692,
+                    -15.709947742401456,
+                    3.406228629855363,
+                    9.221558220569865,
+                    -8.158885260952662,
+                    2.8636363603335813,
+                    -8.744412997258909,
+                    -3.992368361471515,
+                    7.156871495455091,
+                    -7.429085131523497,
+                    13.946311472979584,
+                    -8.147065267161294,
+                    6.9140919742239255,
+                    5.410705094853437
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    14.804983377150954,
+                    13.508689759898632,
+                    14.153007526585831,
+                    13.679393657157737,
+                    12.732070480601688,
+                    18.65533044838535,
+                    17.96436609447146
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0.89,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rab27b": {
+              "encapsulatingRadius": 25,
+              "name": "Rab27b",
+              "source": {
+                "pdb": "2f7s",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -20,
+                    7,
+                    36
+                  ]
+                }
+              },
+              "nbMol": 1,
+              "molarity": 3.11e-8,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.46,
+                0.18,
+                0.87
+              ],
+              "offset": [
+                -20,
+                7,
+                36
+              ],
+              "uniprot": "",
+              "label": "Ras-related protein Rab-27B",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -10.57773662637006,
+                    -18.294687123082785,
+                    6.640549140119381,
+                    -17.193346824455347,
+                    -16.594968303714634,
+                    -13.844863101177449,
+                    4.484121628474206,
+                    -3.656352581944084,
+                    -6.203065412802083,
+                    7.540598262919982,
+                    21.83311079883042,
+                    -1.746396406037853,
+                    -21.477004463817803,
+                    -4.925575626162052,
+                    -2.9242993690177777,
+                    11.969452105007722,
+                    11.828918927581025,
+                    14.180565998575673,
+                    24.773466716396047,
+                    10.425098431778878,
+                    3.570680481192838
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    17.495869152878623,
+                    21.561453824922676,
+                    18.92130331604092,
+                    17.70527074684946,
+                    22.50158724070704,
+                    18.02652824925239,
+                    20.52954976732834
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "included in Sytl4?",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0.85,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Slc30a8": {
+              "encapsulatingRadius": 25,
+              "name": "Slc30a8",
+              "source": {
+                "pdb": "Znt8.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -10,
+                    5.4e-16,
+                    -1
+                  ]
+                }
+              },
+              "nbMol": 12,
+              "molarity": 1.87e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -1,
+                0.01,
+                0.02
+              ],
+              "offset": [
+                -10,
+                5.4e-16,
+                -1
+              ],
+              "uniprot": "",
+              "label": "Zinc transporter 8",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -15.904108774435224,
+                    2.0122085092834343,
+                    -9.646113353631094,
+                    27.361886099402977,
+                    -5.530003334753788,
+                    -20.449322708969795,
+                    4.402395927672696,
+                    10.205876846232483,
+                    12.141486302920384,
+                    27.53629124168288,
+                    5.59952371924863,
+                    20.51278644497843,
+                    4.297839946339746,
+                    -10.583052344168246,
+                    -12.228075427235005,
+                    -35.83326948198984,
+                    -0.06957698285486984,
+                    -0.5528258168065179,
+                    -17.301471309996572,
+                    -1.737078318617355,
+                    10.159891659244948
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    20.392359833810122,
+                    26.120215501476718,
+                    21.939772777779332,
+                    26.05122523223516,
+                    21.776026010200333,
+                    20.7878993208637,
+                    20.00126691398948
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Clcn3": {
+              "encapsulatingRadius": 25,
+              "name": "Clcn3",
+              "source": {
+                "pdb": "Clcn3.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 6,
+              "molarity": 1.87e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.03,
+                -2e-18,
+                -1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "H+-Cl-exchange transporter 3",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -19.84774047884639,
+                    -7.998926616697105,
+                    -6.128891146814226,
+                    -4.958282262701601,
+                    13.469364973432931,
+                    12.754726653323388,
+                    -0.013257799048659535,
+                    -0.01800110253932985,
+                    -36.7084429775102,
+                    5.055358932514196,
+                    -13.427714696423635,
+                    12.714850577033957,
+                    -23.804120326633722,
+                    -17.305398629218644,
+                    22.159394742928782,
+                    19.709514547122666,
+                    7.9444415847810035,
+                    -6.2382742779328595,
+                    23.868290944385507,
+                    17.28671863075175,
+                    22.086139216385646
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    30.864783760325757,
+                    30.417930591718505,
+                    34.66097282184367,
+                    30.347002475008512,
+                    27.565437869443993,
+                    30.802606331623448,
+                    27.668583079928318
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Epha5": {
+              "encapsulatingRadius": 25,
+              "name": "Epha5",
+              "source": {
+                "pdb": "Epha5.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -7,
+                    3,
+                    68
+                  ]
+                }
+              },
+              "nbMol": 12,
+              "molarity": 3.73e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                3e-19,
+                -0.03,
+                -1
+              ],
+              "offset": [
+                -7,
+                3,
+                68
+              ],
+              "uniprot": "",
+              "label": "Ephrin type-A receptor 5",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    6.6724234189047245,
+                    -10.250786008099,
+                    -137.61572550465905,
+                    28.065334100035766,
+                    -9.40418878618995,
+                    -120.87032962703023,
+                    0.3293829558102068,
+                    -4.111425068545492,
+                    -7.85667550449179,
+                    -0.6497737771080168,
+                    4.012697914741155,
+                    -130.00692487249546,
+                    -0.438400843899295,
+                    3.084947670417279,
+                    71.68122684318152,
+                    0.8883443363054084,
+                    -4.035800559915032,
+                    35.838765957236134,
+                    -17.28906439676701,
+                    10.754305910119491,
+                    106.09151413430996,
+                    14.92736695443477,
+                    -4.596472110438132,
+                    -109.84961674455904,
+                    -16.815485289824807,
+                    7.395007580044622,
+                    140.9724994354011,
+                    18.575211400089945,
+                    1.3066211018489469,
+                    -63.20296074214706
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    21.17895911604982,
+                    19.8289521083952,
+                    30.32091022064543,
+                    19.20942522299647,
+                    22.032282611764696,
+                    23.10157936171516,
+                    23.800441631465393,
+                    23.620774970796216,
+                    27.473980222787738,
+                    30.281269788220776
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Kcnj11": {
+              "encapsulatingRadius": 25,
+              "name": "Kcnj11",
+              "source": {
+                "pdb": "Kcnj11.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    1,
+                    1,
+                    -28
+                  ]
+                }
+              },
+              "nbMol": 12,
+              "molarity": 9.33e-8,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.01,
+                -0.01,
+                -1
+              ],
+              "offset": [
+                1,
+                1,
+                -28
+              ],
+              "uniprot": "",
+              "label": "Potassium Channel BIR",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -23.426926000540107,
+                    -0.20030348957928368,
+                    -20.841656926088575,
+                    0.012166988288697667,
+                    -23.140694754925704,
+                    -19.876626914461923,
+                    23.459353355678246,
+                    0.42697507433888404,
+                    -20.98201847036998,
+                    10.014363690359744,
+                    -1.3809676130346134,
+                    10.944345033452493,
+                    -0.28329221981184105,
+                    23.09999833822215,
+                    -19.956865297780183,
+                    0.12257460780909923,
+                    -0.10743932154682057,
+                    42.05019033530158,
+                    -9.732973213745936,
+                    1.3592265702694704,
+                    11.647223865185566
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    30.279236505363798,
+                    29.767572673518217,
+                    30.302831354972746,
+                    26.701764034047745,
+                    29.915250314670214,
+                    28.977636243762408,
+                    26.813239573800324
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Syt7": {
+              "encapsulatingRadius": 25,
+              "name": "Syt7",
+              "source": {
+                "pdb": "Syt7.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    9,
+                    -1,
+                    -65
+                  ]
+                }
+              },
+              "nbMol": 118,
+              "molarity": 0.00000367,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.05,
+                -0.01,
+                -1
+              ],
+              "offset": [
+                9,
+                -1,
+                -65
+              ],
+              "uniprot": "",
+              "label": "Synaptotagmin-7",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -1.2044558004867572,
+                    5.437915366267373,
+                    -20.694662096311248,
+                    14.416211126184214,
+                    -5.867539581300979,
+                    -24.921694812531726,
+                    -8.516452734756747,
+                    -3.063322644371863,
+                    -28.458235245366424,
+                    7.355131916365684,
+                    8.141641766699166,
+                    4.552736325474292,
+                    -7.04945999863086,
+                    -4.9881816945783655,
+                    12.289405982885036,
+                    -9.593422162465007,
+                    -1.024924360428836,
+                    75.58739106039874,
+                    -10.227551147708985,
+                    0.4074228195618237,
+                    45.0133253758712
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    17.490176748775397,
+                    17.65582075631642,
+                    17.40292064707021,
+                    20.04620682001364,
+                    20.324182947497132,
+                    17.985950999774545,
+                    17.350645065472698
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Rac1": {
+              "encapsulatingRadius": 25,
+              "name": "Rac1",
+              "source": {
+                "pdb": "1mh1",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    -44,
+                    20,
+                    6
+                  ]
+                }
+              },
+              "nbMol": 24,
+              "molarity": 7.46e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                -0.82,
+                0.57,
+                0.05
+              ],
+              "offset": [
+                -44,
+                20,
+                6
+              ],
+              "uniprot": "",
+              "label": "p21-Rac1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -8.348217906926461,
+                    -5.533338783520559,
+                    -1.569087026279366,
+                    -0.19645869899145296,
+                    1.5299438153164076,
+                    11.307866128869383,
+                    9.706796216813228,
+                    -14.057840384572788,
+                    1.6646061902634912,
+                    -0.17679879890115746,
+                    0.8544404072121381,
+                    -11.927263174674072,
+                    11.780771830872801,
+                    0.9341662539780984,
+                    -3.3642645789741428,
+                    3.8174076933653156,
+                    12.374569228049118,
+                    -1.2141794463699238,
+                    -16.600327404823055,
+                    6.081281509639069,
+                    3.1669601099986853
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    14.075904108118635,
+                    13.437428030376408,
+                    17.136010182346133,
+                    18.005103232873704,
+                    13.798315771252444,
+                    14.741456036279482,
+                    14.221592914206031
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Cdc42": {
+              "encapsulatingRadius": 25,
+              "name": "Cdc42",
+              "source": {
+                "pdb": "5c2j",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    25,
+                    -3,
+                    -42
+                  ]
+                }
+              },
+              "nbMol": 24,
+              "molarity": 7.46e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0.47,
+                -0.07,
+                -0.88
+              ],
+              "offset": [
+                25,
+                -3,
+                -42
+              ],
+              "uniprot": "",
+              "label": "Cdc42",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -6.933097354764296,
+                    -7.227770817463874,
+                    -0.9387828818533519,
+                    -5.975377493146851,
+                    11.896013663040645,
+                    -7.2284628333219585,
+                    10.246458746419393,
+                    -0.20560748486001623,
+                    -2.3994374154673643,
+                    -2.2710665101725827,
+                    5.363934090766195,
+                    10.017936516236789,
+                    6.259369626706711,
+                    -18.056986981506224,
+                    0.6699501383987325
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    15.363131051779035,
+                    16.543221893282315,
+                    15.393340659018014,
+                    17.037928913267876,
+                    16.116805122582118
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            }
+          }
+        },
+        "interior": {
+          "ingredients": {
+            "Chga": {
+              "encapsulatingRadius": 25,
+              "name": "Chga",
+              "source": {
+                "pdb": "Cga.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 454,
+              "molarity": 0.000043945,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Chromogranin-A",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    109.23399232640821,
+                    -26.250690880554558,
+                    40.57374432076392,
+                    -236.18750452081144,
+                    57.297948441504644,
+                    -78.65808836115914,
+                    -94.5173218202464,
+                    31.2621999539882,
+                    -24.218769722283923,
+                    49.253154527864524,
+                    -15.77961413537329,
+                    26.35684403866071,
+                    284.1323386030241,
+                    -69.55543576055993,
+                    67.82832924726935,
+                    -188.12226211774828,
+                    51.81411622931667,
+                    -56.824992135838784,
+                    -283.9425880730459,
+                    61.6355477015528,
+                    -95.9230316109323,
+                    -141.10270701527338,
+                    45.779645112848286,
+                    -37.76835461586533,
+                    223.7830694714263,
+                    -59.32373391835902,
+                    61.12336175526775,
+                    -1.9115198122983088,
+                    -6.401039267301858,
+                    7.720121839752267,
+                    -48.861727613479445,
+                    11.911290686427453,
+                    -10.382650856182664,
+                    165.53937743269506,
+                    -40.96859249283929,
+                    52.364452592573485
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    31.91790508279676,
+                    28.047209826748567,
+                    26.878589107354014,
+                    31.59284478074706,
+                    33.82788281318114,
+                    29.154318804486323,
+                    28.011575642065104,
+                    27.343510236414634,
+                    32.023471698268075,
+                    29.22122368334551,
+                    27.570907263195185,
+                    31.21989985456673
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 3.75,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Scg3": {
+              "encapsulatingRadius": 25,
+              "name": "Scg3",
+              "source": {
+                "pdb": "Scg3.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 178,
+              "molarity": 0.0000172295,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Secretogranin-3",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    92.70565438594593,
+                    -22.822234586358217,
+                    37.3602021390671,
+                    -32.511670237088936,
+                    4.398786708270176,
+                    -4.564310741469612,
+                    -95.2999086442627,
+                    31.4129943107663,
+                    -24.441793538079082,
+                    155.08387744210177,
+                    -37.86502876759093,
+                    50.23151673644435,
+                    27.817982195668037,
+                    -12.30081574634443,
+                    19.360617444578352,
+                    218.21153660851036,
+                    -57.77327292565322,
+                    60.17550510210427,
+                    282.62765658922814,
+                    -69.23229645548622,
+                    67.63935162634661,
+                    -220.32819672631956,
+                    55.96669097013287,
+                    -71.70969637256815,
+                    -160.18133987438517,
+                    48.406514166308625,
+                    -44.632307301036725,
+                    -278.21910412354856,
+                    61.00641384073835,
+                    -93.8885807036726
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    35.261109795603524,
+                    35.97394700766123,
+                    36.72931348135502,
+                    34.000399512762776,
+                    34.36653745061441,
+                    34.27760091533261,
+                    34.24571453913391,
+                    33.5841751902841,
+                    36.21999281083408,
+                    34.5905548780915
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 3.36,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Pcsk2": {
+              "encapsulatingRadius": 25,
+              "name": "Pcsk2",
+              "source": {
+                "pdb": "1p8j",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 354,
+              "molarity": 0.0000171327,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Neuroendocrine convertase 2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -21.88358351803467,
+                    24.90355274372169,
+                    22.212525922344327,
+                    -20.53111429539851,
+                    -13.222826418831572,
+                    -20.177076356894815,
+                    21.13448737451631,
+                    16.532871445193088,
+                    14.525796743222855,
+                    -6.2706665477293875,
+                    -3.08787605465438,
+                    19.241144348757643,
+                    18.817565679002783,
+                    -22.21521215090931,
+                    -22.224393142710483
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    33.87680110167353,
+                    36.505719824222204,
+                    36.21627008806438,
+                    31.926724938346524,
+                    33.949079610472225
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 3.35,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Ins2": {
+              "encapsulatingRadius": 25,
+              "name": "Ins2",
+              "source": {
+                "pdb": "2kqp",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 177000,
+              "molarity": 0.017132728,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Insulin-2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    2.8585688242925618,
+                    1.460547099238315,
+                    0.1328842629936462,
+                    4.513284984450472,
+                    -12.870890319270549,
+                    1.4844059794682183,
+                    -4.166206970688595,
+                    21.29368320503869,
+                    2.901821692954682,
+                    -0.39585270596235356,
+                    11.167203907162333,
+                    -11.915782570668872,
+                    -5.853019493613203,
+                    -6.9465182284609615,
+                    2.144550899834616
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    12.07105712346516,
+                    9.192301781299214,
+                    13.277374352065676,
+                    10.032192621206809,
+                    10.978235798164102
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.79,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Pcsk1": {
+              "encapsulatingRadius": 25,
+              "name": "Pcsk1",
+              "source": {
+                "pdb": "1p8j",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 129,
+              "molarity": 0.00000309744,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Neuroendocrine convertase 1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    19.191272081843053,
+                    -23.06096278862546,
+                    -20.572462384560538,
+                    -18.786086774964936,
+                    17.482565947137132,
+                    22.526118505785234,
+                    20.982271485931648,
+                    14.4701961390968,
+                    17.16026783724233,
+                    -5.4892917546547615,
+                    3.1193555432897497,
+                    -22.78548773401475,
+                    -24.558875641275684,
+                    -20.32656609880928,
+                    -15.94811231315036
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    35.09535184440481,
+                    35.411152543653124,
+                    35.12325798528215,
+                    31.617187249493067,
+                    34.39773378359996
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.75,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Scg2": {
+              "encapsulatingRadius": 25,
+              "name": "Scg2",
+              "source": {
+                "pdb": "Scg2.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 287,
+              "molarity": 0.0000277802,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Secretogranin-2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    291.2784636736935,
+                    -59.29741967677146,
+                    46.61381094534532,
+                    375.37437606169794,
+                    -75.20140495236541,
+                    58.41089096614688,
+                    -364.8943996632682,
+                    80.2259222096226,
+                    -105.55324887638095,
+                    -56.47728737060555,
+                    5.7941542386192815,
+                    7.9182426660227065,
+                    202.40619368539365,
+                    -50.275000281759596,
+                    50.917494458371166,
+                    -205.02894354762321,
+                    55.26428363619627,
+                    -43.74242210351433,
+                    -284.17512747161646,
+                    72.1528708477272,
+                    -71.5867339181527,
+                    -130.09047277804785,
+                    24.22160445732685,
+                    -19.86071335483028,
+                    114.81793669166484,
+                    -35.89883045819064,
+                    43.43513840026286,
+                    29.491085517212184,
+                    -10.838999697761167,
+                    28.56710365985795
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    44.979352300683665,
+                    48.4457259289439,
+                    48.105639811025725,
+                    45.59426397943936,
+                    45.668341020428336,
+                    43.89736317920653,
+                    45.00807172972296,
+                    42.901250835138995,
+                    46.22641915412383,
+                    45.903821765356014
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.69,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Vegfa": {
+              "encapsulatingRadius": 25,
+              "name": "Vegfa",
+              "source": {
+                "pdb": "VegFA.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 2,
+              "molarity": 1.94e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "VEGF-A",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    10.60346488215039,
+                    39.22195028536517,
+                    12.58306049016977,
+                    -15.920225065810238,
+                    38.41222407709189,
+                    -13.228296114532407,
+                    6.001317022422718,
+                    18.6759873506882,
+                    15.860877569293867,
+                    -9.044172675258835,
+                    18.599762093470073,
+                    -10.985274407323304,
+                    -8.412402967079522,
+                    -17.88615898973183,
+                    7.150880316168836,
+                    -9.38877324348674,
+                    -15.443425122786644,
+                    -13.053488163729387,
+                    14.708506500813748,
+                    -16.250761477593972,
+                    6.898812169973722
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    16.157667415470687,
+                    16.1153384198052,
+                    18.793177034325975,
+                    17.97926205238711,
+                    16.879398088956385,
+                    23.65753919831747,
+                    23.83611289215232
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.58,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Ins1": {
+              "encapsulatingRadius": 25,
+              "name": "Ins1",
+              "source": {
+                "pdb": "2kqp",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 177000,
+              "molarity": 0.017132728,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Insulin-1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    4.637719970519305,
+                    -12.675953614806668,
+                    3.6209887645143084,
+                    3.372285739302334,
+                    15.113329403556481,
+                    -13.008656015366272,
+                    -2.87921423020989,
+                    21.360829525149956,
+                    -2.608593454331116,
+                    -5.486964264886039,
+                    -7.221218620474351,
+                    4.653132468858634,
+                    3.3139769192264854,
+                    2.4017926191740533,
+                    -4.336023713811311
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    9.911322506588304,
+                    7.729677324965738,
+                    11.165275138360704,
+                    10.650512705693583,
+                    12.29559105714398
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.57,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Chgb": {
+              "encapsulatingRadius": 25,
+              "name": "Chgb",
+              "source": {
+                "pdb": "Chgb.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 122,
+              "molarity": 0.000011809,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Secretogranin-1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -254.2346357860751,
+                    66.99606329789381,
+                    -62.972630581147314,
+                    -165.3772946520032,
+                    42.849562272240206,
+                    -33.739107656599515,
+                    186.69288739535477,
+                    -50.454656175454424,
+                    52.83906482891284,
+                    274.41025958609885,
+                    -57.522075616873856,
+                    50.33253773508143,
+                    -345.1453528613002,
+                    76.97129690295642,
+                    -101.21029807432136,
+                    359.22943375064744,
+                    -72.95797882241493,
+                    53.055333066140534,
+                    -77.00137378519634,
+                    9.538714387947849,
+                    -2.6679832360033657,
+                    14.125690625776826,
+                    -6.790577406273108,
+                    24.538648300803388,
+                    99.88969221075371,
+                    -29.62380399162275,
+                    41.33198550996012
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    50.02033413996299,
+                    50.72567145712454,
+                    45.64615830273417,
+                    45.42159787320815,
+                    53.00584146784787,
+                    46.714258708104595,
+                    50.39543083985841,
+                    48.28545068605957,
+                    45.710833483494184
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.54,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Scg5": {
+              "encapsulatingRadius": 25,
+              "name": "Scg5",
+              "source": {
+                "pdb": "Sgc5.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 79,
+              "molarity": 0.00000764681,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Neuroendocrine protein 7B2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    79.79364383277529,
+                    -11.110595915799667,
+                    31.03916319385057,
+                    -99.43715699485207,
+                    12.068474189346588,
+                    -38.71511626669353,
+                    -41.60032357010576,
+                    6.733748895932251,
+                    -18.012379301256182,
+                    -69.45360881223816,
+                    8.480917613043701,
+                    -28.378357967323485,
+                    10.315136833774929,
+                    0.21403966299102706,
+                    6.126562357571409,
+                    58.18602892692478,
+                    -6.109183649850316,
+                    24.106927498501342,
+                    33.91006073694312,
+                    -1.7039515157139604,
+                    16.679443917459963,
+                    100.88395794472389,
+                    -20.669812237391966,
+                    36.34355465481177,
+                    -15.567095859317448,
+                    4.298627318920673,
+                    -6.636629858549945
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    14.99885078845259,
+                    19.713905342125145,
+                    17.294817544075816,
+                    18.90944767823783,
+                    15.901284856629267,
+                    15.372673283816416,
+                    16.076775169916257,
+                    14.64495074280514,
+                    16.179396901401088
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.43,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Mif": {
+              "encapsulatingRadius": 25,
+              "name": "Mif",
+              "source": {
+                "pdb": "1fim",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 491,
+              "molarity": 0.0000158744,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Macrophage migration inh. factor",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -3.067404166688309,
+                    -17.918336081462567,
+                    0.5404221102150046,
+                    -13.984032156744696,
+                    11.615617972335336,
+                    0.5404221102150046,
+                    17.051436323433002,
+                    6.302718109127241,
+                    0.5404221102150046,
+                    -6.927229335329944,
+                    -11.086733415793013,
+                    -10.472440590249755,
+                    -6.137778115286245,
+                    11.54252328977083,
+                    -10.472440590249755,
+                    13.065007450616193,
+                    -0.45578987397781034,
+                    -10.472440590249755,
+                    -12.838795749734086,
+                    -5.382077574560846,
+                    6.573148941383916,
+                    1.7583819703589398,
+                    13.809762060279613,
+                    6.573148941383916,
+                    11.080413779375142,
+                    -8.42768448571876,
+                    6.573148941383916
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    17.936605337661053,
+                    17.936605337661053,
+                    17.936605337661053,
+                    15.212258964115946,
+                    15.212258964115946,
+                    15.212258964115946,
+                    14.965914891261415,
+                    14.965914891261415,
+                    14.965914891261415
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": -1.13,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Vgf": {
+              "encapsulatingRadius": 25,
+              "name": "Vgf",
+              "source": {
+                "pdb": "Vgf.pdb",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 179,
+              "molarity": 0.0000173263,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Neurosecretory protein VGF",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -232.0354389452689,
+                    63.6261487298503,
+                    -51.03750057750745,
+                    388.15784144328126,
+                    -76.921239852866,
+                    62.91094633044125,
+                    -373.62596308313783,
+                    81.2491470068876,
+                    -108.19951222040595,
+                    -302.0671551160891,
+                    74.46505412450628,
+                    -78.9061789980002,
+                    48.00640383842159,
+                    -15.737509652218428,
+                    32.36954749074431,
+                    117.69070484497621,
+                    -37.303371821106985,
+                    43.65961568295779,
+                    -164.70284296248252,
+                    38.191069253789514,
+                    -31.44557899174626,
+                    -96.16270970448579,
+                    12.868929110363148,
+                    -5.750004459520426,
+                    253.79656187240738,
+                    -53.621916862203996,
+                    47.44429304212656,
+                    320.7948033271537,
+                    -65.23512724475344,
+                    46.94502541535334,
+                    -24.231881881006075,
+                    0.5120972976066795,
+                    16.96438881309419,
+                    186.4589694491139,
+                    -48.691506704058234,
+                    50.71825120966466
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    38.54472159163465,
+                    36.90372046612874,
+                    42.2205664370374,
+                    38.91316544028361,
+                    38.128350119584574,
+                    37.76940410732596,
+                    39.24679993201464,
+                    39.276124045731414,
+                    34.75125333147859,
+                    36.79987206301324,
+                    38.93392011383785,
+                    37.45519571765802
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 2.51,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Nptx1": {
+              "encapsulatingRadius": 25,
+              "name": "Nptx1",
+              "source": {
+                "pdb": "3flt",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 2,
+              "molarity": 1.94e-7,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Neuronal pentraxin-1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    40.00245114412759,
+                    27.06135828842154,
+                    -14.884309171860254,
+                    -40.00245114412759,
+                    -27.06135828842154,
+                    -14.884309171860254,
+                    -27.06135828842154,
+                    40.00245114412759,
+                    -14.884309171860254,
+                    27.06135828842154,
+                    -40.00245114412759,
+                    -14.884309171860254,
+                    -40.00245114412759,
+                    27.06135828842154,
+                    14.884309171860254,
+                    40.00245114412759,
+                    -27.06135828842154,
+                    14.884309171860254,
+                    27.06135828842154,
+                    40.00245114412759,
+                    14.884309171860254,
+                    -27.06135828842154,
+                    -40.00245114412759,
+                    14.884309171860254,
+                    9.015886328670211,
+                    47.17672341924366,
+                    -14.854135581068892,
+                    -9.015886328670211,
+                    -47.17672341924366,
+                    -14.854135581068892,
+                    -47.17672341924366,
+                    9.015886328670211,
+                    -14.854135581068892,
+                    47.17672341924366,
+                    -9.015886328670211,
+                    -14.854135581068892,
+                    -9.015886328670211,
+                    47.17672341924366,
+                    14.854135581068892,
+                    9.015886328670211,
+                    -47.17672341924366,
+                    14.854135581068892,
+                    47.17672341924366,
+                    9.015886328670211,
+                    14.854135581068892,
+                    -47.17672341924366,
+                    -9.015886328670211,
+                    14.854135581068892
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.457970501973683,
+                    27.153087903406057,
+                    27.153087903406057,
+                    27.153087903406057,
+                    27.153087903406057,
+                    27.153087903406057,
+                    27.153087903406057,
+                    27.153087903406057,
+                    27.153087903406057
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.53,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Stc1": {
+              "encapsulatingRadius": 25,
+              "name": "Stc1",
+              "source": {
+                "pdb": "4gxt",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 978,
+              "molarity": 0.0000946656,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Stanniocalcin-1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    18.098242252679185,
+                    10.136855904235532,
+                    10.326378672867847,
+                    -10.195134680055599,
+                    -6.622476192672394,
+                    -17.447791534582983,
+                    -18.02042986718203,
+                    -11.201619978855522,
+                    -1.9749078465435872,
+                    6.520365823508612,
+                    -7.592852441582384,
+                    -3.154067464194263,
+                    -0.8217755089332357,
+                    11.894610284389444,
+                    7.899802534706808
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    22.33502382590263,
+                    21.553708424757804,
+                    21.153067745854944,
+                    21.878812935750886,
+                    23.229825594942167
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.34,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Wif1": {
+              "encapsulatingRadius": 25,
+              "name": "Wif1",
+              "source": {
+                "pdb": "2ygq",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 249,
+              "molarity": 0.000024102,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Wnt inhibitory factor 1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    2.990581309630791,
+                    -23.87255847043082,
+                    -6.736809719809209,
+                    -23.872558470430825,
+                    -6.736809719809209,
+                    2.9905813096307945,
+                    -6.736809719809212,
+                    2.9905813096307945,
+                    -23.87255847043082,
+                    22.607401247179865,
+                    -10.031643649394216,
+                    13.586367119459915,
+                    -10.03164364939422,
+                    13.586367119459915,
+                    22.60740124717987,
+                    13.586367119459911,
+                    22.60740124717987,
+                    -10.031643649394216,
+                    16.98508774509233,
+                    -5.12789132549546,
+                    -9.358321638166053,
+                    -5.1278913254954634,
+                    -9.358321638166053,
+                    16.985087745092333,
+                    -9.358321638166057,
+                    16.985087745092333,
+                    -5.12789132549546
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    21.14826315904855,
+                    21.14826315904855,
+                    21.14826315904855,
+                    22.72526667677361,
+                    22.72526667677361,
+                    22.72526667677361,
+                    22.529861085800334,
+                    22.529861085800334,
+                    22.529861085800334
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.25,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Gc": {
+              "encapsulatingRadius": 25,
+              "name": "Gc",
+              "source": {
+                "pdb": "1kw2",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 1447,
+              "molarity": 0.000140062,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "GC1q-R protein or Vitamin D-binding protein",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -0.371410840928041,
+                    -15.034151700402745,
+                    17.52281487548977,
+                    -19.164118582166484,
+                    8.60838026271631,
+                    13.039931860313303,
+                    -7.170578976906953,
+                    -10.114363891150909,
+                    -20.534971362331632,
+                    -0.12695695078250502,
+                    -3.312706049511469,
+                    31.177277551486526,
+                    20.59256346626486,
+                    -3.680049795569097,
+                    -17.825515781649024,
+                    4.990267317173644,
+                    13.995585534006736,
+                    -12.397001257974452,
+                    1.230789176672591,
+                    5.2378275689191085,
+                    4.273790042730241
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    18.65765745294804,
+                    17.74766159934354,
+                    22.06365746299857,
+                    18.384950024794236,
+                    22.148616432363713,
+                    20.639773354268502,
+                    18.886127735832282
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 1.19,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Nucb1": {
+              "encapsulatingRadius": 25,
+              "name": "Nucb1",
+              "source": {
+                "pdb": "1snl",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 209,
+              "molarity": 0.0000202302,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Nucleobindin-1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -8.470143158280356,
+                    -4.9963019293760595,
+                    -2.955782164397754,
+                    -7.2383353715955865,
+                    -8.740455649631143,
+                    17.95425602828708,
+                    17.879890279925366,
+                    20.998395470901944,
+                    -3.8585078341393846,
+                    1.6511425351735352,
+                    -7.095999696017398,
+                    12.000739736239055,
+                    0.7183245961913307,
+                    0.9472191525999968,
+                    -9.307426127123271
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    11.663610138710613,
+                    12.177617599304641,
+                    15.941920360647078,
+                    10.935100833491797,
+                    17.11071550255205
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": -2.23,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Nucb2": {
+              "encapsulatingRadius": 25,
+              "name": "Nucb2",
+              "source": {
+                "pdb": "1snl",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 297,
+              "molarity": 0.0000287481,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Nucleobindin-2",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -9.32340633970173,
+                    -4.624244695482917,
+                    11.409347836672127,
+                    -7.548393388389871,
+                    -5.714649061115762,
+                    -5.190269731277841,
+                    15.06982702313193,
+                    21.22072178167277,
+                    3.032347679633757,
+                    1.7369194109107142,
+                    0.765655278761339,
+                    -9.555987785853857,
+                    0.12039362482307625,
+                    -10.019394754944512,
+                    11.926447705923378
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    8.058361316889089,
+                    9.925354953309402,
+                    14.22945384232621,
+                    17.017492363656146,
+                    10.433679447281882
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": -4.01,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Igf2": {
+              "encapsulatingRadius": 25,
+              "name": "Igf2",
+              "source": {
+                "pdb": "5l3l",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 118,
+              "molarity": 0.0000114218,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Insulin-like growth factor II",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -11.332044453951898,
+                    -17.16225163714311,
+                    -7.673167171689224,
+                    11.377488808300908,
+                    -0.17365182813228924,
+                    -4.9476673191908525,
+                    -0.8399112028089002,
+                    9.915831524369898,
+                    3.709266003109661,
+                    -3.809903527676401,
+                    -3.755418422839873,
+                    3.0372044632098163
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    8.631028870864865,
+                    8.982703229266827,
+                    12.051736718654466,
+                    12.134947484488182
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Iapp": {
+              "encapsulatingRadius": 25,
+              "name": "Iapp",
+              "source": {
+                "pdb": "2kj7",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 3540,
+              "molarity": 0.000342655,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Islet amyloid polypeptide",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -1.2966187844244823,
+                    -3.165706686869715,
+                    0.2071981899999082,
+                    1.2575190995902954,
+                    -17.669312830141116,
+                    -2.6974115531972704,
+                    3.345588058291534,
+                    12.038843530421627,
+                    -0.21494742725777286,
+                    -4.025148458364014,
+                    22.319150109163573,
+                    4.687639044967498
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    9.817966824681715,
+                    9.746565616658156,
+                    11.087269653244274,
+                    10.397561904492523
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "CPeptide1": {
+              "encapsulatingRadius": 25,
+              "name": "CPeptide1",
+              "source": {
+                "pdb": "1t0c",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 177000,
+              "molarity": 0.017132728,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Insulin-Cpeptide 1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -12.067195097308614,
+                    -2.9412675120544973,
+                    3.1221966007595516,
+                    -2.9938929821114355,
+                    -2.839312424699047,
+                    2.5302574597896816,
+                    6.129662075039873,
+                    5.8793492591070935,
+                    -3.2308797848446553,
+                    8.837952748862339,
+                    -0.8393587947873611,
+                    1.3476053035669504,
+                    -1.2307495995464792,
+                    1.5054067079025353,
+                    -6.083637956716268
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    7.2379278339803035,
+                    7.411888316599882,
+                    6.42181679632584,
+                    8.240230586423014,
+                    7.446316039080594
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "CPeptide2": {
+              "encapsulatingRadius": 25,
+              "name": "CPeptide2",
+              "source": {
+                "pdb": "1t0c",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 177000,
+              "molarity": 0.017132728,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Insulin-Cpeptide 1",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    9.32029128690742,
+                    -1.060201064740153,
+                    4.475645108226315,
+                    -5.517126653122021,
+                    0.7732590160253896,
+                    0.326277329165098,
+                    -4.751668643776493,
+                    3.4196937026202914,
+                    -6.558529880717508,
+                    -6.22226398410218,
+                    -8.497997912277988,
+                    1.4329391322062262,
+                    6.164540845908165,
+                    5.781502121519299,
+                    -0.9192316100242182
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    7.952806316245316,
+                    7.7273622208933315,
+                    6.695314114988804,
+                    8.610198571569066,
+                    6.798469701263219
+                  ]
+                }
+              ],
+              "packingMode": "random",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            },
+            "Insulin_crystal": {
+              "encapsulatingRadius": 25,
+              "name": "Insulin_crystal",
+              "source": {
+                "pdb": "1trz",
+                "bu": "",
+                "selection": "",
+                "model": "",
+                "transform": {
+                  "offset": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              },
+              "nbMol": 354000,
+              "molarity": 0.002855455,
+              "molecularweight": 0,
+              "meshFile": "",
+              "meshType": "file",
+              "principalVector": [
+                0,
+                0,
+                1
+              ],
+              "offset": [
+                0,
+                0,
+                0
+              ],
+              "uniprot": "",
+              "label": "Insulin-Crystal",
+              "Type": "MultiSphere",
+              "positions": [
+                {
+                  "coords": [
+                    -1.0618596177047308,
+                    12.307069112588984,
+                    5.551115123125783e-17,
+                    -10.127304688972018,
+                    -7.073131960496145,
+                    5.551115123125783e-17,
+                    11.189164306676748,
+                    -5.233937152092839,
+                    5.551115123125783e-17
+                  ]
+                }
+              ],
+              "radii": [
+                {
+                  "radii": [
+                    20,
+                    20,
+                    20
+                  ]
+                }
+              ],
+              "packingMode": "supercell",
+              "comments": "",
+              "color": [
+                1,
+                0,
+                0
+              ],
+              "confidence": 0,
+              "sprite": {
+                "image": "",
+                "offsety": 0,
+                "scale2d": 0
+              }
+            }
+          }
+        },
+        "mb": {
+          "positions": [
+            0,
+            0,
+            0
+          ],
+          "radii": [
+            1370
+          ]
+        }
+      }
+    }
+  }

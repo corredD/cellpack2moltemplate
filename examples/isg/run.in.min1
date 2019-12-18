@@ -6,8 +6,11 @@
 #   "system.data", "system.in.init", and "system.in.settings" files LAMMPS needs
 
 # -- Init Section --
+# boundary f f f
 
 include system.in.init
+
+
 
 # Specify the custom Gaussian force field style we will use during this step:
 include system.in.init.soft
@@ -23,20 +26,21 @@ include system.in.settings
 # Now load the custom Gaussian force parameters we will use during this step:
 # (Normally these are included in "sytem.in.settings", but not in this example.)
 
-include system.in.settings.pair.coeffs.soft
+
 
 # -- Run Section --
 #comment for debug display the bycycle
-group todump subtract all gBicycleI gBicycleO
 
-dump            1 todump custom 500 traj_min_soft.lammpstrj id mol type x y z ix iy iz# x y z 
-dump_modify 1 sort id
+
+
+#todump
+dump            1 todump custom 100 traj_min_soft.lammpstrj id mol type xu yu zu ix iy iz# x y z 
+dump_modify 1 sort id	
 
 thermo_style    custom step temp pe etotal epair ebond eangle edihed
 thermo          100       # time interval for printing out "thermo" data
 thermo_modify   norm yes flush yes
 
-group mobile subtract all gFixed gOrdinary
 
 # Molecules containing multiple atoms use rigid-body integrators to hold
 # each molecule together and preserve its shape (while allowing it to move).
@@ -44,7 +48,7 @@ group mobile subtract all gFixed gOrdinary
 # (This group is defined in system.in.settings)
 
 fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
-
+#fix fxDamp mobile viscous 0.5 # F = - gamma * velocity
 
 # Molecules containing only one atom do not need to be treated as rigid
 # bodies. We do not need to use rigid body integrators for them. Instead
@@ -54,38 +58,18 @@ fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
 
 fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
 
-
 # Tell LAMMPS to only compute forces between particles in different molecules.
 # (No need to compute forces between particles in the same rigid molecule)
 # This drastically reduces the number of pairwise forces that need to
 # be calculated:
 #one N = max number of neighbors of one atom
 #page N = number of pairs stored in a single neighbor page
-neigh_modify one 20000 page 200000 
-neigh_modify exclude molecule/intra all
-neigh_modify exclude type 2 3
-neigh_modify exclude molecule/inter gBicycleI
-neigh_modify exclude molecule/inter gBicycleO
+
 
 # Reduce the time spent computing neighbor lists by increasing the bin size
 # and using "multi" style (needed when a large range of radii are in use)
 
-neighbor 15.0 multi  # <-- THIS IS A SAFE CHOICE, BUT SIMULATIONS WILL BE SLOW.
-                     #     IF YOUR SIMULATION LACKS PARTICLES/ATOMS LARGER THAN
-		     #     A RIBOSOME, THEN USE A MUCH SMALLER VALUE (ie 10.0).
-		     #     PLAY WITH THIS NUMBER TO IMPROVE THE SIMULATION SPEED
-		     #     (Later, I should get cellpack2moltemplate to choose
-		     #      this number automatically from the particle radii.)
 
-#need wall at radius 1370.0 diameter 2740
-#this part should also come from cellpack2moltemplate
-#mb is 61.5
-region rSphereI sphere  0 0 0  4100.0 side in #region size
-region rSphereO sphere  0 0 0  0.0  side out #region size
-group interior union gisg_interior gBicycleI#union of compartment name and bicycle
-group exterior union gcytoplasme gBicycleO
-fix fxWall1 interior wall/region rSphereI  harmonic  0.05  1.0  2790.0  #actual radius = 4100-2700 = 1400 radius
-fix fxWall2 exterior wall/region rSphereO  harmonic  0.05  1.0  1430.0  #actual radius = 10.0+1390 = 1400 radius
 #fix_modify fxWall1 energy yes
 #fix_modify fxWall2 energy yes
 #strength factor for wall-particle interaction (energy/distance^2).
@@ -106,10 +90,49 @@ fix fxWall2 exterior wall/region rSphereO  harmonic  0.05  1.0  1430.0  #actual 
 # height of each Gaussian barrier) to make sure particles that were not 
 # overlapping before do not start overlapping after this step.
 
-timestep        0.1
+pair_style hybrid lj/cut/soft 2.0 0.5 300.0 #n alpha_lj cutoff
+#pair_coeff * * lj/cut/soft 300.0 50.0 0.5 60.4#300.0 53.810282575676496 60.400000000000006
+#epsiln sigma  lambda cutoff1 cutoff 2
+include system.in.settings.pair.coeffs.lj.softs
+#epison r rcut
+#pair_coeff 1 1 0.28 3.1 1.0 9.5
+timestep        0.00005
+fix fxLan     mobile langevin 0.0 0.0 1 48279
+run 200
+unfix fxLan
+
+timestep        0.0001
+fix fxLan     mobile langevin 0.0 0.0 1 48279
+run 200
+unfix fxLan
+
+timestep        0.0002
+fix fxLan     mobile langevin 0.0 0.0 1 48279
+run 200
+unfix fxLan
+
+timestep        0.0005
+fix fxLan     mobile langevin 0.0 0.0 1 48279
+run 200
+unfix fxLan
+
+timestep        0.001
+fix fxLan     mobile langevin 0.0 0.0 1.0 48279
+run 200
+unfix fxLan
+
+timestep        0.005#make it even smaller ?
 # Anneal the system starting at temperature kB*T/10, and ending at temperature 0
-fix fxLan     all langevin 0.05961621 0.0 100.0  48279
-run 40000
+# langevin Tstart Tstop damp seed keyword values
+fix fxLan     all langevin 0.59 0.59 1.0  48279#0.05961621
+run 500
+unfix fxLan
+
+timestep        0.01#make it even smaller ?
+# Anneal the system starting at temperature kB*T/10, and ending at temperature 0
+# langevin Tstart Tstop damp seed keyword values
+fix fxLan     all langevin 0.59 0.59 1.0  48279#0.05961621
+run 1000
 unfix fxLan
 
 write_data system_after_min_soft.data
