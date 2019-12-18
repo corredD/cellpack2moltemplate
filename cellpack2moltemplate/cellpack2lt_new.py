@@ -519,8 +519,8 @@ def ConvertMolecule(tree,
         #print ("after",center2,crds)
     for i in range(0, len(crds)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
-        atype_name = '@atom:A' + str(iradius)+'_'+str(g_path_radii[path])    #atom type depends on radius
-        atype_names = '@{atom:A' + str(iradius)+'_'+str(g_path_radii[path])  +'}'   #atom type depends on radius
+        atype_name = '@atom:A' + str(iradius)+'x'+str(g_path_radii[path])    #atom type depends on radius
+        atype_names = '@{atom:A' + str(iradius)+'x'+str(g_path_radii[path])  +'}'   #atom type depends on radius
         charge = '0.0'
         l_mol_defs.append('    $atom:a'+str(i+1)+'  '+mol+'  '+atype_name+'  '+charge+'  '+str(crds[i][0])+' '+str(crds[i][1])+' '+str(crds[i][2])+'\n')
         list_atom_type.append(atype_name)
@@ -561,7 +561,7 @@ def ConvertMolecule(tree,
     l_mol_defs.append('  }  # end of: write(\"Data Atoms\") {...\n\n')
     #grouping ?
     l_mol_defs.append('  write_once(\"In Settings\") {\n')
-    l_mol_defs.append('    group '+group+' type '+" ".join(list_atom_type)+'#'+molecule['name']+'\n')
+    l_mol_defs.append('    group '+group+' type '+" ".join(list_atom_type)+'  #'+molecule['name']+'\n')
     #if "surface" in cname :#if cname == "surface" :
     #    l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
     #    l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
@@ -1098,7 +1098,7 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix):
     m = 2000
     for i in range(0, len(radii)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
-        atype_name = '@atom:A' + str(iradius)+'_'+prefix    #atom type depends on radius
+        atype_name = '@atom:A' + str(iradius)+'x'+prefix    #atom type depends on radius
         astr+='group g'+atype_name+' type '+atype_name+'\n'
         if 'compartments' in tree:
             for cname in tree['compartments']:
@@ -1176,7 +1176,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 start = (v-s)+50
                 if start not in b:
                     b[start]=[]
-                b[start].append('@atom:A' + str(v)+"_"+g_radii[cname][comp]["prefix"])
+                b[start].append('@atom:A' + str(v)+"x"+g_radii[cname][comp]["prefix"])
             #print (b)
             
             for s in b:
@@ -1330,7 +1330,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     for i,p in enumerate(ir_needed):
         g_path_radii[p]=i
         for iradius in sorted(ir_needed[p]):
-            coeff = OnePairCoeffCutSoft(str(iradius)+"_"+str(i), iradius, delta_r, apairstyle, aepsilon,alambda)
+            coeff = OnePairCoeffCutSoft(str(iradius)+"x"+str(i), iradius, delta_r, apairstyle, aepsilon,alambda)
             file_out.write(coeff)        
     bycicle1 = OnePairCoeffCutSoft("BIC1", 500, delta_r, apairstyle, aepsilon,alambda)
     bycicle2 = OnePairCoeffCutSoft("BIC2", 500, delta_r, apairstyle, aepsilon,alambda)
@@ -1341,7 +1341,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write('   write_once("In Settings Pair Coeffs") {\n')
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):
-            coeff = OnePairCoeff(str(iradius)+"_"+str(i), iradius, delta_r, pairstyle, epsilon)
+            coeff = OnePairCoeff(str(iradius)+"x"+str(i), iradius, delta_r, pairstyle, epsilon)
     #for iradius in sorted(ir_needed):
     #    coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
     #    file_out.write(coeff)
@@ -1368,7 +1368,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write('   write_once("In Settings Pair Coeffs Soft") {\n')
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):    
-            coeff = OnePairCoeffSoft(str(iradius)+"_"+str(i), iradius, delta_r, epsilon,A=100000.0)
+            coeff = OnePairCoeffSoft(str(iradius)+"x"+str(i), iradius, delta_r, epsilon,A=100000.0)
             file_out.write(coeff)    
     #for iradius in sorted(ir_needed):
     #    coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
@@ -1393,7 +1393,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
             rcut = iradius * delta_r * 0.1
             #r = rcut / (2.0**(1.0/6))
             file_out.write('    ' +
-                       '@atom:A' + str(iradius)+"_"+str(i) +' '+ str(rcut) +'\n')
+                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(rcut) +'\n')
     file_out.write('    ' +
                        '@atom:ABIC1 ' + str(default_mass) +'\n')
     file_out.write('    ' +
@@ -1468,7 +1468,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):          
             r = iradius * delta_r
-            atype_name = '@{atom:A' + str(iradius)+"_"+str(i) + '}'
+            atype_name = '@{atom:A' + str(iradius)+"x"+str(i) + '}'
             file_out.write('    set sel [atomselect top "type '+atype_name+'"]\n'
                        '    \$sel set radius '+str(r)+'\n')
     atype_name1 = '@{atom:ABIC1}'          
@@ -1755,7 +1755,7 @@ def main():
 
 if __name__ == '__main__':
     file_in=main()
-# need a minimum of 2 beads per rigid body 
+# need a minimum of 3 beads per rigid body 
 #python  ~/Documents/cellpack2moltemplate/cellpack2moltemplate/cellpack2lt.py -in resultsISGtest.json  -out system2.lt
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck#nocheck?
 #"C:\Program Files\LAMMPS 64-bit 23Oct2017\bin\lmp_serial.exe" -i run.in.min
