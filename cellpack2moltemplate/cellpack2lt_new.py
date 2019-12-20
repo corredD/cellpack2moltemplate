@@ -1063,7 +1063,16 @@ def OnePairCoeffCutSoft(aname, aradius, delta_r, pairstyle, epsilon, alambda):
                     str(alambda) + ' ' +
                     str(rcut+10.0) + '\n')
 
-def OnePairCoeffSoft(aname, aradius, delta_r, epsilon, A=10000.0):
+def OnePairCoeffSoft(aname, aradius, delta_r, epsilon, A=10.0):
+    radius = aradius * delta_r
+    rcut = 2 * radius   #(don't forget the 2)
+    return ('     pair_coeff ' + 
+                    '@atom:A' + str(aname) + ' ' +
+                    '@atom:A' + str(aname) + ' ' +
+                    str(A) + ' ' +
+                    str(rcut) + '\n')
+
+def OnePairCoeffGauss(aname, aradius, delta_r, epsilon, A=10000.0):
     radius = aradius * delta_r
     rcut = 2 * radius   #(don't forget the 2)
     # pair_style gauss uses the following formula for the energy:
@@ -1095,7 +1104,7 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix):
     astr=''
     mbthickness = 61.5/2.0
     strength = 0.1
-    m = 2000
+    m = 3000
     for i in range(0, len(radii)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+prefix    #atom type depends on radius
@@ -1126,7 +1135,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
         '    #group exterior union gcytoplasme gBicycleO\n')
     mbthickness = 61.5/2.0
     bicycle_radius = 50.0
-    strength = 100.0
+    strength = 10.0
     count=0
     if 'compartments' in tree:
         for compname in tree['compartments']:
@@ -1138,7 +1147,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 astr+='    #mb is '+str(mbthickness)+'\n'
                 m=np.max(bounds)
                 #astr+=('    group interior union g%s_interior gBicycleI#union of compartment name and bicycle\n' % (compname))   
-                astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m))
+                astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m*2))
                 astr+=('    region rSphereO%sg sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],0.0))
                 #astr+=('    fix fxWall%i_1 g%s_interior wall/region rSphereI%sg  harmonic  %f  0.1  %f\n'%(count,compname,compname,strength,m-radius+mbthickness+rcut_max))
                 #astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,strength,radius+mbthickness+rcut_max))                       
@@ -1160,15 +1169,14 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     global g_radii
     #astr=''
     mbthickness = 61.5/2.0
-    strength = 100.0
-    m=np.max(bounds)
+    strength = 10.0
+    m=np.max(bounds)*2.0
     for cname in g_radii:
         for comp in g_radii[cname]:
             radius = g_radii[cname][comp]['radius']
             d=m-radius
             atom = np.sort(list(g_radii[cname][comp]['atom']))
             N=len(atom)
-            d=m-radius
             b={}
             for n in range(0,N):
                 v=atom[n]
@@ -1184,10 +1192,10 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 #atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
                 if cname == 'cytoplasme':
                     astr+='group gO'+str(s)+' type '+' '.join(set(b[s]))+'\n'
-                    astr+='fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1,radius,mbthickness,s)
+                    astr+='fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1,radius,mbthickness,s*0.1)
                 else :             
                     astr+='group gI'+str(s)+' type '+' '.join(set(b[s]))+'\n'          
-                    astr+='fix ifxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1,d,mbthickness,s)
+                    astr+='fix ifxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1,d,mbthickness,s*0.1)
     astr+='}\n'
     vmd+='}\n'
     return astr+vmd
@@ -1320,7 +1328,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     special_bonds_command = 'special_bonds lj/coul 0.0 0.0 1.0'
     apairstyle='lj/cut/soft'
     alambda = 0.95
-    aepsilon = 5.9#5.90#300 was to high ?
+    aepsilon = 10.0#5.90#300 was to high ?
     
     file_out.write('   write_once("In Settings Pair Coeffs LJ Softs") {\n')
     #for iradius in sorted(ir_needed):
@@ -1342,6 +1350,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):
             coeff = OnePairCoeff(str(iradius)+"x"+str(i), iradius, delta_r, pairstyle, epsilon)
+            file_out.write(coeff)
     #for iradius in sorted(ir_needed):
     #    coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
     #    file_out.write(coeff)
@@ -1368,13 +1377,13 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     file_out.write('   write_once("In Settings Pair Coeffs Soft") {\n')
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):    
-            coeff = OnePairCoeffSoft(str(iradius)+"x"+str(i), iradius, delta_r, epsilon,A=100000.0)
+            coeff = OnePairCoeffSoft(str(iradius)+"x"+str(i), iradius, delta_r, epsilon,A=10.0)
             file_out.write(coeff)    
     #for iradius in sorted(ir_needed):
     #    coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
     #    file_out.write(coeff)
-    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=100000.0)
-    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=100000.0)
+    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=10.0)
+    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=10.0)
     file_out.write(bycicle1)
     file_out.write(bycicle2)
     file_out.write('  }  #end of "In Settings Pair Coeffs Soft"\n'
@@ -1393,7 +1402,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
             rcut = iradius * delta_r * 0.1
             #r = rcut / (2.0**(1.0/6))
             file_out.write('    ' +
-                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(rcut) +'\n')
+                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(default_mass) +'\n')
     file_out.write('    ' +
                        '@atom:ABIC1 ' + str(default_mass) +'\n')
     file_out.write('    ' +
