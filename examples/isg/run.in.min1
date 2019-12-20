@@ -48,7 +48,8 @@ thermo_modify   norm yes flush yes
 # (This group is defined in system.in.settings)
 
 fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
-#fix fxDamp mobile viscous 0.5 # F = - gamma * velocity
+#fix fxDamp mobile viscous 0.01 # F = - gamma * velocity
+#In a Brownian dynamics context, gamma = Kb T / D, where Kb = Boltzmann’s constant, T = temperature, and D = particle diffusion coefficient. D can be written as Kb T / (3 pi eta d), where eta = dynamic viscosity of the frictional fluid and d = diameter of particle. This means gamma = 3 pi eta d, and thus is proportional to the viscosity of the fluid and the particle diameter.
 
 # Molecules containing only one atom do not need to be treated as rigid
 # bodies. We do not need to use rigid body integrators for them. Instead
@@ -90,49 +91,35 @@ fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
 # height of each Gaussian barrier) to make sure particles that were not 
 # overlapping before do not start overlapping after this step.
 
-pair_style hybrid lj/cut/soft 2.0 0.5 300.0 #n alpha_lj cutoff
+#pair_style hybrid lj/cut/soft 2.0 0.5 300.0 #n alpha_lj cutoff
 #pair_coeff * * lj/cut/soft 300.0 50.0 0.5 60.4#300.0 53.810282575676496 60.400000000000006
 #epsiln sigma  lambda cutoff1 cutoff 2
-include system.in.settings.pair.coeffs.lj.softs
+#include system.in.settings.pair.coeffs.lj.softs
+#pair_style hybrid gauss 980
+#include system.in.init.soft
+
 #epison r rcut
 #pair_coeff 1 1 0.28 3.1 1.0 9.5
-timestep        0.00005
+
+change_box all boundary fs fs fs
+
+#fix vmd all imd 5678
+pair_style soft 300.0
+include system.in.settings.pair.coeffs.soft
+variable prefactor equal ramp(0,20000)
+fix adapt1 mobile adapt 1 pair soft a * * v_prefactor
+
+timestep        0.01
 fix fxLan     mobile langevin 0.0 0.0 1 48279
-run 200
+run 10000
 unfix fxLan
 
-timestep        0.0001
-fix fxLan     mobile langevin 0.0 0.0 1 48279
-run 200
-unfix fxLan
-
-timestep        0.0002
-fix fxLan     mobile langevin 0.0 0.0 1 48279
-run 200
-unfix fxLan
-
-timestep        0.0005
-fix fxLan     mobile langevin 0.0 0.0 1 48279
-run 200
-unfix fxLan
-
-timestep        0.001
-fix fxLan     mobile langevin 0.0 0.0 1.0 48279
-run 200
-unfix fxLan
-
-timestep        0.005#make it even smaller ?
-# Anneal the system starting at temperature kB*T/10, and ending at temperature 0
-# langevin Tstart Tstop damp seed keyword values
-fix fxLan     all langevin 0.59 0.59 1.0  48279#0.05961621
-run 500
-unfix fxLan
-
-timestep        0.01#make it even smaller ?
-# Anneal the system starting at temperature kB*T/10, and ending at temperature 0
-# langevin Tstart Tstop damp seed keyword values
-fix fxLan     all langevin 0.59 0.59 1.0  48279#0.05961621
-run 1000
-unfix fxLan
+#minimize 1.0e-4 1.0e-6 100 1000 ?
+#pair_style hybrid lj/cut 1960
+#include system.in.settings.pair.coeffs
+#timestep        0.005
+#fix fxLan     mobile langevin 0.0 0.0 1 48279
+#run 2000
+#unfix fxLan
 
 write_data system_after_min_soft.data
