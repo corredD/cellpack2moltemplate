@@ -18,6 +18,8 @@ if sys.version < '2.7':
 else:
     from collections import OrderedDict 
 import transformation as tr
+import moltemplate
+
 g_program_name = __file__.split('/')[-1]   # = 'cellpack2lt.py'
 __version__ = '0.2.1'
 __date__ = '2018-8-13'
@@ -529,6 +531,8 @@ def ConvertMolecule(tree,
     N = len(crds)
     group = "g"+cname 
     #group = 'gOrdinary'
+    if N == 1 :
+        group = 'gOrdinary'
     #if N> 1 :
         #group = 'gRigid'  
         #group = "g"+cname  
@@ -868,29 +872,50 @@ def ConvertSystem2(tree,
                     '\n' +
                     '\n')      
 
-def FindIngredientInTreeFromId(query_ing_id,tree):
-    current_id = 0
+#curve_ingredient follow a local order in cellpackgpu
+def FindIngredientInTreeFromId(query_ing_id,tree,grow=False):
+    current_id = -1
+    fiber_id = -1
     path="."
+    start = True
     if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
         cname ='cytoplasme'
         for ing_name in tree['cytoplasme']['ingredients']:
-            if query_ing_id == current_id :
-                return [tree['cytoplasme']['ingredients'][ing_name],cname,".cytoplasme.ingredients"]
-            current_id+=1
+            if tree['cytoplasme']['ingredients'][ing_name]["Type"] == "Grow":
+                fiber_id+=1
+                if query_ing_id == fiber_id  and grow:
+                    return [tree['cytoplasme']['ingredients'][ing_name],cname,".cytoplasme.ingredients"]
+            else :
+                current_id+=1
+                #print (current_id,query_ing_id,ing_name)
+                if query_ing_id == current_id and not grow:
+                    return [tree['cytoplasme']['ingredients'][ing_name],cname,".cytoplasme.ingredients"]
     if 'compartments' in tree:
         for compname in tree['compartments']:
             if 'surface' in tree['compartments'][compname] and len(tree['compartments'][compname]['surface']['ingredients']) :
                 cname = compname+"_surface"
                 for ing_name in tree['compartments'][compname]['surface']['ingredients']:
-                    if query_ing_id == current_id :
-                        return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
-                    current_id+=1                        
+                    if tree['compartments'][compname]['surface']['ingredients'][ing_name]["Type"] == "Grow":
+                        fiber_id+=1
+                        if query_ing_id == fiber_id and grow:
+                            return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
+                    else :
+                        current_id+=1  
+                        #print (current_id,query_ing_id,ing_name)
+                        if query_ing_id == current_id and not grow:
+                            return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
             if 'interior' in tree['compartments'][compname] and len(tree['compartments'][compname]['interior']['ingredients']):
                 cname = compname+"_interior"
                 for ing_name in tree['compartments'][compname]['interior']['ingredients']:
-                    if query_ing_id == current_id :
-                        return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
-                    current_id+=1                        
+                    if tree['compartments'][compname]['interior']['ingredients'][ing_name]["Type"] == "Grow":
+                        fiber_id+=1
+                        if query_ing_id == fiber_id  and grow:
+                            return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
+                    else :                                      
+                        current_id+=1   
+                        #print (current_id,query_ing_id,ing_name)                     
+                        if query_ing_id == current_id and not grow:
+                            return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
     return [None,None,None]    
 
 def FindIngredientInTree(query_ing_name,tree):
@@ -912,6 +937,11 @@ def FindIngredientInTree(query_ing_name,tree):
                     if query_ing_name == ing_name :
                         return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname]
     return [None,None]
+
+def fastest_calc_dist(p1,p2):
+    return sqrt((p2[0] - p1[0]) ** 2 +
+                     (p2[1] - p1[1]) ** 2 +
+                     (p2[2] - p1[2]) ** 2)
 
 def ConvertSystem(tree,
                   file_out,
@@ -988,16 +1018,80 @@ def ConvertSystem(tree,
     #if (prev_ingredient_name == "Insulin_crystal"):
     #    file_out.write('}\n')
     #    file_out.write(prev_ingredient_name+'_body = new '+prev_ingredient_name+'Body\n\n')                    
-    file_out.write(nindent*'  '+'}  # endo of \"'+prev_ingredient_name+'\"_ingredient definition\n\n')
-    file_out.write('\n' + 
+    if ninstances!= 0 :
+        file_out.write(nindent*'  '+'}  # endo of \"'+prev_ingredient_name+'\"_ingredient definition\n\n')
+        file_out.write('\n' + 
             nindent*'  '+prev_ingredient_name + '_ingredient_instance = new ' + prev_ingredient_name + '_ingredient\n' +
             '\n' +
             '\n')    
+
+    ncpts = len(model_data["cpts"])
+    cpts_info = model_data["cinfo"]
+    if ncpts!=0:
+        ncurves = np.unique(cpts_info[:,0])
+        curves = np.array( [ cpts_info[cpts_info[:,0]==i,:] for i in ncurves] )
+        for i in ncurves:
+            indices = cpts_info[:,0]==i
+            infos = cpts_info[indices] #curve_id, curve_type, angle, uLength
+            pts = model_data["cpts"][indices]*np.array([-1.0,1.0,1.0,1.0]) #xyz_radius
+            normal = model_data["cnorm"][indices] #xyz_0
+            ptype =  infos[0][1]
+            ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree,grow=True)
+            name = ingredient["name"]+"_"+str(int(i))
+            print ("ingredient fiber ",i,infos[0], ptype,name, cname, path)
+            #build the molecule definition
+            #file_out.write(nindent*'  '+name + '_ingredient {\n')
+            l_mol_defs = []
+            l_instances = []
+            const=ConvertMolecule(tree,
+                        ingredient,
+                        name,
+                        l_mol_defs,
+                        l_instances,
+                        delta_r,
+                        bounds,cname,path,model_data=model_data)
+            comp_constraints+=const
+            cutoff = 10.0#distance between first two points ?
+            if (len(pts)>=2):
+                cutoff=fastest_calc_dist(pts[0],pts[1])
+            l_mol_defs.append('  write_once(\"In Settings\") {\n')
+            l_mol_defs.append('    bond_coeff  @bond:Backbone_'+name+'    10.0 '+str(cutoff)+'\n')#K energy distance, r0 distance
+            #if "surface" in cname :#if cname == "surface" :
+            #    l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
+            #    l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
+            l_mol_defs.append('}  # end of: write_once(\"In Settings\")\n\n\n')    
+            #file_out.write('\n' + 
+            #        (nindent*'  ') + '# ----------- molecule definitions -----------\n'
+            #        '\n')
+            #file_out.write((nindent*'  ') + (nindent*'  ').join(l_mol_defs))
+            #file_out.write(nindent*'  '+'}  # endo of \"'+name+'\"_ingredient definition\n\n')
+            # It's a really good idea to generate a smoother version of this curve:
+            #x_new = moltemplate.interpolate_curve.ResampleCurve(pts, len(pts), 1.0)
+            #what about flexibility 
+            gp = moltemplate.genpoly_lt.GenPoly()
+            gp.coords_multi = [pts]
+            gp.name_sequence_multi =[[name,]*len(pts)]
+            ax,ay,az = ingredient["principalVector"]
+            gp.ParseArgs([
+                    '-axis', str(ax),str(ay),str(az), #direction of the polymer axis in the original monomer object.
+                    '-helix', '0.0', #rotate each monomer around it's axis by angle deltaphi (in degrees) beforehand #34.2857 dna
+                    '-circular', 'no',
+                    '-bond', 'Backbone_'+name, 'a1', 'a1', #define the connectivity
+                    '-polymer-name', "fiber_"+name,
+                    '-inherits', 'ForceField',
+                    '-monomer-name',name,
+                    '-header', (nindent*'  ') + (nindent*'  ').join(l_mol_defs)
+                    ])
+            gp.WriteLTFile(file_out)
+            file_out.write('\n' + 
+                nindent*'  '+'fiber_'+name + '_instance = new ' + 'fiber_'+name + '\n' +
+                '\n' +
+                '\n')   
     file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
     file_out.write('\n' + 
                     nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
                     '\n' +
-                    '\n')   
+                    '\n')          
     return comp_constraints
    
 def CreateGroupCompartment(tree):
@@ -1024,20 +1118,28 @@ def GetModelData(model_in):
     f=open(model_in,"rb")
     ninst=struct.unpack('<i', f.read(4))[0]
     ncurve=struct.unpack('<i', f.read(4))[0]
-    #ninstb=f.read(4)
-    #ncurveb=f.read(4)
-    data=f.read(ninst*4*4) 
-    pos = np.frombuffer(data,dtype='f').reshape((ninst,4))
-    data=f.read(ninst*4*4) 
-    quat = np.frombuffer(data,dtype='f').reshape((ninst,4))
+    pos=[]
+    quat=[]
+    ctrl_pts=[]
+    ctrl_normal=[]
+    ctrl_info=[]
+    if ninst!= 0:
+        data=f.read(ninst*4*4) 
+        pos = np.frombuffer(data,dtype='f').reshape((ninst,4))
+        data=f.read(ninst*4*4) 
+        quat = np.frombuffer(data,dtype='f').reshape((ninst,4))
     #point,norm,info curve
     if  ncurve!= 0:
         data=f.read(ncurve*4*4) 
-        pts = np.frombuffer(data)
+        ctrl_pts = np.frombuffer(data,dtype='f').reshape((ncurve,4))
+        data=f.read(ncurve*4*4) 
+        ctrl_normal = np.frombuffer(data,dtype='f').reshape((ncurve,4))
+        data=f.read(ncurve*4*4) 
+        ctrl_info = np.frombuffer(data,dtype='f').reshape((ncurve,4))            
         #data=f.read(ninst*4*4) 
         #quat = np.frombuffer(data)  
     f.close()   
-    return {"pos":pos,"quat":quat}
+    return {"pos":pos,"quat":quat,"cpts":ctrl_pts,"cnorm":ctrl_normal,"cinfo":ctrl_info}
 
 def OnePairCoeff(aname, aradius, delta_r, pairstyle, epsilon):
     rcut = 2 * aradius * delta_r   #(don't forget the 2)
@@ -1382,8 +1484,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     #for iradius in sorted(ir_needed):
     #    coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
     #    file_out.write(coeff)
-    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=10.0)
-    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=10.0)
+    bycicle1 = OnePairCoeffSoft("BIC1", 0, delta_r, epsilon,A=0.0)
+    bycicle2 = OnePairCoeffSoft("BIC2", 0, delta_r, epsilon,A=0.0)
     file_out.write(bycicle1)
     file_out.write(bycicle2)
     file_out.write('  }  #end of "In Settings Pair Coeffs Soft"\n'
@@ -1398,16 +1500,25 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '   write_once("Data Masses") {\n')
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):   
-    #for iradius in sorted(ir_needed):
+            mass = default_mass
             rcut = iradius * delta_r * 0.1
             #r = rcut / (2.0**(1.0/6))
             file_out.write('    ' +
-                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(default_mass) +'\n')
+                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(mass) +'\n')
     file_out.write('    ' +
                        '@atom:ABIC1 ' + str(default_mass) +'\n')
     file_out.write('    ' +
                        '@atom:ABIC2 ' + str(default_mass) +'\n')                                          
     file_out.write('  }  # end of "Data Masses"\n\n')
+    
+    file_out.write('\n\n'
+                    'write_once("In Settings") {\n'
+                    '\n'
+                    '#             bond-type        k     r0\n'
+                    '\n'
+                    'bond_coeff  @bond:Backbone    133.2793 1.63803\n'#should be per ingredient type
+                    '\n'
+                    '}\n')
 
     file_out.write('\n\n'
                    '  # At some point we must specify what -kind- of force fields we want to use\n'
@@ -1417,6 +1528,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '  write_once("In Init") {\n'
                    '\n'
                    '    atom_style full #(default atom style)\n'
+                   '\n'
+                   '    bond_style harmonic\n'
                    '\n'
                    '    units lj        #(this means the units can be customized by the user (us))\n'
                    '\n'
@@ -1460,7 +1573,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '    neighbor 3.0 multi      # Adjust this number later to improve efficiency\n'
                    '\n')
     file_out.write('  }  # finished selecting force field styles\n')
-
+    #'bond_coeff @bond:Backbone  harmonic  133.2793 1.63803\n'
     file_out.write('  # specify the custom force field style used for minimization\n'
                    '  write_once("In Init Soft") {\n'
                    '    pair_style hybrid gauss ' + 
@@ -1592,7 +1705,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
 
 
 def main():
-    try:
+    #try:
         sys.stderr.write(g_program_name + ", version " +
                          __version__ + ", " + __date__ + "\n")
 
@@ -1758,9 +1871,9 @@ def main():
         return file_in
 
 
-    except InputError as err:
-        sys.stderr.write('\n\n' + str(err) + '\n')
-        sys.exit(1)
+    #except InputError as err:
+    #    sys.stderr.write('\n\n' + str(err) + '\n')
+    #    sys.exit(1)
 
 if __name__ == '__main__':
     file_in=main()
@@ -1786,8 +1899,10 @@ if __name__ == '__main__':
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 4 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
-#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\ISG_HD.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\test\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
 
 
