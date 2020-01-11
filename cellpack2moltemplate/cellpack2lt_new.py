@@ -29,6 +29,7 @@ g_ingredient_id=0
 g_ingredient_names=[]
 g_radii = {}
 g_path_radii = {}
+g_fixed = []
 #key is compartment, value is list or atom type
 #set of radii for constraints, group by range of ten
 doc_msg = \
@@ -425,6 +426,7 @@ def ConvertMolecule(tree,
     global g_ingredient_id
     global g_ingredient_names
     global g_path_radii
+    global g_fixed
     g_ingredient_names.append(name)
     #print ("convert molecule "+molecule['name']+" "+name,g_ingredient_id)
     #if (molecule['name'] == "Insulin_crystal"):
@@ -519,15 +521,6 @@ def ConvertMolecule(tree,
             center2+=X+Xoff
         center2 = [center2[0]/len(crds),center2[1]/len(crds),center2[2]/len(crds)]
         #print ("after",center2,crds)
-    for i in range(0, len(crds)):
-        iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
-        atype_name = '@atom:A' + str(iradius)+'x'+str(g_path_radii[path])    #atom type depends on radius
-        atype_names = '@{atom:A' + str(iradius)+'x'+str(g_path_radii[path])  +'}'   #atom type depends on radius
-        charge = '0.0'
-        l_mol_defs.append('    $atom:a'+str(i+1)+'  '+mol+'  '+atype_name+'  '+charge+'  '+str(crds[i][0])+' '+str(crds[i][1])+' '+str(crds[i][2])+'\n')
-        list_atom_type.append(atype_name)
-        list_atom_types.append(atype_names)
-    list_atom_type = set(list_atom_type)    
     N = len(crds)
     group = "g"+cname 
     #group = 'gOrdinary'
@@ -537,7 +530,22 @@ def ConvertMolecule(tree,
         #group = 'gRigid'  
         #group = "g"+cname  
     if (molecule['name'] == "Insulin_crystal"): 
-        group = 'gFixed'        
+        #need to change the atom type!! 
+        group = 'gFixed'     
+    for i in range(0, len(crds)):
+        iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
+        atype_name = '@atom:A' + str(iradius)+'x'+str(g_path_radii[path])    #atom type depends on radius
+        atype_names = '@{atom:A' + str(iradius)+'x'+str(g_path_radii[path])  +'}'   #atom type depends on radius
+        if group == "gFixed":
+            atype_name = '@atom:A' + str(iradius)+'f'+str(g_path_radii[path])    #atom type depends on radius
+            atype_names = '@{atom:A' + str(iradius)+'f'+str(g_path_radii[path])  +'}'   #atom type depends on radius
+            g_fixed.append([iradius,str(iradius)+'f'+str(g_path_radii[path])])
+        charge = '0.0'
+        l_mol_defs.append('    $atom:a'+str(i+1)+'  '+mol+'  '+atype_name+'  '+charge+'  '+str(crds[i][0])+' '+str(crds[i][1])+' '+str(crds[i][2])+'\n')
+        list_atom_type.append(atype_name)
+        list_atom_types.append(atype_names)
+    list_atom_type = set(list_atom_type)    
+   
     list_atom_type_surface = []
     if "surface" in cname :#cname == "surface" :
         #group = 'gSurface'
@@ -672,7 +680,7 @@ def ConvertMolecule(tree,
             l_instances.append('}  # end of "vmd_commands.tcl"\n')
             l_instances.append('\n')
     if "surface" not in cname :
-        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname,str(g_path_radii[path]))
+        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname,str(g_path_radii[path]),bounds)
         return constr
     else :
         return ''
@@ -1199,18 +1207,19 @@ def OnePairCoeffGauss(aname, aradius, delta_r, epsilon, A=10000.0):
                     str(B) + ' ' +
                     str(rcut) + '\n')
 
-def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix):
+def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds):
     #should be done per atom type!
     # group by range 10 
     global g_radii
     astr=''
     mbthickness = 61.5/2.0
-    strength = 0.1
-    m = 3000
+    strength = 10.0
+    m=np.max(bounds)*2.0
+    #m = 3000
     for i in range(0, len(radii)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+prefix    #atom type depends on radius
-        astr+='group g'+atype_name+' type '+atype_name+'\n'
+        astr+='    group g'+atype_name+' type '+atype_name+'\n'
         if 'compartments' in tree:
             for cname in tree['compartments']:
                 if 'mb' in tree['compartments'][cname]:
@@ -1221,9 +1230,9 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix):
                         g_radii[compname][cname]={"radius":radius,"atom":set([]),"prefix":prefix}
                     g_radii[compname][cname]["atom"].add(iradius)
                     if (compname == 'cytoplasme'):
-                        astr+='fix fxWall%s g%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,radius+mbthickness+radii[i])
+                        astr+='    fix ofxWall%s g%s wall/region rSphereO%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,radius+mbthickness+radii[i])
                     else :                       
-                        astr+='fix fxWall%s g%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,m-radius+mbthickness+radii[i])
+                        astr+='    fix ifxWall%s g%s wall/region rSphereI%sg harmonic  %f  0.1  %f\n'%('A' + str(iradius),atype_name,cname,strength,m-radius+mbthickness+radii[i])
     return astr
 
 def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
@@ -1265,13 +1274,13 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 vmd+=(' draw material Transparent\n')                 
     astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
     astr+='    region rBound block '+str(bounds[0][0]*2)+' '+str(bounds[1][0]*2)+'  '+str(bounds[0][1]*2)+' '+str(bounds[1][1]*2)+'  '+str(bounds[0][2]*2)+' '+str(bounds[1][2]*2)+'\n'
-    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % strength
+    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 5.0
     astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,m)
     #astr+= ing_constr
     global g_radii
     #astr=''
     mbthickness = 61.5/2.0
-    strength = 10.0
+    strength = 20.0
     m=np.max(bounds)*2.0
     for cname in g_radii:
         for comp in g_radii[cname]:
@@ -1279,25 +1288,36 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
             d=m-radius
             atom = np.sort(list(g_radii[cname][comp]['atom']))
             N=len(atom)
-            b={}
-            for n in range(0,N):
-                v=atom[n]
-                s=v%50
-                start = (v-s)+50
-                if start not in b:
-                    b[start]=[]
-                b[start].append('@atom:A' + str(v)+"x"+g_radii[cname][comp]["prefix"])
-            #print (b)
-            
-            for s in b:
-                print (s)
-                #atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
-                if cname == 'cytoplasme':
-                    astr+='group gO'+str(s)+' type '+' '.join(set(b[s]))+'\n'
-                    astr+='fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1,radius,mbthickness,s*0.1)
-                else :             
-                    astr+='group gI'+str(s)+' type '+' '.join(set(b[s]))+'\n'          
-                    astr+='fix ifxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1,d,mbthickness,s*0.1)
+            if len(g_radii) < 30 :
+                for n in range(0,N):
+                    v=atom[n]
+                    atype_name = '@atom:A' + str(v)+'x'+g_radii[cname][comp]["prefix"]    #atom type depends on radius
+                    if cname == 'cytoplasme':
+                        astr+='    group gO'+str(v)+' type '+atype_name+'\n'
+                        astr+='    fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(v),str(v),comp,strength,radius+mbthickness+v*0.1,radius,mbthickness,v*0.1)
+                    else :
+                        astr+='    group gI'+str(v)+' type '+atype_name+'\n'
+                        astr+='    fix ifxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(v),str(v),comp,strength,d+mbthickness+v*0.1,d,mbthickness,v*0.1)
+            else :
+                b={}
+                for n in range(0,N):
+                    v=atom[n]
+                    s=v%50
+                    start = (v-s)+50
+                    if start not in b:
+                        b[start]=[]
+                    b[start].append('@atom:A' + str(v)+"x"+g_radii[cname][comp]["prefix"])
+                #print (b)
+                
+                for s in b:
+                    print (s)
+                    #atype_name = '@atom:A' + str(iradius)    #atom type depends on radius
+                    if cname == 'cytoplasme':
+                        astr+='    group gO'+str(s)+' type '+' '.join(set(b[s]))+'\n'
+                        astr+='    fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,radius+mbthickness+s*0.1,radius,mbthickness,s*0.1)
+                    else :             
+                        astr+='    group gI'+str(s)+' type '+' '.join(set(b[s]))+'\n'          
+                        astr+='    fix ifxWall%s gI%s wall/region rSphereI%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(s),str(s),comp,strength,d+mbthickness+s*0.1,d,mbthickness,s*0.1)
     astr+='}\n'
     vmd+='}\n'
     return astr+vmd
@@ -1320,6 +1340,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     convert it to MOLTEMPLATE (LT) format.
     """
     global g_path_radii
+    global g_fixed
     tree = json.load(file_in,object_pairs_hook=OrderedDict)#retain file order
     model_data=None
     if (model_in!=""):
@@ -1416,6 +1437,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     assert(len(ir_needed) > 0)
     #rmax = max(ir_needed) * delta_r
     rcut_max = rmax
+    for i,p in enumerate(ir_needed):
+        g_path_radii[p]=i
     bounds = [[0.0,0.0,0.0],    #Box big enough to enclose all the particles
               [-1.0,-1.0,-1.0]] #[[xmin,ymin,zmin],[xmax,ymax,zmax]]
     pairstyle2args['lj/cut'] = str(2*rcut_max)
@@ -1428,89 +1451,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     #pair_mixing_style = 'geometric' <-- NO do not use geometric why ?
     pair_mixing_style = 'arithmetic'#geometric ?arithmetic sixthpower ?
     special_bonds_command = 'special_bonds lj/coul 0.0 0.0 1.0'
-    apairstyle='lj/cut/soft'
-    alambda = 0.95
-    aepsilon = 10.0#5.90#300 was to high ?
-    
-    file_out.write('   write_once("In Settings Pair Coeffs LJ Softs") {\n')
-    #for iradius in sorted(ir_needed):
-    #    coeff = OnePairCoeffCutSoft(iradius, iradius, delta_r, apairstyle, aepsilon,alambda)
-    #    file_out.write(coeff)
-    
-    for i,p in enumerate(ir_needed):
-        g_path_radii[p]=i
-        for iradius in sorted(ir_needed[p]):
-            coeff = OnePairCoeffCutSoft(str(iradius)+"x"+str(i), iradius, delta_r, apairstyle, aepsilon,alambda)
-            file_out.write(coeff)        
-    bycicle1 = OnePairCoeffCutSoft("BIC1", 500, delta_r, apairstyle, aepsilon,alambda)
-    bycicle2 = OnePairCoeffCutSoft("BIC2", 500, delta_r, apairstyle, aepsilon,alambda)
-    file_out.write(bycicle1)
-    file_out.write(bycicle2)
-    file_out.write('  }  #end of "In Settings Pair Coeffs LJ Softs"\n'
-                   '\n\n\n')
-    file_out.write('   write_once("In Settings Pair Coeffs") {\n')
-    for i,p in enumerate(ir_needed):
-        for iradius in sorted(ir_needed[p]):
-            coeff = OnePairCoeff(str(iradius)+"x"+str(i), iradius, delta_r, pairstyle, epsilon)
-            file_out.write(coeff)
-    #for iradius in sorted(ir_needed):
-    #    coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
-    #    file_out.write(coeff)
-    bycicle1 = OnePairCoeff("BIC1", 500, delta_r, pairstyle, epsilon)
-    bycicle2 = OnePairCoeff("BIC2", 500, delta_r, pairstyle, epsilon)
-    file_out.write(bycicle1)
-    file_out.write(bycicle2)
-    file_out.write('  }  #end of "In Settings Pair Coeffs"\n'
-                   '\n\n\n')                   
-    #scaling=[2.5,2.0,1.5,1.25,1.05]
-    #for i in range(5):
-    #    file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
-    #    file_out.write('   write_once("In Settings Pair Coeffs Soft'+str(i)+'") {\n')
-    #    for iradius in sorted(ir_needed):
-    #        coeff = OnePairCoeffSoft(iradius, iradius/scaling[i], delta_r, epsilon,A=20000.0)
-    #        file_out.write(coeff)
-    #    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=20000.0)
-    #    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=20000.0)
-    #    file_out.write(bycicle1)
-    #    file_out.write(bycicle2)
-    #    file_out.write('  }  #end of "In Settings Pair Coeffs Soft'+str(i)+'"\n'
-    #                '\n\n\n')
-    file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
-    file_out.write('   write_once("In Settings Pair Coeffs Soft") {\n')
-    for i,p in enumerate(ir_needed):
-        for iradius in sorted(ir_needed[p]):    
-            coeff = OnePairCoeffSoft(str(iradius)+"x"+str(i), iradius, delta_r, epsilon,A=10.0)
-            file_out.write(coeff)    
-    #for iradius in sorted(ir_needed):
-    #    coeff = OnePairCoeffSoft(iradius, iradius, delta_r, epsilon,A=100000.0)
-    #    file_out.write(coeff)
-    bycicle1 = OnePairCoeffSoft("BIC1", 0, delta_r, epsilon,A=0.0)
-    bycicle2 = OnePairCoeffSoft("BIC2", 0, delta_r, epsilon,A=0.0)
-    file_out.write(bycicle1)
-    file_out.write(bycicle2)
-    file_out.write('  }  #end of "In Settings Pair Coeffs Soft"\n'
-                   '\n\n\n')
 
-    default_mass = 1.0   # Users can override this later
-  
-    file_out.write('  # Last I checked, LAMMPS still requires that every atom has its\n'
-                   '  # mass defined in the DATA file, even if it is irrelevant.\n'
-                   '  # Take care of that detail below.\n')
-    file_out.write('\n'
-                   '   write_once("Data Masses") {\n')
-    for i,p in enumerate(ir_needed):
-        for iradius in sorted(ir_needed[p]):   
-            mass = default_mass
-            rcut = iradius * delta_r * 0.1
-            #r = rcut / (2.0**(1.0/6))
-            file_out.write('    ' +
-                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(mass) +'\n')
-    file_out.write('    ' +
-                       '@atom:ABIC1 ' + str(default_mass) +'\n')
-    file_out.write('    ' +
-                       '@atom:ABIC2 ' + str(default_mass) +'\n')                                          
-    file_out.write('  }  # end of "Data Masses"\n\n')
-    
     file_out.write('\n\n'
                     'write_once("In Settings") {\n'
                     '\n'
@@ -1580,40 +1521,6 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    pairstyle2args['gauss'] + '\n'
                    '  }\n\n\n')
 
-    file_out.write('\n'
-                   '\n'
-                   '  # Optional: Create a file to help make display in VMD prettier\n'
-                   '\n'
-                   '  write_once("vmd_commands.tcl") {\n')
-    #is it important to sort them ?
-    #for iradius in sorted(ir_needed):
-    for i,p in enumerate(ir_needed):
-        for iradius in sorted(ir_needed[p]):          
-            r = iradius * delta_r
-            atype_name = '@{atom:A' + str(iradius)+"x"+str(i) + '}'
-            file_out.write('    set sel [atomselect top "type '+atype_name+'"]\n'
-                       '    \$sel set radius '+str(r)+'\n')
-    atype_name1 = '@{atom:ABIC1}'          
-    atype_name2 = '@{atom:ABIC2}'  
-    file_out.write('    set sel [atomselect top "type '+atype_name1+'"]\n'
-                       '    \$sel set radius 50.0\n')
-    file_out.write('    set sel [atomselect top "type '+atype_name2+'"]\n'
-                       '    \$sel set radius 50.0\n')
-    file_out.write('    mol rep VDW\n'
-        '    mol addrep 0\n'
-        '    mol modselect 1 0 "type '+atype_name1+'"\n'
-        '    mol modcolor 1 0 "ColorID 0"\n')
-    file_out.write('    mol rep VDW\n'
-        '    mol addrep 0\n'
-        '    mol modselect 2 0 "type '+atype_name2+'"\n'
-        '    mol modcolor 2 0 "ColorID 1"\n')            
-    file_out.write(' mol rep VDW\n')
-    file_out.write(' mol addrep 0\n')
-    file_out.write(' mol modselect 3 0 "not type '+atype_name1+' '+atype_name2+'"\n')
-    #file_out.write(' mol modcolor 3 0 "ColorID 2"\n')
-
-    file_out.write('  }  # end of "vmd_commands.tcl"\n\n')
-
     #need one outside group
     #need one group per compartment
     list_groups = CreateGroupCompartment(tree)
@@ -1667,7 +1574,15 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '\n')
     file_out.write('}  # end of the "ForceField" object definition\n'
                    '\n\n\n\n\n')
-    
+    # Print the simulation boundary conditions
+    # should I get it from computation? recipe? model ?
+    # same for metaball and compartment that can be changed on the fly
+    bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
+              [7692,7692,7692]]
+    bounds = [[-2100.0,-2100.0,-2100.0],    #Box big enough to enclose all the particles
+              [2100.0,2100.0,2100.0]]
+    print (bounds)
+
     comp_constraints=ConvertSystem(tree,
                   file_out,
                   delta_r,
@@ -1677,13 +1592,6 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
 
     if out_obj_name != '':
         file_out.write('}  # end of \"'+ out_obj_name + '\" object definition\n')
-
-    # Print the simulation boundary conditions
-    bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
-              [7692,7692,7692]]
-    bounds = [[-2100.0,-2100.0,-2100.0],    #Box big enough to enclose all the particles
-              [2100.0,2100.0,2100.0]]
-    print (bounds)
 
     c=CompartmentConstraint(tree,bounds,rcut_max,comp_constraints)
     file_out.write(c)    
@@ -1696,6 +1604,139 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                    '  '+str(bounds[0][1])+' '+str(bounds[1][1])+' ylo yhi\n'
                    '  '+str(bounds[0][2])+' '+str(bounds[1][2])+' zlo zhi\n'
                    '}\n\n')
+    
+    default_mass = 1.0   # Users can override this later
+  
+    file_out.write('  # Last I checked, LAMMPS still requires that every atom has its\n'
+                   '  # mass defined in the DATA file, even if it is irrelevant.\n'
+                   '  # Take care of that detail below.\n')
+    file_out.write('\n'
+                   '   write_once("Data Masses") {\n')
+    for i,p in enumerate(ir_needed):
+        g_path_radii[p]=i
+        for iradius in sorted(ir_needed[p]):   
+            mass = default_mass
+            rcut = iradius * delta_r * 0.1
+            #r = rcut / (2.0**(1.0/6))
+            file_out.write('    ' +
+                       '@atom:A' + str(iradius)+"x"+str(i) +' '+ str(mass) +'\n')
+    for gf in g_fixed:
+        file_out.write('    ' +
+                       '@atom:A' +gf[1] +' '+ str(mass) +'\n')
+    file_out.write('    ' +
+                       '@atom:ABIC1 ' + str(default_mass) +'\n')
+    file_out.write('    ' +
+                       '@atom:ABIC2 ' + str(default_mass) +'\n')                                          
+    file_out.write('  }  # end of "Data Masses"\n\n')
+    
+    
+    apairstyle='lj/cut/soft'
+    alambda = 0.95
+    aepsilon = 10.0#5.90#300 was to high ?
+    
+    file_out.write('   write_once("In Settings Pair Coeffs LJ Softs") {\n')
+    #for iradius in sorted(ir_needed):
+    #    coeff = OnePairCoeffCutSoft(iradius, iradius, delta_r, apairstyle, aepsilon,alambda)
+    #    file_out.write(coeff)
+    tFixed = [tuple(t) for t in g_fixed]
+    g_fixed = set(tFixed)
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):
+            coeff = OnePairCoeffCutSoft(str(iradius)+"x"+str(i), iradius, delta_r, apairstyle, aepsilon,alambda)
+            file_out.write(coeff)  
+    for gf in g_fixed:
+        coeff = OnePairCoeffCutSoft(gf[1], gf[0], delta_r, apairstyle, aepsilon,alambda)
+        file_out.write(coeff)  
+    bycicle1 = OnePairCoeffCutSoft("BIC1", 500, delta_r, apairstyle, aepsilon,alambda)
+    bycicle2 = OnePairCoeffCutSoft("BIC2", 500, delta_r, apairstyle, aepsilon,alambda)
+    file_out.write(bycicle1)
+    file_out.write(bycicle2)
+    file_out.write('  }  #end of "In Settings Pair Coeffs LJ Softs"\n'
+                   '\n\n\n')
+    file_out.write('   write_once("In Settings Pair Coeffs") {\n')
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):
+            coeff = OnePairCoeff(str(iradius)+"x"+str(i), iradius, delta_r, pairstyle, epsilon)
+            file_out.write(coeff)
+    for gf in g_fixed:
+        coeff = OnePairCoeff(gf[1], gf[0], delta_r, pairstyle, epsilon)
+        file_out.write(coeff)              
+    #for iradius in sorted(ir_needed):
+    #    coeff = OnePairCoeff(iradius, iradius, delta_r, pairstyle, epsilon)
+    #    file_out.write(coeff)
+    bycicle1 = OnePairCoeff("BIC1", 500, delta_r, pairstyle, epsilon)
+    bycicle2 = OnePairCoeff("BIC2", 500, delta_r, pairstyle, epsilon)
+    file_out.write(bycicle1)
+    file_out.write(bycicle2)
+    file_out.write('  }  #end of "In Settings Pair Coeffs"\n'
+                   '\n\n\n')                   
+    #scaling=[2.5,2.0,1.5,1.25,1.05]
+    #for i in range(5):
+    #    file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
+    #    file_out.write('   write_once("In Settings Pair Coeffs Soft'+str(i)+'") {\n')
+    #    for iradius in sorted(ir_needed):
+    #        coeff = OnePairCoeffSoft(iradius, iradius/scaling[i], delta_r, epsilon,A=20000.0)
+    #        file_out.write(coeff)
+    #    bycicle1 = OnePairCoeffSoft("BIC1", 500, delta_r, epsilon,A=20000.0)
+    #    bycicle2 = OnePairCoeffSoft("BIC2", 500, delta_r, epsilon,A=20000.0)
+    #    file_out.write(bycicle1)
+    #    file_out.write(bycicle2)
+    #    file_out.write('  }  #end of "In Settings Pair Coeffs Soft'+str(i)+'"\n'
+    #                '\n\n\n')
+    file_out.write('   # Alternate forces used in the initial stages of minimization:\n\n')
+    file_out.write('   write_once("In Settings Pair Coeffs Soft") {\n')
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):    
+            coeff = OnePairCoeffSoft(str(iradius)+"x"+str(i), iradius, delta_r, epsilon,A=10.0)
+            file_out.write(coeff)    
+    for gf in g_fixed:
+        coeff = OnePairCoeffSoft(gf[1], gf[0], delta_r, epsilon,A=10.0)
+        file_out.write(coeff)   
+    bycicle1 = OnePairCoeffSoft("BIC1", 0.01, delta_r, epsilon,A=0.0)
+    bycicle2 = OnePairCoeffSoft("BIC2", 0.01, delta_r, epsilon,A=0.0)
+    file_out.write(bycicle1)
+    file_out.write(bycicle2)
+    file_out.write('  }  #end of "In Settings Pair Coeffs Soft"\n'
+                   '\n\n\n')
+
+    file_out.write('\n'
+                   '\n'
+                   '  # Optional: Create a file to help make display in VMD prettier\n'
+                   '\n'
+                   '  write_once("vmd_commands.tcl") {\n')
+    #is it important to sort them ?
+    #for iradius in sorted(ir_needed):
+    for i,p in enumerate(ir_needed):
+        for iradius in sorted(ir_needed[p]):          
+            r = iradius * delta_r
+            atype_name = '@{atom:A' + str(iradius)+"x"+str(i) + '}'
+            file_out.write('    set sel [atomselect top "type '+atype_name+'"]\n'
+                       '    \$sel set radius '+str(r)+'\n')
+    for gf in g_fixed:
+        r = gf[0] * delta_r
+        atype_name = '@{atom:A' + gf[1] + '}'
+        file_out.write('    set sel [atomselect top "type '+atype_name+'"]\n'
+                       '    \$sel set radius '+str(r)+'\n')  
+    atype_name1 = '@{atom:ABIC1}'          
+    atype_name2 = '@{atom:ABIC2}'  
+    file_out.write('    set sel [atomselect top "type '+atype_name1+'"]\n'
+                       '    \$sel set radius 50.0\n')
+    file_out.write('    set sel [atomselect top "type '+atype_name2+'"]\n'
+                       '    \$sel set radius 50.0\n')
+    file_out.write('    mol rep VDW\n'
+        '    mol addrep 0\n'
+        '    mol modselect 1 0 "type '+atype_name1+'"\n'
+        '    mol modcolor 1 0 "ColorID 0"\n')
+    file_out.write('    mol rep VDW\n'
+        '    mol addrep 0\n'
+        '    mol modselect 2 0 "type '+atype_name2+'"\n'
+        '    mol modcolor 2 0 "ColorID 1"\n')            
+    file_out.write(' mol rep VDW\n')
+    file_out.write(' mol addrep 0\n')
+    file_out.write(' mol modselect 3 0 "not type '+atype_name1+' '+atype_name2+'"\n')
+    #file_out.write(' mol modcolor 3 0 "ColorID 2"\n')
+
+    file_out.write('  }  # end of "vmd_commands.tcl"\n\n')
 
 
 
@@ -1899,7 +1940,7 @@ if __name__ == '__main__':
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 4 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
-#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\ISG_HD.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\rooty.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
