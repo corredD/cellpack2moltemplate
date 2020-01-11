@@ -24,6 +24,7 @@ g_program_name = __file__.split('/')[-1]   # = 'cellpack2lt.py'
 __version__ = '0.2.1'
 __date__ = '2018-8-13'
 
+special_crystal = False
 g_control_vmd_colors = False
 g_ingredient_id=0
 g_ingredient_names=[]
@@ -428,6 +429,7 @@ def ConvertMolecule(tree,
     global g_ingredient_names
     global g_path_radii
     global g_fixed
+    global special_crystal
     g_ingredient_names.append(name)
     #print ("convert molecule "+molecule['name']+" "+name,g_ingredient_id)
     #if (molecule['name'] == "Insulin_crystal"):
@@ -533,6 +535,7 @@ def ConvertMolecule(tree,
     if (molecule['name'] == "Insulin_crystal"): 
         #need to change the atom type!! 
         group = 'gFixed'     
+        special_crystal = True
     for i in range(0, len(crds)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+str(g_path_radii[path])    #atom type depends on radius
@@ -1281,9 +1284,10 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 vmd+=(' draw material Transparent\n') 
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius+mbthickness)) 
                 vmd+=(' draw material Transparent\n')                 
-    astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
+    if special_crystal:
+        astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
+        astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 5.0
     astr+='    region rBound block '+str(bounds[0][0]+200.0)+' '+str(bounds[1][0]+200.0)+'  '+str(bounds[0][1]+200.0)+' '+str(bounds[1][1]+200.0)+'  '+str(bounds[0][2]+200.0)+' '+str(bounds[1][2]+200.0)+'\n'
-    astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 5.0
     astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,10)
     #astr+= ing_constr
     global g_radii
