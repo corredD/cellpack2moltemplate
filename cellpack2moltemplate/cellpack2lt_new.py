@@ -30,6 +30,7 @@ g_ingredient_names=[]
 g_radii = {}
 g_path_radii = {}
 g_fixed = []
+r_max=0
 #key is compartment, value is list or atom type
 #set of radii for constraints, group by range of ten
 doc_msg = \
@@ -960,6 +961,7 @@ def ConvertSystem(tree,
                   model_data=None):
     if not isinstance(tree, dict) or model_data==None:
         return
+    global r_max
     object_name = "recipe"
     file_out.write(nindent*'  '+object_name + ' {\n')
     ninstances = len(model_data["pos"])
@@ -1022,6 +1024,13 @@ def ConvertSystem(tree,
                             str(-p[0]) + ',' +
                             str(p[1]) + ',' +
                             str(p[2]) + ')\n')
+        AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
+        AdjustBounds(bounds, [p[0]-r_max, p[1], p[2]])
+        AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
+        AdjustBounds(bounds, [p[0], p[1]-r_max, p[2]])
+        AdjustBounds(bounds, [p[0], p[1]+r_max, p[2]])
+        AdjustBounds(bounds, [p[0], p[1], p[2]-r_max])
+        AdjustBounds(bounds, [p[0], p[1], p[2]+r_max])        
         count += 1    
     #if (prev_ingredient_name == "Insulin_crystal"):
     #    file_out.write('}\n')
@@ -1214,7 +1223,7 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds):
     astr=''
     mbthickness = 61.5/2.0
     strength = 10.0
-    m=np.max(bounds)*2.0
+    m=np.max(bounds)
     #m = 3000
     for i in range(0, len(radii)):
         iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
@@ -1256,9 +1265,9 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 radius = tree['compartments'][compname]['mb']['radii'][0]
                 astr+='    #need wall at radius '+str(radius)+'\n'
                 astr+='    #mb is '+str(mbthickness)+'\n'
-                m=np.max(bounds)
+                m=np.max(bounds)+200
                 #astr+=('    group interior union g%s_interior gBicycleI#union of compartment name and bicycle\n' % (compname))   
-                astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m*2))
+                astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m))
                 astr+=('    region rSphereO%sg sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],0.0))
                 #astr+=('    fix fxWall%i_1 g%s_interior wall/region rSphereI%sg  harmonic  %f  0.1  %f\n'%(count,compname,compname,strength,m-radius+mbthickness+rcut_max))
                 #astr+=('    fix fxWall%i_2 gcytoplasme wall/region rSphereO%sg  harmonic  %f  0.1  %f\n'%(count,compname,strength,radius+mbthickness+rcut_max))                       
@@ -1273,9 +1282,9 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius+mbthickness)) 
                 vmd+=(' draw material Transparent\n')                 
     astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
-    astr+='    region rBound block '+str(bounds[0][0]*2)+' '+str(bounds[1][0]*2)+'  '+str(bounds[0][1]*2)+' '+str(bounds[1][1]*2)+'  '+str(bounds[0][2]*2)+' '+str(bounds[1][2]*2)+'\n'
+    astr+='    region rBound block '+str(bounds[0][0]+200.0)+' '+str(bounds[1][0]+200.0)+'  '+str(bounds[0][1]+200.0)+' '+str(bounds[1][1]+200.0)+'  '+str(bounds[0][2]+200.0)+' '+str(bounds[1][2]+200.0)+'\n'
     astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 5.0
-    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,m)
+    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,10)
     #astr+= ing_constr
     global g_radii
     #astr=''
@@ -1341,6 +1350,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     """
     global g_path_radii
     global g_fixed
+    global r_max
     tree = json.load(file_in,object_pairs_hook=OrderedDict)#retain file order
     model_data=None
     if (model_in!=""):
@@ -1437,6 +1447,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     assert(len(ir_needed) > 0)
     #rmax = max(ir_needed) * delta_r
     rcut_max = rmax
+    r_max = rcut_max
     for i,p in enumerate(ir_needed):
         g_path_radii[p]=i
     bounds = [[0.0,0.0,0.0],    #Box big enough to enclose all the particles
@@ -1577,10 +1588,10 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     # Print the simulation boundary conditions
     # should I get it from computation? recipe? model ?
     # same for metaball and compartment that can be changed on the fly
-    bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
-              [7692,7692,7692]]
-    bounds = [[-2100.0,-2100.0,-2100.0],    #Box big enough to enclose all the particles
-              [2100.0,2100.0,2100.0]]
+    #bounds = [[-7692,-7692,-7692],    #Box big enough to enclose all the particles
+    #          [7692,7692,7692]]
+    #bounds = [[-2100.0,-2100.0,-2100.0],    #Box big enough to enclose all the particles
+    #          [2100.0,2100.0,2100.0]]
     print (bounds)
 
     comp_constraints=ConvertSystem(tree,
@@ -1589,7 +1600,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
                   bounds,
                   nindent,
                   model_data=model_data)
-
+    print ("bounds",bounds)
     if out_obj_name != '':
         file_out.write('}  # end of \"'+ out_obj_name + '\" object definition\n')
 

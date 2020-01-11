@@ -48,7 +48,6 @@ thermo_modify   norm yes flush yes
 # (This group is defined in system.in.settings)
 
 fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
-#fix fxDamp mobile viscous 0.01 # F = - gamma * velocity
 #In a Brownian dynamics context, gamma = Kb T / D, where Kb = Boltzmann’s constant, T = temperature, and D = particle diffusion coefficient. D can be written as Kb T / (3 pi eta d), where eta = dynamic viscosity of the frictional fluid and d = diameter of particle. This means gamma = 3 pi eta d, and thus is proportional to the viscosity of the fluid and the particle diameter.
 
 # Molecules containing only one atom do not need to be treated as rigid
@@ -59,67 +58,16 @@ fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
 
 fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
 
-# Tell LAMMPS to only compute forces between particles in different molecules.
-# (No need to compute forces between particles in the same rigid molecule)
-# This drastically reduces the number of pairwise forces that need to
-# be calculated:
-#one N = max number of neighbors of one atom
-#page N = number of pairs stored in a single neighbor page
+pair_modify mix arithmetic
 
-
-# Reduce the time spent computing neighbor lists by increasing the bin size
-# and using "multi" style (needed when a large range of radii are in use)
-
-
-#fix_modify fxWall1 energy yes
-#fix_modify fxWall2 energy yes
-#strength factor for wall-particle interaction (energy/distance^2).
-#The {harmonic} style is a softer
-#potential and does not blow up as r -> 0, but you must use a large
-#enough {epsilon} that particles always reamin on the correct side of
-#the region surface (r > 0).
-
-# ------------------- Run the simulation ------------------------
-
-# The first step is to use a soft Gaussian repulsive force between particles
-# in an effort to deal with cases where there is complete overlap between
-# protein complexes.  (In cases where CellPack completely failed.)
-# Runing a simulation with soft Gaussian repulsive forces
-# should eliminate the worst cases of particle overlap.
-# There is a finite energy barrier for two particles to completely overlap.
-# So run these simulations at a low temperature (at least 10x lower than the 
-# height of each Gaussian barrier) to make sure particles that were not 
-# overlapping before do not start overlapping after this step.
-
-#pair_style hybrid lj/cut/soft 2.0 0.5 300.0 #n alpha_lj cutoff
-#pair_coeff * * lj/cut/soft 300.0 50.0 0.5 60.4#300.0 53.810282575676496 60.400000000000006
-#epsiln sigma  lambda cutoff1 cutoff 2
-#include system.in.settings.pair.coeffs.lj.softs
-#pair_style hybrid gauss 980
-#include system.in.init.soft
-
-#epison r rcut
-#pair_coeff 1 1 0.28 3.1 1.0 9.5
-
-change_box all boundary fs fs fs
-
-#fix vmd all imd 5678
 pair_style soft 300.0
 include system.in.settings.pair.coeffs.soft
-variable prefactor equal ramp(0,20000)
-fix adapt1 mobile adapt 1 pair soft a * * v_prefactor
+variable prefactor equal ramp(0,100000)
+fix adapt1 all adapt 1 pair soft a * * v_prefactor
 
 timestep        0.01
-fix fxLan     mobile langevin 0.0 0.0 1 48279
+fix fxLan     all langevin 0.00 0.00 1 48279
 run 10000
 unfix fxLan
-
-#minimize 1.0e-4 1.0e-6 100 1000 ?
-#pair_style hybrid lj/cut 1960
-#include system.in.settings.pair.coeffs
-#timestep        0.005
-#fix fxLan     mobile langevin 0.0 0.0 1 48279
-#run 2000
-#unfix fxLan
 
 write_data system_after_min_soft.data

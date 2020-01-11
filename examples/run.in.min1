@@ -11,6 +11,7 @@
 include system.in.init
 
 
+
 # Specify the custom Gaussian force field style we will use during this step:
 include system.in.init.soft
 
@@ -25,13 +26,15 @@ include system.in.settings
 # Now load the custom Gaussian force parameters we will use during this step:
 # (Normally these are included in "sytem.in.settings", but not in this example.)
 
-include system.in.settings.pair.coeffs.soft
+
 
 # -- Run Section --
 #comment for debug display the bycycle
 
+
+
 #todump
-dump            1 todump custom 1000 traj_min_soft.lammpstrj id mol type xu yu zu ix iy iz# x y z 
+dump            1 todump custom 100 traj_min_soft.lammpstrj id mol type xu yu zu ix iy iz# x y z 
 dump_modify 1 sort id	
 
 thermo_style    custom step temp pe etotal epair ebond eangle edihed
@@ -45,7 +48,7 @@ thermo_modify   norm yes flush yes
 # (This group is defined in system.in.settings)
 
 fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
-#fix fxDamp mobile viscous 0.5 # F = - gamma * velocity
+#In a Brownian dynamics context, gamma = Kb T / D, where Kb = Boltzmann’s constant, T = temperature, and D = particle diffusion coefficient. D can be written as Kb T / (3 pi eta d), where eta = dynamic viscosity of the frictional fluid and d = diameter of particle. This means gamma = 3 pi eta d, and thus is proportional to the viscosity of the fluid and the particle diameter.
 
 # Molecules containing only one atom do not need to be treated as rigid
 # bodies. We do not need to use rigid body integrators for them. Instead
@@ -55,43 +58,16 @@ fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
 
 fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
 
-# Tell LAMMPS to only compute forces between particles in different molecules.
-# (No need to compute forces between particles in the same rigid molecule)
-# This drastically reduces the number of pairwise forces that need to
-# be calculated:
-#one N = max number of neighbors of one atom
-#page N = number of pairs stored in a single neighbor page
+pair_modify mix arithmetic
 
-
-# Reduce the time spent computing neighbor lists by increasing the bin size
-# and using "multi" style (needed when a large range of radii are in use)
-
-
-#fix_modify fxWall1 energy yes
-#fix_modify fxWall2 energy yes
-#strength factor for wall-particle interaction (energy/distance^2).
-#The {harmonic} style is a softer
-#potential and does not blow up as r -> 0, but you must use a large
-#enough {epsilon} that particles always reamin on the correct side of
-#the region surface (r > 0).
-
-# ------------------- Run the simulation ------------------------
-
-# The first step is to use a soft Gaussian repulsive force between particles
-# in an effort to deal with cases where there is complete overlap between
-# protein complexes.  (In cases where CellPack completely failed.)
-# Runing a simulation with soft Gaussian repulsive forces
-# should eliminate the worst cases of particle overlap.
-# There is a finite energy barrier for two particles to completely overlap.
-# So run these simulations at a low temperature (at least 10x lower than the 
-# height of each Gaussian barrier) to make sure particles that were not 
-# overlapping before do not start overlapping after this step.
+pair_style soft 300.0
+include system.in.settings.pair.coeffs.soft
+variable prefactor equal ramp(0,100000)
+fix adapt1 all adapt 1 pair soft a * * v_prefactor
 
 timestep        0.01
-# Anneal the system starting at temperature kB*T/10, and ending at temperature 0
-# langevin Tstart Tstop damp seed keyword values
-fix fxLan     all langevin 0.0 0.0 1.0  48279#0.05961621
-run 40000
+fix fxLan     all langevin 0.00 0.00 1 48279
+run 10000
 unfix fxLan
 
 write_data system_after_min_soft.data
