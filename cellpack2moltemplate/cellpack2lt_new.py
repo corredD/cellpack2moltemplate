@@ -31,6 +31,8 @@ g_ingredient_names=[]
 g_radii = {}
 g_path_radii = {}
 g_fixed = []
+g_do_crystal = False
+g_crystal = [0,0,0,600.0]#x,y,z,r
 r_max=0
 #key is compartment, value is list or atom type
 #set of radii for constraints, group by range of ten
@@ -1249,6 +1251,9 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds):
 
 def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     print("rcut_max",rcut_max)
+    global special_crystal
+    global g_crystal
+    global g_do_crystal
     vmd='write_once("vmd_commands.tcl") {\n'
     astr = ('  write_once("In Settings") {\n' +
         '    group gBicycleO type @atom:ABIC1\n' +
@@ -1260,6 +1265,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     bicycle_radius = 50.0
     strength = 10.0
     count=0
+    m=np.max(bounds)+400
     if 'compartments' in tree:
         for compname in tree['compartments']:
             if 'mb' in tree['compartments'][compname]:
@@ -1268,7 +1274,6 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 radius = tree['compartments'][compname]['mb']['radii'][0]
                 astr+='    #need wall at radius '+str(radius)+'\n'
                 astr+='    #mb is '+str(mbthickness)+'\n'
-                m=np.max(bounds)+200
                 #astr+=('    group interior union g%s_interior gBicycleI#union of compartment name and bicycle\n' % (compname))   
                 astr+=('    region rSphereI%sg sphere  %f %f %f  %f side in #region size\n' % (compname,p[0],p[1],p[2],m))
                 astr+=('    region rSphereO%sg sphere  %f %f %f  %f  side out #region size\n' % (compname,p[0],p[1],p[2],0.0))
@@ -1285,16 +1290,20 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 vmd+=(' draw sphere \{%f %f %f\} radius %f resolution 20\n'% (p[0],p[1],p[2],radius+mbthickness)) 
                 vmd+=(' draw material Transparent\n')                 
     if special_crystal:
-        astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
-        astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 5.0
-    astr+='    region rBound block '+str(bounds[0][0]+200.0)+' '+str(bounds[1][0]+200.0)+'  '+str(bounds[0][1]+200.0)+' '+str(bounds[1][1]+200.0)+'  '+str(bounds[0][2]+200.0)+' '+str(bounds[1][2]+200.0)+'\n'
-    astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,10)
+        if g_do_crystal :
+            astr+='    region rCystal sphere  %f %f %f  0.0  side out #region size\n' % (g_crystal[0],g_crystal[1],g_crystal[2])
+            astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  %f\n' % (5.0,g_crystal[3])
+        else :
+            astr+='    region rCystal sphere  0 0 0  0.0  side out #region size\n'
+            astr+='    fix fxWall3 mobile wall/region rCystal  harmonic  %f  0.1  846.1538461538461    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % 5.0
+    #astr+='    region rBound block '+str(bounds[0][0]-500.0)+' '+str(bounds[1][0]+500.0)+'  '+str(bounds[0][1]-500.0)+' '+str(bounds[1][1]+500.0)+'  '+str(bounds[0][2]-500.0)+' '+str(bounds[1][2]-500.0)+'\n'
+    #astr+='    fix fxWall4 mobile wall/region rBound  harmonic  %f  0.1  %f    #actual radius = 10.0+1390 = 1400 radius	#1692\n' % (strength,10)
     #astr+= ing_constr
     global g_radii
     #astr=''
     mbthickness = 61.5/2.0
     strength = 20.0
-    m=np.max(bounds)*2.0
+    #m=np.max(bounds)*2.0
     for cname in g_radii:
         for comp in g_radii[cname]:
             radius = g_radii[cname][comp]['radius']
@@ -1774,6 +1783,8 @@ def main():
         # defaults:
         out_obj_name = ''
         #type_subset = set([])
+        global g_do_crystal
+        global g_crystal
 
         filename_in = ''
         filename_out = 'THIS_FILE'
@@ -1879,6 +1890,14 @@ def main():
                     raise InputError('Error: ' + argv[i] + ' flag should be followed by the name of a file\n')
                 model_in= argv[i + 1]
                 del argv[i:i + 2]
+            elif argv[i] == '-crystal':
+                g_do_crystal = True
+                x = argv[i+1]
+                y = argv[i+2]
+                z = argv[i+3]
+                r = argv[i+4]
+                g_crystal = [-float(x),float(y),float(z),float(r)]
+                del argv[i:i + 5]
             elif argv[i] in ('-url', '-in-url'):
                 import urllib2
                 if i + 1 >= len(argv):
@@ -1951,14 +1970,14 @@ if __name__ == '__main__':
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\mature\cfx_model0_0_0.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck #1h30 later
 #1175640 rigid bodies with 3224998 atoms ISG
-##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1
+##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 30 -i run.in.min1
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 4 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\rooty.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed1\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\results_serialized.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min1;"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 
-#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
+#python -i  "C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py" -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\test\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
 
 
