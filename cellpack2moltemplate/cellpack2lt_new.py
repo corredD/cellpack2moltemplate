@@ -32,6 +32,7 @@ g_radii = {}
 g_path_radii = {}
 g_fixed = []
 g_do_crystal = False
+g_Radius = -1.0
 g_crystal = [0,0,0,600.0]#x,y,z,r
 r_max=0
 #key is compartment, value is list or atom type
@@ -186,7 +187,7 @@ def RadiiNeeded(tree,
         if path not in ir_needed: ir_needed[path] = set([])
         for n in range(0, len(tree['radii'])): #loop over "subunits" of this molecule
             for i in range(0, len(r_ni[n]['radii'])):   #loop over atoms
-                iradius = int(round(r_ni[n]['radii'][i]/delta_r))  #(quantize the radii)
+                iradius = int(round(float(r_ni[n]['radii'][i])/delta_r))  #(quantize the radii)
                 #ir_needed.append({path:iradius})
                 ir_needed[path].add(iradius)
     else:
@@ -479,7 +480,7 @@ def ConvertMolecule(tree,
     r_ni = molecule['radii']
     for n in range(0, len(r_ni)): #loop over "subunits" of this molecule
         for i in range(0, len(r_ni[n]['radii'])):       #loop over atoms
-            radii.append(r_ni[n]['radii'][i])
+            radii.append(float(r_ni[n]['radii'][i]))
             #iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
             #ir_needed.add(iradius)
     if len(crds) != len(radii):
@@ -539,7 +540,7 @@ def ConvertMolecule(tree,
         group = 'gFixed'     
         special_crystal = True
     for i in range(0, len(crds)):
-        iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
+        iradius = int(round(float(radii[i])/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+str(g_path_radii[path])    #atom type depends on radius
         atype_names = '@{atom:A' + str(iradius)+'x'+str(g_path_radii[path])  +'}'   #atom type depends on radius
         if group == "gFixed":
@@ -906,18 +907,6 @@ def FindIngredientInTreeFromId(query_ing_id,tree,grow=False):
                     return [tree['cytoplasme']['ingredients'][ing_name],cname,".cytoplasme.ingredients"]
     if 'compartments' in tree:
         for compname in tree['compartments']:
-            if 'surface' in tree['compartments'][compname] and len(tree['compartments'][compname]['surface']['ingredients']) :
-                cname = compname+"_surface"
-                for ing_name in tree['compartments'][compname]['surface']['ingredients']:
-                    if tree['compartments'][compname]['surface']['ingredients'][ing_name]["Type"] == "Grow":
-                        fiber_id+=1
-                        if query_ing_id == fiber_id and grow:
-                            return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
-                    else :
-                        current_id+=1  
-                        #print (current_id,query_ing_id,ing_name)
-                        if query_ing_id == current_id and not grow:
-                            return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
             if 'interior' in tree['compartments'][compname] and len(tree['compartments'][compname]['interior']['ingredients']):
                 cname = compname+"_interior"
                 for ing_name in tree['compartments'][compname]['interior']['ingredients']:
@@ -930,6 +919,18 @@ def FindIngredientInTreeFromId(query_ing_id,tree,grow=False):
                         #print (current_id,query_ing_id,ing_name)                     
                         if query_ing_id == current_id and not grow:
                             return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
+            if 'surface' in tree['compartments'][compname] and len(tree['compartments'][compname]['surface']['ingredients']) :
+                cname = compname+"_surface"
+                for ing_name in tree['compartments'][compname]['surface']['ingredients']:
+                    if tree['compartments'][compname]['surface']['ingredients'][ing_name]["Type"] == "Grow":
+                        fiber_id+=1
+                        if query_ing_id == fiber_id and grow:
+                            return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
+                    else :
+                        current_id+=1  
+                        #print (current_id,query_ing_id,ing_name)
+                        if query_ing_id == current_id and not grow:
+                            return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
     return [None,None,None]    
 
 def FindIngredientInTree(query_ing_name,tree):
@@ -957,7 +958,7 @@ def fastest_calc_dist(p1,p2):
                      (p2[1] - p1[1]) ** 2 +
                      (p2[2] - p1[2]) ** 2)
 
-def ConvertSystem(tree,
+def ConvertSystem2(tree,
                   file_out,
                   delta_r,
                   bounds,
@@ -983,10 +984,11 @@ def ConvertSystem(tree,
         q = model_data["quat"][i]
         ptype = int(p[3])
         ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree)
+        #print (ptype,ingredient["name"])
         name = ingredient["name"]
         #if name == "Insulin_crystal" : continue
         if name != prev_ingredient_name :
-            print (ptype,prev_ingredient_name,name,start,count-start,count_ingr)
+            print (ptype,name, prev_ingredient_name,start,count-start,count_ingr)
             count_ingr+=1
             if (count != 0) :
                 #if (prev_ingredient_name == "Insulin_crystal"):
@@ -1116,6 +1118,179 @@ def ConvertSystem(tree,
                     '\n')          
     return comp_constraints
    
+def ConvertSystem(tree,
+                  file_out,
+                  delta_r,
+                  bounds,
+                  nindent=0,
+                  cname = "",
+                  model_data=None):
+    if not isinstance(tree, dict) or model_data==None:
+        return
+    global r_max
+    object_name = "recipe"
+    file_out.write(nindent*'  '+object_name + ' {\n')
+    ninstances = len(model_data["pos"])
+    count = 0
+    start = 0   
+    prev_ingredient_name = ""
+    comp_constraints=''
+    count_ingr=0
+    limit_ingr=-1#hard coded for debug
+    all_definitions=OrderedDict()
+    for i in range(ninstances):
+        if count_ingr == limit_ingr and limit_ingr != -1 :
+            break
+        p = model_data["pos"][i]
+        q = model_data["quat"][i]
+        ptype = int(p[3])
+        ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree)
+        #print (ptype,ingredient["name"])
+        name = ingredient["name"]
+        #if name == "Insulin_crystal" : continue
+        if name != prev_ingredient_name :
+            print (ptype,name, prev_ingredient_name,start,count-start,count_ingr)
+            count_ingr+=1
+            #if (count != 0) :
+                #if (prev_ingredient_name == "Insulin_crystal"):
+                #    file_out.write('}\n')
+                #    file_out.write(prev_ingredient_name+'_body = new '+prev_ingredient_name+'Body\n\n')                    
+            #    all_definitions[prev_ingredient_name]+=nindent*'  '+'}  # endo of \"'+prev_ingredient_name+'\"_ingredient definition\n\n'
+            #    all_definitions[prev_ingredient_name]+='\n' + \
+            #               nindent*'  '+prev_ingredient_name + '_ingredient_instance = new ' + prev_ingredient_name + '_ingredient\n' + \
+            #               '\n' + \
+            #               '\n'
+            start = count
+            if name not in all_definitions:
+                all_definitions[name]={"def":"","inst":"","end":""}
+                all_definitions[name]["end"]+=nindent*'  '+'}  # endo of \"'+name+'\"_ingredient definition\n\n'
+                all_definitions[name]["end"]+='\n' + \
+                           nindent*'  '+name + '_ingredient_instance = new ' + name + '_ingredient\n' + \
+                           '\n' + \
+                           '\n'
+               
+                all_definitions[name]["def"]+=nindent*'  '+name + '_ingredient {\n'
+                l_mol_defs = []
+                l_instances = []
+                const=ConvertMolecule(tree,
+                            ingredient,
+                            name,
+                            l_mol_defs,
+                            l_instances,
+                            delta_r,
+                            bounds,cname,path,model_data=model_data)
+                comp_constraints+=const
+                all_definitions[name]["def"]+='\n' + \
+                    (nindent*'  ') + '# ----------- molecule definitions -----------\n' + \
+                    '\n'
+                all_definitions[name]["def"]+=(nindent*'  ') + (nindent*'  ').join(l_mol_defs)
+                all_definitions[name]["def"]+='\n' + \
+                    nindent*'  ' + '# ----------- molecule instances -----------\n' + \
+                    '\n'
+                #if (name == "Insulin_crystal"):
+                #    file_out.write(name+'Body {\n')    
+            prev_ingredient_name = name
+        all_definitions[name]["inst"]+=name + '_instances[' + str(i) + '] = new ' + name + \
+                            '.quat(' + \
+                            str(-q[0]) + ',' + \
+                            str(q[1]) + ',' + \
+                            str(q[2]) + ',' + \
+                            str(-q[3]) + \
+                            ').move(' + \
+                            str(-p[0]) + ',' + \
+                            str(p[1]) + ',' + \
+                            str(p[2]) + ')\n' 
+        AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
+        AdjustBounds(bounds, [p[0]-r_max, p[1], p[2]])
+        AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
+        AdjustBounds(bounds, [p[0], p[1]-r_max, p[2]])
+        AdjustBounds(bounds, [p[0], p[1]+r_max, p[2]])
+        AdjustBounds(bounds, [p[0], p[1], p[2]-r_max])
+        AdjustBounds(bounds, [p[0], p[1], p[2]+r_max])        
+        count += 1    
+    #if (prev_ingredient_name == "Insulin_crystal"):
+    #    file_out.write('}\n')
+    #    file_out.write(prev_ingredient_name+'_body = new '+prev_ingredient_name+'Body\n\n')                    
+    #if ninstances!= 0 :
+    #    all_definitions[prev_ingredient_name]+=nindent*'  '+'}  # endo of \"'+prev_ingredient_name+'\"_ingredient definition\n\n'
+    #    all_definitions[prev_ingredient_name]+='\n' + \
+    #        nindent*'  '+prev_ingredient_name + '_ingredient_instance = new ' + prev_ingredient_name + '_ingredient\n' + \
+    #        '\n' + \
+    #        '\n'
+    for entry in all_definitions:
+        file_out.write(all_definitions[entry]["def"])
+        file_out.write(all_definitions[entry]["inst"])
+        file_out.write(all_definitions[entry]["end"])
+
+    ncpts = len(model_data["cpts"])
+    cpts_info = model_data["cinfo"]
+    if ncpts!=0:
+        ncurves = np.unique(cpts_info[:,0])
+        curves = np.array( [ cpts_info[cpts_info[:,0]==i,:] for i in ncurves] )
+        for i in ncurves:
+            indices = cpts_info[:,0]==i
+            infos = cpts_info[indices] #curve_id, curve_type, angle, uLength
+            pts = model_data["cpts"][indices]*np.array([-1.0,1.0,1.0,1.0]) #xyz_radius
+            normal = model_data["cnorm"][indices] #xyz_0
+            ptype =  infos[0][1]
+            ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree,grow=True)
+            name = ingredient["name"]+"_"+str(int(i))
+            print ("ingredient fiber ",i,infos[0], ptype,name, cname, path)
+            #build the molecule definition
+            #file_out.write(nindent*'  '+name + '_ingredient {\n')
+            l_mol_defs = []
+            l_instances = []
+            const=ConvertMolecule(tree,
+                        ingredient,
+                        name,
+                        l_mol_defs,
+                        l_instances,
+                        delta_r,
+                        bounds,cname,path,model_data=model_data)
+            comp_constraints+=const
+            cutoff = 10.0#distance between first two points ?
+            if (len(pts)>=2):
+                cutoff=fastest_calc_dist(pts[0],pts[1])
+            l_mol_defs.append('  write_once(\"In Settings\") {\n')
+            l_mol_defs.append('    bond_coeff  @bond:Backbone_'+name+'    10.0 '+str(cutoff)+'\n')#K energy distance, r0 distance
+            #if "surface" in cname :#if cname == "surface" :
+            #    l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
+            #    l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
+            l_mol_defs.append('}  # end of: write_once(\"In Settings\")\n\n\n')    
+            #file_out.write('\n' + 
+            #        (nindent*'  ') + '# ----------- molecule definitions -----------\n'
+            #        '\n')
+            #file_out.write((nindent*'  ') + (nindent*'  ').join(l_mol_defs))
+            #file_out.write(nindent*'  '+'}  # endo of \"'+name+'\"_ingredient definition\n\n')
+            # It's a really good idea to generate a smoother version of this curve:
+            #x_new = moltemplate.interpolate_curve.ResampleCurve(pts, len(pts), 1.0)
+            #what about flexibility 
+            gp = moltemplate.genpoly_lt.GenPoly()
+            gp.coords_multi = [pts]
+            gp.name_sequence_multi =[[name,]*len(pts)]
+            ax,ay,az = ingredient["principalVector"]
+            gp.ParseArgs([
+                    '-axis', str(ax),str(ay),str(az), #direction of the polymer axis in the original monomer object.
+                    '-helix', '0.0', #rotate each monomer around it's axis by angle deltaphi (in degrees) beforehand #34.2857 dna
+                    '-circular', 'no',
+                    '-bond', 'Backbone_'+name, 'a1', 'a1', #define the connectivity
+                    '-polymer-name', "fiber_"+name,
+                    '-inherits', 'ForceField',
+                    '-monomer-name',name,
+                    '-header', (nindent*'  ') + (nindent*'  ').join(l_mol_defs)
+                    ])
+            gp.WriteLTFile(file_out)
+            file_out.write('\n' + 
+                nindent*'  '+'fiber_'+name + '_instance = new ' + 'fiber_'+name + '\n' +
+                '\n' +
+                '\n')   
+    file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
+    file_out.write('\n' + 
+                    nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
+                    '\n' +
+                    '\n')          
+    return comp_constraints
+
 def CreateGroupCompartment(tree):
     list_groups=[]
     if not isinstance(tree, dict):
@@ -1231,7 +1406,7 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds):
     m=np.max(bounds)
     #m = 3000
     for i in range(0, len(radii)):
-        iradius = int(round(radii[i]/delta_r))  #(quantize the radii)
+        iradius = int(round(float(radii[i])/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+prefix    #atom type depends on radius
         astr+='    group g'+atype_name+' type '+atype_name+'\n'
         if 'compartments' in tree:
@@ -1254,6 +1429,7 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     global special_crystal
     global g_crystal
     global g_do_crystal
+    global g_Radius    
     vmd='write_once("vmd_commands.tcl") {\n'
     astr = ('  write_once("In Settings") {\n' +
         '    group gBicycleO type @atom:ABIC1\n' +
@@ -1272,6 +1448,8 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 p = tree['compartments'][compname]['mb']['positions']
                 #pos = [p[0],p[1],p[2]]
                 radius = tree['compartments'][compname]['mb']['radii'][0]
+                if g_Radius != -1 :
+                    radius = g_Radius
                 astr+='    #need wall at radius '+str(radius)+'\n'
                 astr+='    #mb is '+str(mbthickness)+'\n'
                 #astr+=('    group interior union g%s_interior gBicycleI#union of compartment name and bicycle\n' % (compname))   
@@ -1307,6 +1485,8 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
     for cname in g_radii:
         for comp in g_radii[cname]:
             radius = g_radii[cname][comp]['radius']
+            if g_Radius != -1 :
+                radius = g_Radius
             d=m-radius
             atom = np.sort(list(g_radii[cname][comp]['atom']))
             N=len(atom)
@@ -1785,7 +1965,7 @@ def main():
         #type_subset = set([])
         global g_do_crystal
         global g_crystal
-
+        global g_Radius
         filename_in = ''
         filename_out = 'THIS_FILE'
         file_in = sys.stdin
@@ -1898,6 +2078,9 @@ def main():
                 r = argv[i+4]
                 g_crystal = [-float(x),float(y),float(z),float(r)]
                 del argv[i:i + 5]
+            elif argv[i] == '-vradius':  
+                g_Radius =  float(argv[i+1])
+                del argv[i:i + 2]
             elif argv[i] in ('-url', '-in-url'):
                 import urllib2
                 if i + 1 >= len(argv):
@@ -1979,5 +2162,6 @@ if __name__ == '__main__':
 
 #python -i  "C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py" -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\test\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in D:\cellPACK_data_git\Mycoplasma\Martina\relaxed\root_mpn.json -out D:\cellPACK_data_git\Mycoplasma\Martina\relaxed\system.lt -model D:\cellPACK_data_git\Mycoplasma\Martina\relaxed\results_serialized.bin
 
 

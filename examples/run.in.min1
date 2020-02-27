@@ -58,7 +58,15 @@ fix fxRigid mobile  rigid molecule   #(move the atoms in the "gRigid" group)
 
 fix fxNVE   gOrdinary nve            #(move the atoms in the "gOrdinary" group)
 
-pair_modify mix arithmetic
+
+#pair_modify mix arithmetic
+#comm_modify mode multi
+#comm_modify mode single
+neighbor 40.0 bin
+neigh_modify one 50000 page 500000
+#neighbor 2.0 multi
+#default is page = 100000, one = 2000, and binsize = 0.0.
+
 
 pair_style soft 300.0
 include system.in.settings.pair.coeffs.soft
@@ -67,7 +75,7 @@ fix adapt1 all adapt 1 pair soft a * * v_prefactor
 
 timestep        0.01
 fix fxLan     all langevin 0.00 0.00 1 48279
-run 10000
+run 3000
 unfix fxLan
 
 write_data system_after_min_soft.data
