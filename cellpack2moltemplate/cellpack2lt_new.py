@@ -506,7 +506,7 @@ def ConvertMolecule(tree,
     #if (molecule['name'] == "Insulin_crystal"):
     #    mol='$mol:...'
     #if surface proteins, transform cluster according offset and pcp
-    if "surface" in cname :
+    if True:#"surface" in cname : #do it for every molecule 
         axe = molecule["principalVector"]
         off = molecule["offset"]
         center2 = [0,0,0]
@@ -535,10 +535,10 @@ def ConvertMolecule(tree,
     #if N> 1 :
         #group = 'gRigid'  
         #group = "g"+cname  
-    if (molecule['name'] == "Insulin_crystal"): 
+    if (molecule['name'] == "Insulin_crystal" or molecule['name'] == "HIVCapside"): # or molecule['name'] == "GAG" or molecule['name'] == "hiv_gag_pol"): 
         #need to change the atom type!! 
         group = 'gFixed'     
-        special_crystal = True
+        if (molecule['name'] == "Insulin_crystal") : special_crystal = True
     for i in range(0, len(crds)):
         iradius = int(round(float(radii[i])/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+str(g_path_radii[path])    #atom type depends on radius
@@ -547,6 +547,10 @@ def ConvertMolecule(tree,
             atype_name = '@atom:A' + str(iradius)+'f'+str(g_path_radii[path])    #atom type depends on radius
             atype_names = '@{atom:A' + str(iradius)+'f'+str(g_path_radii[path])  +'}'   #atom type depends on radius
             g_fixed.append([iradius,str(iradius)+'f'+str(g_path_radii[path])])
+        elif group == 'gOrdinary':
+            atype_name = '@atom:A' + str(iradius)+'c'+str(g_path_radii[path])+'f'    #atom type depends on radius
+            atype_names = '@{atom:A' + str(iradius)+'c'+str(g_path_radii[path])+'f'  +'}'   #atom type depends on radius
+            g_fixed.append([iradius,str(iradius)+'c'+str(g_path_radii[path])+'f'])            
         charge = '0.0'
         l_mol_defs.append('    $atom:a'+str(i+1)+'  '+mol+'  '+atype_name+'  '+charge+'  '+str(crds[i][0])+' '+str(crds[i][1])+' '+str(crds[i][2])+'\n')
         list_atom_type.append(atype_name)
@@ -554,7 +558,7 @@ def ConvertMolecule(tree,
     list_atom_type = set(list_atom_type)    
    
     list_atom_type_surface = []
-    if "surface" in cname :#cname == "surface" :
+    if "surface" in cname and group != "gFixed": #cname == "surface" :
         #group = 'gSurface'
         #need to add the bicycle if surface
         charge = '0.0'
@@ -619,7 +623,7 @@ def ConvertMolecule(tree,
 
         print (molecule['name'],g_ingredient_id,len(deltaXs))                   
         #l_instances.append('# List of \"'+name+'\" instances:\n')
-        if (molecule['name'] == "Insulin_crystal"):
+        if (molecule['name'] == "Insulin_crystal"):#or gag?
             #later will use the ignredient type for that
             current_instance=[]
             current_instance.append(name+'Body {\n')
@@ -687,7 +691,13 @@ def ConvertMolecule(tree,
             l_instances.append('}  # end of "vmd_commands.tcl"\n')
             l_instances.append('\n')
     if "surface" not in cname :
-        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname,str(g_path_radii[path]),bounds)
+        c=False
+        prefix = str(g_path_radii[path])
+        if group == 'gOrdinary':
+            c=True
+            cname = cname+"_fiber"
+            prefix = str(g_path_radii[path])+'f'
+        constr = MoleculeCompartmentConstraint(tree,radii,delta_r,cname,prefix,bounds,c)
         return constr
     else :
         return ''
@@ -731,162 +741,6 @@ def ConvertMolecules(tree,molecules,
 
 
 
-
-def ConvertSystem_old(tree,
-                  file_out,
-                  delta_r,
-                  bounds,
-                  nindent=0,
-                  cname = "",
-                  model_data=None):
-    """
-    Recursively search for objects in the JSON file 
-    containing a 'ingredients' field.  
-    The 'ingredients' should map to a dictionary of molecule_tyle_names.
-    For each of them, define a moltemplate molecule type, followed by
-    a list of \"new\" commands which instantiate a copy of that molecule
-    at different positions and orientations.
-    """
-
-    if not isinstance(tree, dict):
-        return
-    if 'ingredients' in tree:
-        ConvertMolecules(tree,tree['ingredients'],
-                         file_out,
-                         delta_r,
-                         bounds,
-                         nindent,cname =cname,model_data=model_data)
-    else:
-        for object_name in tree:
-            if object_name == 'recipe':
-                continue
-            file_out.write(nindent*'  '+object_name + ' {\n')
-            if object_name == 'cytoplasme':
-                ConvertMolecules(tree,tree['cytoplasme'],
-                                file_out,
-                                delta_r,
-                                bounds,
-                                nindent,cname =cname,model_data=model_data)
-            else :                    
-                ConvertSystem(tree[object_name],
-                            file_out,
-                            delta_r,
-                            bounds,
-                            nindent+1,
-                            cname=object_name,model_data=model_data)
-            file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-            file_out.write('\n' + 
-                           nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                           '\n' +
-                           '\n')
-
-            #when debugging, uncomment the next line:
-            #break
-
-def ConvertSystem2(tree,
-                  file_out,
-                  delta_r,
-                  bounds,
-                  nindent=0,
-                  cname = "",
-                  model_data=None):
-    if not isinstance(tree, dict):
-        return
-    l_instances = []
-    #object_name = "recipe"
-    #file_out.write(nindent*'  '+object_name + ' {\n')
-    if 'cytoplasme' in tree and 'ingredients' in tree['cytoplasme'] and len(tree['cytoplasme']['ingredients']):
-        object_name = 'cytoplasme'
-        file_out.write(nindent*'  '+object_name + ' {\n')
-        ConvertMolecules(tree,tree['cytoplasme']['ingredients'],
-                file_out,
-                delta_r,
-                bounds,
-                nindent,cname ='cytoplasme',model_data=model_data)
-        file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-        file_out.write('\n' + 
-                           nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                           '\n' +
-                           '\n')
-    if 'compartments' in tree:
-        for compname in tree['compartments']:
-            if 'surface' in tree['compartments'][compname]:
-                #list_groups.append("g"+compname+"_surface")
-                cname = compname+"_surface"
-                object_name = cname
-                file_out.write(nindent*'  '+object_name + ' {\n')
-                ConvertMolecules(tree,tree['compartments'][compname]['surface']['ingredients'],
-                         file_out,
-                         delta_r,
-                         bounds,
-                         nindent,cname =cname,model_data=model_data)
-                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-                file_out.write('\n' + 
-                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                                '\n' +
-                                '\n')                 
-            if 'interior' in tree['compartments'][compname]:
-                #list_groups.append("g"+compname+"_interior")
-                cname = compname+"_interior"
-                object_name = cname
-                file_out.write(nindent*'  '+object_name + ' {\n')
-                ConvertMolecules(tree,tree['compartments'][compname]['interior']['ingredients'],
-                         file_out,
-                         delta_r,
-                         bounds,
-                         nindent,cname =cname,model_data=model_data)
-                file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-                file_out.write('\n' + 
-                                nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                                '\n' +
-                                '\n')   
-    
-    if model_data!=None:
-        ninstances = len(model_data["pos"])
-        previous_name = g_ingredient_names[int(model_data["pos"][0][3])]
-        if previous_name == "Insulin_crystal":
-            l_instances.append(previous_name+'Body {\n')
-        count = 0
-        start = 0
-        for i in range(ninstances):
-            p = model_data["pos"][i]
-            q = model_data["quat"][i]
-            ptype = int(p[3])
-            name = g_ingredient_names[ptype]
-            if (previous_name!=name):
-                print (ptype,previous_name,start,count-start)
-                start = count
-                if (previous_name!=name and name == "Insulin_crystal"):
-                    l_instances.append(name+'Body {\n')
-                if (previous_name!=name and previous_name == "Insulin_crystal"):    
-                    l_instances.append('}\n')
-                    l_instances.append(previous_name+'_body = new '+previous_name+'Body\n\n')
-                previous_name = name
-            l_instances.append(name + '_instances[' + str(i) + '] = new ' + name +
-                                '.quat(' + 
-                                str(-q[0]) + ',' +
-                                str(q[1]) + ',' +
-                                str(q[2]) + ',' +
-                                str(-q[3]) +
-                                ').move(' + 
-                                str(-p[0]) + ',' +
-                                str(p[1]) + ',' +
-                                str(p[2]) + ')\n')
-            count += 1
-        print (previous_name,start,count-start)
-        bounds = [[-500.0,-500.0,-500.0],    #Box big enough to enclose all the particles
-              [500.0,500.0,500.0]] #[[xmin,ymin,zmin],[xmax,ymax,zmax]]    
-        file_out.write('\n' +
-                   nindent*'  ' + '# ----------- molecule instances -----------\n' +
-                   '\n')
-        file_out.write((nindent*'  ') + (nindent*'  ').join(l_instances))
-
-    file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-    file_out.write('\n' + 
-                    nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                    '\n' +
-                    '\n')      
-
 #curve_ingredient follow a local order in cellpackgpu
 def FindIngredientInTreeFromId(query_ing_id,tree,grow=False):
     current_id = -1
@@ -907,18 +761,6 @@ def FindIngredientInTreeFromId(query_ing_id,tree,grow=False):
                     return [tree['cytoplasme']['ingredients'][ing_name],cname,".cytoplasme.ingredients"]
     if 'compartments' in tree:
         for compname in tree['compartments']:
-            if 'interior' in tree['compartments'][compname] and len(tree['compartments'][compname]['interior']['ingredients']):
-                cname = compname+"_interior"
-                for ing_name in tree['compartments'][compname]['interior']['ingredients']:
-                    if tree['compartments'][compname]['interior']['ingredients'][ing_name]["Type"] == "Grow":
-                        fiber_id+=1
-                        if query_ing_id == fiber_id  and grow:
-                            return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
-                    else :                                      
-                        current_id+=1   
-                        #print (current_id,query_ing_id,ing_name)                     
-                        if query_ing_id == current_id and not grow:
-                            return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
             if 'surface' in tree['compartments'][compname] and len(tree['compartments'][compname]['surface']['ingredients']) :
                 cname = compname+"_surface"
                 for ing_name in tree['compartments'][compname]['surface']['ingredients']:
@@ -931,6 +773,18 @@ def FindIngredientInTreeFromId(query_ing_id,tree,grow=False):
                         #print (current_id,query_ing_id,ing_name)
                         if query_ing_id == current_id and not grow:
                             return [tree['compartments'][compname]['surface']['ingredients'][ing_name],cname,'.compartments.'+compname+'.surface.ingredients']
+            if 'interior' in tree['compartments'][compname] and len(tree['compartments'][compname]['interior']['ingredients']):
+                cname = compname+"_interior"
+                for ing_name in tree['compartments'][compname]['interior']['ingredients']:
+                    if tree['compartments'][compname]['interior']['ingredients'][ing_name]["Type"] == "Grow":
+                        fiber_id+=1
+                        if query_ing_id == fiber_id  and grow:
+                            return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
+                    else :                                      
+                        current_id+=1   
+                        #print (current_id,query_ing_id,ing_name)                     
+                        if query_ing_id == current_id and not grow:
+                            return [tree['compartments'][compname]['interior']['ingredients'][ing_name],cname,'.compartments.'+compname+'.interior.ingredients']
     return [None,None,None]    
 
 def FindIngredientInTree(query_ing_name,tree):
@@ -958,166 +812,6 @@ def fastest_calc_dist(p1,p2):
                      (p2[1] - p1[1]) ** 2 +
                      (p2[2] - p1[2]) ** 2)
 
-def ConvertSystem2(tree,
-                  file_out,
-                  delta_r,
-                  bounds,
-                  nindent=0,
-                  cname = "",
-                  model_data=None):
-    if not isinstance(tree, dict) or model_data==None:
-        return
-    global r_max
-    object_name = "recipe"
-    file_out.write(nindent*'  '+object_name + ' {\n')
-    ninstances = len(model_data["pos"])
-    count = 0
-    start = 0   
-    prev_ingredient_name = ""
-    comp_constraints=''
-    count_ingr=0
-    limit_ingr=-1#hard coded for debug
-    for i in range(ninstances):
-        if count_ingr == limit_ingr and limit_ingr != -1 :
-            break
-        p = model_data["pos"][i]
-        q = model_data["quat"][i]
-        ptype = int(p[3])
-        ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree)
-        #print (ptype,ingredient["name"])
-        name = ingredient["name"]
-        #if name == "Insulin_crystal" : continue
-        if name != prev_ingredient_name :
-            print (ptype,name, prev_ingredient_name,start,count-start,count_ingr)
-            count_ingr+=1
-            if (count != 0) :
-                #if (prev_ingredient_name == "Insulin_crystal"):
-                #    file_out.write('}\n')
-                #    file_out.write(prev_ingredient_name+'_body = new '+prev_ingredient_name+'Body\n\n')                    
-                file_out.write(nindent*'  '+'}  # endo of \"'+prev_ingredient_name+'\"_ingredient definition\n\n')
-                file_out.write('\n' + 
-                           nindent*'  '+prev_ingredient_name + '_ingredient_instance = new ' + prev_ingredient_name + '_ingredient\n' +
-                           '\n' +
-                           '\n')
-            start = count
-            file_out.write(nindent*'  '+name + '_ingredient {\n')
-            l_mol_defs = []
-            l_instances = []
-            const=ConvertMolecule(tree,
-                        ingredient,
-                        name,
-                        l_mol_defs,
-                        l_instances,
-                        delta_r,
-                        bounds,cname,path,model_data=model_data)
-            comp_constraints+=const
-            file_out.write('\n' + 
-                   (nindent*'  ') + '# ----------- molecule definitions -----------\n'
-                   '\n')
-            file_out.write((nindent*'  ') + (nindent*'  ').join(l_mol_defs))
-            file_out.write('\n' +
-                   nindent*'  ' + '# ----------- molecule instances -----------\n' +
-                   '\n')
-            #if (name == "Insulin_crystal"):
-            #    file_out.write(name+'Body {\n')    
-            prev_ingredient_name = name
-        file_out.write(name + '_instances[' + str(i) + '] = new ' + name +
-                            '.quat(' + 
-                            str(-q[0]) + ',' +
-                            str(q[1]) + ',' +
-                            str(q[2]) + ',' +
-                            str(-q[3]) +
-                            ').move(' + 
-                            str(-p[0]) + ',' +
-                            str(p[1]) + ',' +
-                            str(p[2]) + ')\n')
-        AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
-        AdjustBounds(bounds, [p[0]-r_max, p[1], p[2]])
-        AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
-        AdjustBounds(bounds, [p[0], p[1]-r_max, p[2]])
-        AdjustBounds(bounds, [p[0], p[1]+r_max, p[2]])
-        AdjustBounds(bounds, [p[0], p[1], p[2]-r_max])
-        AdjustBounds(bounds, [p[0], p[1], p[2]+r_max])        
-        count += 1    
-    #if (prev_ingredient_name == "Insulin_crystal"):
-    #    file_out.write('}\n')
-    #    file_out.write(prev_ingredient_name+'_body = new '+prev_ingredient_name+'Body\n\n')                    
-    if ninstances!= 0 :
-        file_out.write(nindent*'  '+'}  # endo of \"'+prev_ingredient_name+'\"_ingredient definition\n\n')
-        file_out.write('\n' + 
-            nindent*'  '+prev_ingredient_name + '_ingredient_instance = new ' + prev_ingredient_name + '_ingredient\n' +
-            '\n' +
-            '\n')    
-
-    ncpts = len(model_data["cpts"])
-    cpts_info = model_data["cinfo"]
-    if ncpts!=0:
-        ncurves = np.unique(cpts_info[:,0])
-        curves = np.array( [ cpts_info[cpts_info[:,0]==i,:] for i in ncurves] )
-        for i in ncurves:
-            indices = cpts_info[:,0]==i
-            infos = cpts_info[indices] #curve_id, curve_type, angle, uLength
-            pts = model_data["cpts"][indices]*np.array([-1.0,1.0,1.0,1.0]) #xyz_radius
-            normal = model_data["cnorm"][indices] #xyz_0
-            ptype =  infos[0][1]
-            ingredient, cname, path = FindIngredientInTreeFromId(ptype,tree,grow=True)
-            name = ingredient["name"]+"_"+str(int(i))
-            print ("ingredient fiber ",i,infos[0], ptype,name, cname, path)
-            #build the molecule definition
-            #file_out.write(nindent*'  '+name + '_ingredient {\n')
-            l_mol_defs = []
-            l_instances = []
-            const=ConvertMolecule(tree,
-                        ingredient,
-                        name,
-                        l_mol_defs,
-                        l_instances,
-                        delta_r,
-                        bounds,cname,path,model_data=model_data)
-            comp_constraints+=const
-            cutoff = 10.0#distance between first two points ?
-            if (len(pts)>=2):
-                cutoff=fastest_calc_dist(pts[0],pts[1])
-            l_mol_defs.append('  write_once(\"In Settings\") {\n')
-            l_mol_defs.append('    bond_coeff  @bond:Backbone_'+name+'    10.0 '+str(cutoff)+'\n')#K energy distance, r0 distance
-            #if "surface" in cname :#if cname == "surface" :
-            #    l_mol_defs.append('    group gBicycleO type '+list_atom_type_surface[0]+'\n')
-            #    l_mol_defs.append('    group gBicycleI type '+list_atom_type_surface[1]+'\n')
-            l_mol_defs.append('}  # end of: write_once(\"In Settings\")\n\n\n')    
-            #file_out.write('\n' + 
-            #        (nindent*'  ') + '# ----------- molecule definitions -----------\n'
-            #        '\n')
-            #file_out.write((nindent*'  ') + (nindent*'  ').join(l_mol_defs))
-            #file_out.write(nindent*'  '+'}  # endo of \"'+name+'\"_ingredient definition\n\n')
-            # It's a really good idea to generate a smoother version of this curve:
-            #x_new = moltemplate.interpolate_curve.ResampleCurve(pts, len(pts), 1.0)
-            #what about flexibility 
-            gp = moltemplate.genpoly_lt.GenPoly()
-            gp.coords_multi = [pts]
-            gp.name_sequence_multi =[[name,]*len(pts)]
-            ax,ay,az = ingredient["principalVector"]
-            gp.ParseArgs([
-                    '-axis', str(ax),str(ay),str(az), #direction of the polymer axis in the original monomer object.
-                    '-helix', '0.0', #rotate each monomer around it's axis by angle deltaphi (in degrees) beforehand #34.2857 dna
-                    '-circular', 'no',
-                    '-bond', 'Backbone_'+name, 'a1', 'a1', #define the connectivity
-                    '-polymer-name', "fiber_"+name,
-                    '-inherits', 'ForceField',
-                    '-monomer-name',name,
-                    '-header', (nindent*'  ') + (nindent*'  ').join(l_mol_defs)
-                    ])
-            gp.WriteLTFile(file_out)
-            file_out.write('\n' + 
-                nindent*'  '+'fiber_'+name + '_instance = new ' + 'fiber_'+name + '\n' +
-                '\n' +
-                '\n')   
-    file_out.write(nindent*'  '+'}  # endo of \"'+object_name+'\" definition\n\n')
-    file_out.write('\n' + 
-                    nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
-                    '\n' +
-                    '\n')          
-    return comp_constraints
-   
 def ConvertSystem(tree,
                   file_out,
                   delta_r,
@@ -1138,6 +832,9 @@ def ConvertSystem(tree,
     count_ingr=0
     limit_ingr=-1#hard coded for debug
     all_definitions=OrderedDict()
+    all_instances = '\n' + \
+                    (nindent*'  ') + '# ----------- molecule definitions -----------\n' + \
+                    '\n'
     for i in range(ninstances):
         if count_ingr == limit_ingr and limit_ingr != -1 :
             break
@@ -1163,13 +860,13 @@ def ConvertSystem(tree,
             start = count
             if name not in all_definitions:
                 all_definitions[name]={"def":"","inst":"","end":""}
-                all_definitions[name]["end"]+=nindent*'  '+'}  # endo of \"'+name+'\"_ingredient definition\n\n'
-                all_definitions[name]["end"]+='\n' + \
-                           nindent*'  '+name + '_ingredient_instance = new ' + name + '_ingredient\n' + \
-                           '\n' + \
-                           '\n'
+                #all_definitions[name]["end"]+=nindent*'  '+'}  # end of \"'+name+'\"_ingredient definition\n\n'
+                #all_definitions[name]["end"]+='\n' + \
+                #           nindent*'  '+name + '_ingredient_instance = new ' + name + '_ingredient\n' + \
+                #           '\n' + \
+                #           '\n'
                
-                all_definitions[name]["def"]+=nindent*'  '+name + '_ingredient {\n'
+                #all_definitions[name]["def"]+=nindent*'  '+name + '_ingredient {\n'
                 l_mol_defs = []
                 l_instances = []
                 const=ConvertMolecule(tree,
@@ -1184,13 +881,15 @@ def ConvertSystem(tree,
                     (nindent*'  ') + '# ----------- molecule definitions -----------\n' + \
                     '\n'
                 all_definitions[name]["def"]+=(nindent*'  ') + (nindent*'  ').join(l_mol_defs)
-                all_definitions[name]["def"]+='\n' + \
-                    nindent*'  ' + '# ----------- molecule instances -----------\n' + \
-                    '\n'
+                #all_definitions[name]["def"]+='\n' + \
+                #    nindent*'  ' + '# ----------- molecule instances -----------\n' + \
+                #    '\n'
                 #if (name == "Insulin_crystal"):
                 #    file_out.write(name+'Body {\n')    
             prev_ingredient_name = name
-        all_definitions[name]["inst"]+=name + '_instances[' + str(i) + '] = new ' + name + \
+        
+        #all_definitions[name]["inst"]+=name + '_instances[' + str(i) + '] = new ' + name + \
+        all_instances+=name + '_instances[' + str(i) + '] = new ' + name + \
                             '.quat(' + \
                             str(-q[0]) + ',' + \
                             str(q[1]) + ',' + \
@@ -1199,7 +898,7 @@ def ConvertSystem(tree,
                             ').move(' + \
                             str(-p[0]) + ',' + \
                             str(p[1]) + ',' + \
-                            str(p[2]) + ')\n' 
+                            str(p[2]) + ')\n'
         AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
         AdjustBounds(bounds, [p[0]-r_max, p[1], p[2]])
         AdjustBounds(bounds, [p[0]+r_max, p[1], p[2]])
@@ -1217,11 +916,12 @@ def ConvertSystem(tree,
     #        nindent*'  '+prev_ingredient_name + '_ingredient_instance = new ' + prev_ingredient_name + '_ingredient\n' + \
     #        '\n' + \
     #        '\n'
+    #can I define the molecule then the intsance ?
     for entry in all_definitions:
         file_out.write(all_definitions[entry]["def"])
-        file_out.write(all_definitions[entry]["inst"])
-        file_out.write(all_definitions[entry]["end"])
-
+        #file_out.write(all_definitions[entry]["inst"])
+        #file_out.write(all_definitions[entry]["end"])
+    file_out.write(all_instances)
     ncpts = len(model_data["cpts"])
     cpts_info = model_data["cinfo"]
     if ncpts!=0:
@@ -1288,7 +988,11 @@ def ConvertSystem(tree,
     file_out.write('\n' + 
                     nindent*'  '+object_name + '_instance = new ' + object_name + '\n' +
                     '\n' +
-                    '\n')          
+                    '\n')   
+    #here should take of the constraints 
+    #in "In Settings"  bond_coeff  @bond:type_bond_name    10.0 34.03155370752372
+    #in "Data Bonds" $bond:name_bond @bond:type_bond_name $atom:instance[0]/atom_id $atom:instance[0]/atom_id
+    #Example Ribosome : what beads attach to what beads       
     return comp_constraints
 
 def CreateGroupCompartment(tree):
@@ -1364,7 +1068,7 @@ def OnePairCoeffCutSoft(aname, aradius, delta_r, pairstyle, epsilon, alambda):
 
 def OnePairCoeffSoft(aname, aradius, delta_r, epsilon, A=10.0):
     radius = aradius * delta_r
-    rcut = 2 * radius   #(don't forget the 2)
+    rcut = 2.0 * radius   #(don't forget the 2)
     return ('     pair_coeff ' + 
                     '@atom:A' + str(aname) + ' ' +
                     '@atom:A' + str(aname) + ' ' +
@@ -1396,7 +1100,7 @@ def OnePairCoeffGauss(aname, aradius, delta_r, epsilon, A=10000.0):
                     str(B) + ' ' +
                     str(rcut) + '\n')
 
-def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds):
+def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds,c=False):
     #should be done per atom type!
     # group by range 10 
     global g_radii
@@ -1408,6 +1112,8 @@ def MoleculeCompartmentConstraint(tree,radii,delta_r,compname,prefix,bounds):
     for i in range(0, len(radii)):
         iradius = int(round(float(radii[i])/delta_r))  #(quantize the radii)
         atype_name = '@atom:A' + str(iradius)+'x'+prefix    #atom type depends on radius
+        if c :
+            atype_name = '@atom:A' + str(iradius)+'c'+prefix    #atom type depends on radius
         astr+='    group g'+atype_name+' type '+atype_name+'\n'
         if 'compartments' in tree:
             for cname in tree['compartments']:
@@ -1494,6 +1200,8 @@ def CompartmentConstraint(tree,bounds,rcut_max,ing_constr):
                 for n in range(0,N):
                     v=atom[n]
                     atype_name = '@atom:A' + str(v)+'x'+g_radii[cname][comp]["prefix"]    #atom type depends on radius
+                    if cname.find("_fiber")!=-1:
+                        atype_name = '@atom:A' + str(v)+'c'+g_radii[cname][comp]["prefix"]    #atom type depends on radius
                     if cname == 'cytoplasme':
                         astr+='    group gO'+str(v)+' type '+atype_name+'\n'
                         astr+='    fix ofxWall%s gO%s wall/region rSphereO%sg harmonic  %f  0.1  %f#%f %f %f\n'%('A' + str(v),str(v),comp,strength,radius+mbthickness+v*0.1,radius,mbthickness,v*0.1)
@@ -1621,6 +1329,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     RadiiNeeded(tree, ir_needed, delta_r)
     rmax=0.0
     for p in ir_needed :
+        if len(ir_needed[p]) == 0 :
+            continue
         mm=max(ir_needed[p])
         if mm > rmax :
             rmax = mm
@@ -1799,6 +1509,8 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
 
     c=CompartmentConstraint(tree,bounds,rcut_max,comp_constraints)
     file_out.write(c)    
+    tFixed = [tuple(t) for t in g_fixed]
+    g_fixed = set(tFixed)
 
     file_out.write('\n\n'
                    '# Simulation boundaries:\n'
@@ -1842,8 +1554,7 @@ def ConvertCellPACK(file_in,        # typically sys.stdin
     #for iradius in sorted(ir_needed):
     #    coeff = OnePairCoeffCutSoft(iradius, iradius, delta_r, apairstyle, aepsilon,alambda)
     #    file_out.write(coeff)
-    tFixed = [tuple(t) for t in g_fixed]
-    g_fixed = set(tFixed)
+
     for i,p in enumerate(ir_needed):
         for iradius in sorted(ir_needed[p]):
             coeff = OnePairCoeffCutSoft(str(iradius)+"x"+str(i), iradius, delta_r, apairstyle, aepsilon,alambda)
@@ -2153,7 +1864,7 @@ if __name__ == '__main__':
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Documents\ISG\models\recipes\initialISG.json -out C:\Users\ludov\Documents\ISG\models\model_systematic\models\relaxed\system.lt -model C:\Users\ludov\Documents\ISG\models\model_systematic\models\mature\cfx_model0_0_0.bin
 #sh ~/Documents/moltemplate/moltemplate/scripts/moltemplate.sh system.lt -nocheck #1h30 later
 #1175640 rigid bodies with 3224998 atoms ISG
-##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 30 -i run.in.min1
+##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 6 -i run.in.min1
 ##"C:\Program Files\LAMMPS 64-bit 19Sep2019\bin\lmp_serial.exe" -sf omp -pk omp 4 -i run.in.min2
 #"C:\Program Files\LAMMPS 64-bit 19Sep2019-MPI\bin\lmp_mpi.exe" -sf omp -pk omp 4 -i run.in.min1
 #'/c/Program Files (x86)/University of Illinois/VMD/vmd.exe' traj_min_soft.lammpstrj -e vmd_commands.tcl
@@ -2163,5 +1874,7 @@ if __name__ == '__main__':
 #python -i  "C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py" -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in C:\Users\ludov\Downloads\root_test.json -out C:\Users\ludov\Downloads\test\system.lt -model C:\Users\ludov\Downloads\results_serialized.bin
 #python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in D:\cellPACK_data_git\Mycoplasma\Martina\relaxed\root_mpn.json -out D:\cellPACK_data_git\Mycoplasma\Martina\relaxed\system.lt -model D:\cellPACK_data_git\Mycoplasma\Martina\relaxed\results_serialized.bin
-
-
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in "C:\Users\ludov\Documents\martina\model\root (63).json" -out C:\Users\ludov\Documents\martina\model\relaxed\system.lt -model C:\Users\ludov\Documents\martina\model\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in "D:\cellPACK_data_git\Coronavirus\root (53).json" -out D:\cellPACK_data_git\Coronavirus\relaxed\system.lt -model D:\cellPACK_data_git\Coronavirus\results_serialized.bin
+#python -i  C:\Users\ludov\Documents\cellpack2moltemplate.git\cellpack2moltemplate\cellpack2lt_new.py -in rootIm.json -out relaxed\system.lt -model root_serialized.bin
+#alias vmd='/c/Program Files (x86)/University of Illinois/VMD/vmd.exe'
